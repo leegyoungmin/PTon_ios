@@ -11,4 +11,9 @@ import Foundation
 class MemoListViewModel:ObservableObject{
     @Published var memos:[memo] = []
     
+    let userid:String
+    
+    init(userid:String){
+        self.userid = userid
+    }
 }
