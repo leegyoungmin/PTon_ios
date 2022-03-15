@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>674085853010-mo64sd8rrlh4qir8jmpkasai79j8tef9.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.674085853010-mo64sd8rrlh4qir8jmpkasai79j8tef9</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCYxM-4acSQMhdmzE6WhKFskckPS0PLRBI</string>
+	<key>GCM_SENDER_ID</key>
+	<string>674085853010</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>Salud.PTon</string>
+	<key>PROJECT_ID</key>
+	<string>pton-1ffc0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>pton-1ffc0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:674085853010:ios:f672afe765fdd7da8f8c8b</string>
+	<key>DATABASE_URL</key>
+	<string>https://pton-1ffc0-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+</dict>
+</plist>
