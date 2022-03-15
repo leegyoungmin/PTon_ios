@@ -74,6 +74,7 @@
 		1893961B27ABF9CD00B4DB8A /* Model+LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893961A27ABF9CD00B4DB8A /* Model+LoginViewModel.swift */; };
 		18B7D94027E08E4100400310 /* Model + MemoCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */; };
 		18B7D94227E09C8A00400310 /* MemoListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7D94127E09C8A00400310 /* MemoListViewModel.swift */; };
+		18B7D94827E0A07200400310 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 18B7D94727E0A07200400310 /* .gitignore */; };
 		18CFFF5A27BBF09D00BB95DA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5927BBF09D00BB95DA /* HomeView.swift */; };
 		18CFFF5C27BBF6E800BB95DA /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5B27BBF6E800BB95DA /* UserProfileView.swift */; };
 		18CFFF5F27BBF92500BB95DA /* StretchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5E27BBF92500BB95DA /* StretchingView.swift */; };
@@ -159,6 +160,7 @@
 		1893961A27ABF9CD00B4DB8A /* Model+LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+LoginViewModel.swift"; sourceTree = "<group>"; };
 		18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + MemoCreateViewModel.swift"; sourceTree = "<group>"; };
 		18B7D94127E09C8A00400310 /* MemoListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoListViewModel.swift; sourceTree = "<group>"; };
+		18B7D94727E0A07200400310 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		18CFFF5927BBF09D00BB95DA /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		18CFFF5B27BBF6E800BB95DA /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		18CFFF5E27BBF92500BB95DA /* StretchingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchingView.swift; sourceTree = "<group>"; };
@@ -459,6 +461,7 @@
 		189393F627ABAF0100B4DB8A = {
 			isa = PBXGroup;
 			children = (
+				18B7D94727E0A07200400310 /* .gitignore */,
 				1893940127ABAF0100B4DB8A /* PTon */,
 				0EF94B364B91CDA0AD3B8B13 /* Pods */,
 				1893941527ABBC5F00B4DB8A /* PTon.app */,
@@ -638,6 +641,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18B7D94827E0A07200400310 /* .gitignore in Resources */,
 				1833C65A27BD798E0096E3E4 /* GoogleService-Info.plist in Resources */,
 				1888F9B027B6806600EBAA43 /* SurvayData.json in Resources */,
 				1888F9B627B6808100EBAA43 /* Stretching.json in Resources */,
