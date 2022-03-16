@@ -29,7 +29,7 @@ struct MemoListView:View{
                         ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
                             ZStack{
                                 NavigationLink {
-                                    Text("Example Memo")
+                                    PublicMemoView(currentMemo: memo)
                                 } label: {
                                     EmptyView()
                                 }
