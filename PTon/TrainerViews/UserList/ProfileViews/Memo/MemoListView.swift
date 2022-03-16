@@ -9,9 +9,9 @@ import Foundation
 import SwiftUI
 
 struct MemoListView:View{
+    @StateObject var viewmodel:MemoListViewModel
     @State var tabList = ["공개","비공개"]
     @State var selectedIndex = 0
-    let userid:String
     var body: some View{
         VStack{
             MemoTabs(tabs: $tabList, selection: $selectedIndex, underlineColor: .black){ title, selected in
@@ -23,75 +23,102 @@ struct MemoListView:View{
             .background(.white)
             
             
-            ZStack{
-                
-                VStack{
-                    Spacer()
-                    HStack{
-                        Spacer()
-                        
-                        NavigationLink {
-                            MemoCreateView(viewmodel: MemoCreateViewModel(userid: userid))
-                        } label: {
-                            Image(systemName: "plus.circle")
-                                .font(.system(size: 30))
-                                .foregroundColor(.accentColor)
+            VStack{
+                List{
+                    if selectedIndex == 0{
+                        ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
+                            ZStack{
+                                NavigationLink {
+                                    Text("Example Memo")
+                                } label: {
+                                    EmptyView()
+                                }
+                                .buttonStyle(.plain)
+                                .opacity(0.0)
+                                
+                                MemoListCellView(memo: memo)
+                            }
+
                         }
-                        .buttonStyle(.plain)
+                    }else{
+                        ForEach(viewmodel.memos.filter{$0.isPrivate == true},id:\.self) { memo in
+                            MemoListCellView(memo: memo)
+                        }
                     }
+                    
                 }
-                .padding(.trailing)
+                .listStyle(.plain)
+                .listRowSeparator(.hidden)
+                .padding()
                 
-                Text("작성된 메모가 없습니다.")
+                HStack{
+                    Spacer()
+                    
+                    NavigationLink {
+                        MemoCreateView(viewmodel: MemoCreateViewModel(userid: viewmodel.userid))
+                    } label: {
+                        Image(systemName: "plus.circle")
+                            .font(.system(size: 50))
+                            .shadow(color: .gray.opacity(0.1), radius: 1, x: 0, y: 1)
+                            .foregroundColor(.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                   
+                }
+                .padding(.horizontal)
             }
-            
-            Spacer()
         }
         .background(Color("Background"))
     }
 }
 
-//
-//struct MemoListCellView:View{
-//    @State var memo:Memo
-//    @State var ButtonClicked:Bool = false
-//    var body: some View{
-//
-//        HStack{
-//            VStack(alignment: .leading, spacing: 0){
-//                Text(memo.title)
-//
-//                Text(memo.date)
-//                    .font(.footnote)
-//                    .padding(.bottom,20)
-//                    .foregroundColor(.gray)
-//
-//                Text(memo.contents)
-//                    .lineLimit(2)
-//                    .font(.footnote)
-//                    .foregroundColor(.gray)
-//            }
-//
-//
-//            Spacer()
-//
-//            VStack{
-//                Image(systemName: "chevron.forward")
-//                    .foregroundColor(.accentColor)
-//                Spacer()
-//            }
-//        }
-//        .padding(5)
-//        .padding(.horizontal,10)
-//        .background(.white)
-//        .padding(.top,5)
-//
-//    }
-//}
+struct MemoListCellView:View{
+    let memo:Memo
+    var body: some View{
+        VStack(alignment:.leading,spacing:5){
+            HStack{
+                Text(memo.title)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                
+                Spacer()
+                
+                Image(systemName: "chevron.forward")
+                    .foregroundColor(.accentColor)
+            }
+            
+            HStack{
+                Text(memo.time)
+                    .font(.body)
+                    .foregroundColor(.gray.opacity(0.5))
+                Spacer()
+            }
+            
+            Text(memo.content)
+                .font(.body)
+                .foregroundColor(.gray.opacity(0.5))
+                .padding(.top,10)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+        }
+        .padding(5)
+    }
+}
 
 struct MemoListView_Previews:PreviewProvider{
     static var previews: some View{
-        MemoListView(userid: "asdasd")
+        MemoListView(viewmodel: MemoListViewModel(userid: "kakao:1967260938"))
+//        MemoListCellView(memo: Memo(
+//            uuid: UUID().uuidString,
+//            title: "Example_1",
+//            content: "Example",
+//            time: convertString(content: Date(), dateFormat: "yyyy.MM.dd HH:mm"),
+//            isPrivate: false,
+//            firstMeal: ["식사1"],
+//            secondMeal: ["식사2"],
+//            thirdMeal: nil)
+//        )
+//        .previewLayout(.sizeThatFits)
     }
 }
 

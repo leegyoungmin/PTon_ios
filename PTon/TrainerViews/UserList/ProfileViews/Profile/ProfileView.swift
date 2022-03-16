@@ -150,7 +150,7 @@ struct ProfileView: View {
                             ProfileButton(icons[3])
                         }
                         NavigationLink {
-                            MemoListView(userid: viewmodel.userid)
+                            MemoListView(viewmodel: MemoListViewModel(userid: viewmodel.userid))
                                 .navigationTitle("")
                                 .navigationBarTitleDisplayMode(.inline)
                         } label: {

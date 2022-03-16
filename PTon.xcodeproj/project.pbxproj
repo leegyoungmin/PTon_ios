@@ -46,6 +46,7 @@
 		184F14F527B8FF7F00E5AF07 /* StretchingRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184F14F427B8FF7F00E5AF07 /* StretchingRequestView.swift */; };
 		184F14FA27B9191700E5AF07 /* StretchingThumnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184F14F927B9191700E5AF07 /* StretchingThumnailView.swift */; };
 		184F14FC27B91CD500E5AF07 /* Model + StretchingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184F14FB27B91CD500E5AF07 /* Model + StretchingViewModel.swift */; };
+		184FCCC627E1F0BB007DCB8F /* PublicMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184FCCC527E1F0BB007DCB8F /* PublicMemoView.swift */; };
 		1854529F27B2421C001F2B9F /* Model+UserBaseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1854529E27B2421C001F2B9F /* Model+UserBaseViewModel.swift */; };
 		185687E527B272D300753D5B /* TrainerUserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185687E427B272D300753D5B /* TrainerUserListView.swift */; };
 		185687E927B272EA00753D5B /* TrainerScheduleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185687E827B272EA00753D5B /* TrainerScheduleView.swift */; };
@@ -130,6 +131,7 @@
 		184F14F427B8FF7F00E5AF07 /* StretchingRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchingRequestView.swift; sourceTree = "<group>"; };
 		184F14F927B9191700E5AF07 /* StretchingThumnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchingThumnailView.swift; sourceTree = "<group>"; };
 		184F14FB27B91CD500E5AF07 /* Model + StretchingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + StretchingViewModel.swift"; sourceTree = "<group>"; };
+		184FCCC527E1F0BB007DCB8F /* PublicMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicMemoView.swift; sourceTree = "<group>"; };
 		1854529E27B2421C001F2B9F /* Model+UserBaseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+UserBaseViewModel.swift"; sourceTree = "<group>"; };
 		185687E427B272D300753D5B /* TrainerUserListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainerUserListView.swift; sourceTree = "<group>"; };
 		185687E827B272EA00753D5B /* TrainerScheduleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainerScheduleView.swift; sourceTree = "<group>"; };
@@ -428,6 +430,14 @@
 			path = Stretching;
 			sourceTree = "<group>";
 		};
+		184FCCC427E1F0A8007DCB8F /* PublicMemoView */ = {
+			isa = PBXGroup;
+			children = (
+				184FCCC527E1F0BB007DCB8F /* PublicMemoView.swift */,
+			);
+			path = PublicMemoView;
+			sourceTree = "<group>";
+		};
 		186E832327BA79E400CBB25E /* MembershipSetting */ = {
 			isa = PBXGroup;
 			children = (
@@ -440,6 +450,7 @@
 		186F11E327B7D7E3004BED0F /* Memo */ = {
 			isa = PBXGroup;
 			children = (
+				184FCCC427E1F0A8007DCB8F /* PublicMemoView */,
 				186F11E427B7D7EC004BED0F /* MemoListView.swift */,
 				186F11E627B7D821004BED0F /* MemoCreateView.swift */,
 				18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */,
@@ -594,8 +605,6 @@
 			dependencies = (
 			);
 			name = PTon;
-			packageProductDependencies = (
-			);
 			productName = PTon;
 			productReference = 1893941527ABBC5F00B4DB8A /* PTon.app */;
 			productType = "com.apple.product-type.application";
@@ -608,7 +617,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1320;
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1330;
 				TargetAttributes = {
 					189393FE27ABAF0100B4DB8A = {
 						CreatedOnToolsVersion = 13.2;
@@ -625,8 +634,6 @@
 				"ko-KR",
 			);
 			mainGroup = 189393F627ABAF0100B4DB8A;
-			packageReferences = (
-			);
 			productRefGroup = 189393F627ABAF0100B4DB8A;
 			projectDirPath = "";
 			projectRoot = "";
@@ -708,6 +715,7 @@
 				18EE19DE27B38C3100CCA16D /* NavigationBarColor.swift in Sources */,
 				183E745C27AD20B00075B058 /* BaseInformationPage.swift in Sources */,
 				1893961B27ABF9CD00B4DB8A /* Model+LoginViewModel.swift in Sources */,
+				184FCCC627E1F0BB007DCB8F /* PublicMemoView.swift in Sources */,
 				1833091927BEC44000890212 /* VideoPlayer.swift in Sources */,
 				184F14FC27B91CD500E5AF07 /* Model + StretchingViewModel.swift in Sources */,
 				1833090B27BE3C4D00890212 /* MonthYearPickerView.swift in Sources */,
@@ -782,6 +790,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
@@ -845,6 +854,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
