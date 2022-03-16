@@ -9,6 +9,7 @@ target 'PTon' do
     end
   end
   use_frameworks!
+  inhibit_all_warnings!
 
   # Pods for PTon
   pod 'naveridlogin-sdk-ios'

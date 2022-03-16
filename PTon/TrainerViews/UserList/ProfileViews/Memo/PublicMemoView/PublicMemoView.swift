@@ -65,7 +65,7 @@ struct MemoMealCellView:View{
             .padding()
             .background(Color("Background"))
             .cornerRadius(10)
-        }else{
+        }else if meals.count == 1{
             HStack{
                 Text(title)
                     .foregroundColor(.accentColor)
@@ -75,6 +75,8 @@ struct MemoMealCellView:View{
             .padding()
             .background(Color("Background"))
             .cornerRadius(10)
+        }else{
+            EmptyView()
         }
         
 
