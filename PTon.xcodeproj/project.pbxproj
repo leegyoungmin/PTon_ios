@@ -63,6 +63,7 @@
 		187D876927DB196500495576 /* ChattingImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D876827DB196500495576 /* ChattingImageViewModel.swift */; };
 		187D876B27DB422400495576 /* TrainerScheduleCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D876A27DB422400495576 /* TrainerScheduleCreateView.swift */; };
 		187D876D27DB440200495576 /* Model + ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D876C27DB440200495576 /* Model + ScheduleViewModel.swift */; };
+		1888E3B927E33C7200EC80A9 /* Model + PublicMemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1888E3B827E33C7200EC80A9 /* Model + PublicMemoViewModel.swift */; };
 		1888F9AA27B67FF000EBAA43 /* SurveyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1888F9A927B67FF000EBAA43 /* SurveyView.swift */; };
 		1888F9B027B6806600EBAA43 /* SurvayData.json in Resources */ = {isa = PBXBuildFile; fileRef = 1888F9AF27B6806600EBAA43 /* SurvayData.json */; };
 		1888F9B627B6808100EBAA43 /* Stretching.json in Resources */ = {isa = PBXBuildFile; fileRef = 1888F9B527B6808100EBAA43 /* Stretching.json */; };
@@ -148,6 +149,7 @@
 		187D876827DB196500495576 /* ChattingImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingImageViewModel.swift; sourceTree = "<group>"; };
 		187D876A27DB422400495576 /* TrainerScheduleCreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainerScheduleCreateView.swift; sourceTree = "<group>"; };
 		187D876C27DB440200495576 /* Model + ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + ScheduleViewModel.swift"; sourceTree = "<group>"; };
+		1888E3B827E33C7200EC80A9 /* Model + PublicMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + PublicMemoViewModel.swift"; sourceTree = "<group>"; };
 		1888F9A927B67FF000EBAA43 /* SurveyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyView.swift; sourceTree = "<group>"; };
 		1888F9AF27B6806600EBAA43 /* SurvayData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SurvayData.json; sourceTree = "<group>"; };
 		1888F9B527B6808100EBAA43 /* Stretching.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Stretching.json; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 			isa = PBXGroup;
 			children = (
 				184FCCC527E1F0BB007DCB8F /* PublicMemoView.swift */,
+				1888E3B827E33C7200EC80A9 /* Model + PublicMemoViewModel.swift */,
 			);
 			path = PublicMemoView;
 			sourceTree = "<group>";
@@ -748,6 +751,7 @@
 				1833091227BE3E1700890212 /* RequestingExerciseView.swift in Sources */,
 				1888F9BC27B6818600EBAA43 /* Extensions.swift in Sources */,
 				186F11E527B7D7EC004BED0F /* MemoListView.swift in Sources */,
+				1888E3B927E33C7200EC80A9 /* Model + PublicMemoViewModel.swift in Sources */,
 				182AB1AE27C8C7F400381C55 /* Model+CoachingViewModel.swift in Sources */,
 				1839D37527B94D7F00EDF216 /* Model + RecordingExerciseViewModel.swift in Sources */,
 				1833091727BE8ECA00890212 /* Model+RequestStretchingViewModel.swift in Sources */,

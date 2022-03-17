@@ -12,6 +12,9 @@ struct MemoListView:View{
     @StateObject var viewmodel:MemoListViewModel
     @State var tabList = ["공개","비공개"]
     @State var selectedIndex = 0
+    let userName:String
+    let trainerId:String
+    let trainerName:String
     var body: some View{
         VStack{
             MemoTabs(tabs: $tabList, selection: $selectedIndex, underlineColor: .black){ title, selected in
@@ -29,7 +32,7 @@ struct MemoListView:View{
                         ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
                             ZStack{
                                 NavigationLink {
-                                    PublicMemoView(currentMemo: memo)
+                                    PublicMemoView(viewmodel: PublicMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid), currentMemo: memo)
                                 } label: {
                                     EmptyView()
                                 }
@@ -37,8 +40,8 @@ struct MemoListView:View{
                                 .opacity(0.0)
                                 
                                 MemoListCellView(memo: memo)
-                            }
 
+                            }
                         }
                     }else{
                         ForEach(viewmodel.memos.filter{$0.isPrivate == true},id:\.self) { memo in
@@ -107,18 +110,18 @@ struct MemoListCellView:View{
 
 struct MemoListView_Previews:PreviewProvider{
     static var previews: some View{
-        MemoListView(viewmodel: MemoListViewModel(userid: "kakao:1967260938"))
-//        MemoListCellView(memo: Memo(
-//            uuid: UUID().uuidString,
-//            title: "Example_1",
-//            content: "Example",
-//            time: convertString(content: Date(), dateFormat: "yyyy.MM.dd HH:mm"),
-//            isPrivate: false,
-//            firstMeal: ["식사1"],
-//            secondMeal: ["식사2"],
-//            thirdMeal: nil)
-//        )
-//        .previewLayout(.sizeThatFits)
+//        MemoListView(viewmodel: MemoListViewModel(userid: "kakao:1967260938"))
+        MemoListCellView(memo: Memo(
+            uuid: UUID().uuidString,
+            title: "Example_1",
+            content: "Example",
+            time: convertString(content: Date(), dateFormat: "yyyy.MM.dd HH:mm"),
+            isPrivate: false,
+            firstMeal: ["식사1"],
+            secondMeal: ["식사2"],
+            thirdMeal: nil)
+        )
+        .previewLayout(.sizeThatFits)
     }
 }
 

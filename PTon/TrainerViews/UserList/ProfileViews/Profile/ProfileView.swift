@@ -22,6 +22,7 @@ struct ProfileView: View {
     @Binding var isChatting:Bool
     @State var isPresentBottomSheet:Bool = false
     @State var memberShipType:membershipType?
+    let trainerName:String
     var body: some View {
         
         //TODO: - 제스처에 따른 화면 offset 변경
@@ -150,7 +151,10 @@ struct ProfileView: View {
                             ProfileButton(icons[3])
                         }
                         NavigationLink {
-                            MemoListView(viewmodel: MemoListViewModel(userid: viewmodel.userid))
+                            MemoListView(viewmodel: MemoListViewModel(userid: viewmodel.userid),
+                                         userName: viewmodel.userName,
+                                         trainerId: viewmodel.traineid,
+                                         trainerName: self.trainerName)
                                 .navigationTitle("")
                                 .navigationBarTitleDisplayMode(.inline)
                         } label: {

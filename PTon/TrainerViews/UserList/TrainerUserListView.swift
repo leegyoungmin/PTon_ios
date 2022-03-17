@@ -15,6 +15,7 @@ struct TrainerUserListView: View {
     @State var userindex:Int = 0
     @State var searchText:String = ""
     @Binding var baseIndex:Int
+    let trainerName:String
     var body: some View {
         
         ZStack{
@@ -74,7 +75,8 @@ struct TrainerUserListView: View {
                                                             userName: trainerUserListViewModel.getUserName(userindex),
                                                             userUrl: trainerUserListViewModel.trainees[userindex].userProfile),
                                 ispresent: $isShowSheet,
-                                isChatting: $isPresentChat)
+                                isChatting: $isPresentChat,
+                                trainerName: self.trainerName)
                         }
                 }
                 .listStyle(.plain)
@@ -146,7 +148,7 @@ struct userListRowView:View{
 //MARK: - PREVIEWS
 struct TrainerUserListView_Previews: PreviewProvider {
     static var previews: some View {
-        TrainerUserListView(baseIndex: .constant(0))
+        TrainerUserListView(baseIndex: .constant(0), trainerName: "이경민")
         //        userListRowView(item: trainee(username: "이경민", useremail: "cow970814@naver.com", userid: "asd", userProfile: "asdasd"))
         //            .previewLayout(.sizeThatFits)
     }

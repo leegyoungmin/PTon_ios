@@ -11,7 +11,7 @@ import FirebaseFirestoreSwift
 
 
 struct Memo:Codable,Hashable{
-    let uuid:String?
+    let uuid:String
     let title:String
     let content:String
     let time:String

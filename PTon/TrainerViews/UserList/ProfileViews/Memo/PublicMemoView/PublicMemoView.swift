@@ -8,43 +8,165 @@
 import SwiftUI
 
 struct PublicMemoView: View {
+    @StateObject var viewmodel:PublicMemoViewModel
+    @State var commentText:String = ""
+    @State var proxyIndex:Int = 0
     let currentMemo:Memo
+    
+    func validationMeal()->Bool{
+        return (self.currentMemo.firstMeal?.isEmpty ?? true) && (self.currentMemo.secondMeal?.isEmpty ?? true) && (self.currentMemo.thirdMeal?.isEmpty ?? true)
+    }
+    
     var body: some View {
-        VStack(alignment:.leading,spacing:5){
-            HStack{
-                Text(currentMemo.title)
-                    .font(.title)
-                    .fontWeight(.semibold)
-                Spacer()
-            }
+        VStack(spacing:0) {
+            ScrollView {
+                ScrollViewReader { proxy in
+                    VStack(alignment:.leading,spacing:5){
+                        
+                        Text(currentMemo.time.replacingOccurrences(of: "-", with: "."))
+                            .font(.callout)
+                            .foregroundColor(.gray.opacity(0.5))
+                        
+                        Text(currentMemo.content)
+                            .font(.body)
+                            .fontWeight(.regular)
+                            .foregroundColor(.gray.opacity(0.9))
+                            .padding(.top)
+                            .multilineTextAlignment(.leading)
+                            .frame(minHeight:200,alignment: .top)
+                        
+                        if !validationMeal(){
+                            Text("식단")
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .padding(.vertical)
+                            
+                            if currentMemo.firstMeal != nil{
+                                MemoMealCellView(title:"아침",meals: currentMemo.firstMeal!)
+                            }
+                            
+                            if currentMemo.secondMeal != nil{
+                                MemoMealCellView(title:"점심",meals: currentMemo.secondMeal!)
+                            }
+                            
+                            if currentMemo.thirdMeal != nil{
+                                MemoMealCellView(title:"저녁",meals: currentMemo.thirdMeal!)
+                            }
+                        }
+                        
+                        Divider()
+                            .padding(.vertical)
+                        
+                        if !viewmodel.commentList.isEmpty{
+                            VStack(spacing:20){
+                                ForEach(viewmodel.commentList.indices,id:\.self) { index in
+                                    MemoCommentCellView(comment: viewmodel.commentList[index])
+                                        .id(index)
+                                        .environmentObject(self.viewmodel)
+                                }
+                            }
+                            
+                        }else{
+                            VStack{
+                                Text("아직 작성된 댓글이 없습니다.")
+                            }
+                            .padding(.bottom)
+                        }
+                        
 
-            Text(currentMemo.time)
-            
-            Text(currentMemo.content)
-                .padding(.top)
-                .multilineTextAlignment(.leading)
-            
-            Text("식단")
-                .font(.title2)
-                .padding(.top)
-            
-            if currentMemo.firstMeal != nil{
-                MemoMealCellView(title:"아침",meals: currentMemo.firstMeal!)
+                    }
+                    .padding(.horizontal)
+                    .onChange(of: proxyIndex) { newValue in
+                        withAnimation {
+                            if newValue == 0{
+                                UIApplication.shared.endEditing()
+                            }else{
+                                proxy.scrollTo(newValue, anchor: .bottom)
+                            }
+                        }
+                    }
+                    
+                }
+                
+                
+            }
+            .navigationTitle(currentMemo.title)
+            .navigationBarTitleDisplayMode(.large)
+            .onTapGesture {
+                proxyIndex = 0
             }
             
-            if currentMemo.secondMeal != nil{
-                MemoMealCellView(title:"점심",meals: currentMemo.secondMeal!)
+            VStack{
+                Divider()
+                
+                HStack{
+
+                    TextField("댓글 달기", text: $commentText)
+                        .textFieldStyle(.plain)
+                        .onTapGesture {
+                            proxyIndex = viewmodel.commentList.count - 1
+                        }
+                    
+                    Button {
+                        DispatchQueue.main.async {
+                            viewmodel.setCommentData(commentText)
+                            commentText = ""
+                        }
+                    } label: {
+                        Image(systemName: "paperplane.fill")
+                    }
+
+                }
+                .padding([.horizontal,.bottom])
+                .padding(.top,5)
+                
             }
-            
-            if currentMemo.thirdMeal != nil{
-                MemoMealCellView(title:"저녁",meals: currentMemo.thirdMeal!)
-            }
-            
         }
-        .padding(.horizontal)
     }
 }
 
+//MARK: - 댓글 셀 뷰
+struct MemoCommentCellView:View{
+    @EnvironmentObject var viewModel:PublicMemoViewModel
+    let comment:comment
+    var body: some View{
+        HStack{
+            Image(systemName: "person.fill")
+                .resizable()
+                .frame(width: 50, height: 50, alignment: .center)
+                .clipShape(Circle())
+            
+            VStack(alignment:.leading,spacing:5){
+                CommentLabel(name: comment.writerName, comment: comment.content)
+                    .lineLimit(2)
+                
+                HStack{
+                    //MARK: - 댓글 작성 시간 및 현재 시간 비교 후 일수 및 시간 작성
+                    Text("1일")
+                }
+                .font(.footnote)
+            }
+            //MARK: - 댓글 더보기
+
+            Spacer()
+            
+            Button {
+                print(123)
+            } label: {
+                Image(systemName: "heart")
+            }
+            .disabled(viewModel.isWriter(comment.writerId))
+
+        }
+    }
+    
+    @ViewBuilder
+    func CommentLabel(name:String,comment:String)->some View{
+        Text(name).fontWeight(.semibold) + Text("  ") + Text(comment).font(.footnote)
+    }
+}
+
+//MARK: - 메모 식사 셀 뷰
 struct MemoMealCellView:View{
     let title:String
     let meals:[String]
@@ -78,14 +200,13 @@ struct MemoMealCellView:View{
         }else{
             EmptyView()
         }
-        
-
     }
 }
 
 struct PublicMemoView_Previews: PreviewProvider {
+    static var viewModel = PublicMemoViewModel(userId: "asd", userName: "asd", trainerId: "asd", trainerName: "asd", memoId: "asd")
     static var previews: some View {
-        PublicMemoView(currentMemo:
+        PublicMemoView(viewmodel: viewModel, currentMemo:
                         Memo(
                             uuid: UUID().uuidString,
                             title: "Example_1",

@@ -25,7 +25,7 @@ struct TrainerBaseView: View {
     }
     var body: some View {
         TabView(selection: $trainerSelectedIndex) {
-            TrainerUserListView(baseIndex: $trainerSelectedIndex)
+            TrainerUserListView(baseIndex: $trainerSelectedIndex,trainerName: trainerBaseViewModel.trainername)
                 .tabItem {
                     Image(systemName: "person")
                 }
