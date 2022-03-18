@@ -37,9 +37,11 @@ class MemoListViewModel:ObservableObject{
     @Published var memos:[Memo] = []
     
     let userid:String
+    let trainerid:String
     let db = Firestore.firestore()
     
-    init(userid:String){
+    init(trainerid:String,userid:String){
+        self.trainerid = trainerid
         self.userid = userid
         
         observeData()
@@ -80,8 +82,6 @@ class MemoListViewModel:ObservableObject{
     }
     
     func observeData(){
-        guard let trainerid = Firebase.Auth.auth().currentUser?.uid else{return}
-        
         db.collection("Memo").document(trainerid).collection(userid).order(by: "time",descending: true).addSnapshotListener { querySnapshot, error in
             guard let snapshot = querySnapshot else{return}
             

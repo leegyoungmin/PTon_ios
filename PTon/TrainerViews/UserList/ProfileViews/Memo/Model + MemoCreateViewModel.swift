@@ -10,7 +10,7 @@ import Firebase
 import FirebaseFirestore
 
 
-
+//MARK: - Model
 struct memo{
     let uuid = UUID().uuidString
     var isprivate:Bool = false
@@ -24,7 +24,8 @@ struct meal{
     var foodList:[String]?
 }
 
-
+//MARK: - ViewModel
+//TODO: - 데이터 생성시 작성자 id 입력하여서 push notification 발송
 class MemoCreateViewModel:ObservableObject{
     @Published var meals:[meal] = [
         meal(mealType: .first, foodList: []),

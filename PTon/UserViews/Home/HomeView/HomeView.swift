@@ -15,6 +15,17 @@ struct HomeView: View {
         
         ScrollView(.vertical, showsIndicators: false){
             VStack{
+                
+                NavigationLink {
+                    MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.trainerid, userid: viewmodel.userid),
+                                 userName: viewmodel.username, trainerId: viewmodel.trainerid, trainerName: "트레이너")
+                } label: {
+                    Text("메모로")
+                }
+                .buttonStyle(.plain)
+
+                
+                
                 UserProfileCardView()
                     .environmentObject(self.viewmodel)
                     .padding()

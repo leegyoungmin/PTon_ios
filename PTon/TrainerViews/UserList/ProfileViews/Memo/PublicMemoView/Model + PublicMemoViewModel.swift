@@ -43,6 +43,7 @@ class PublicMemoViewModel:ObservableObject{
     }
     
     //TODO: - Read Data
+    //MARK: - 가독성을 위한 함수 분리 작업
     func ObserveData(){
         reference.addSnapshotListener { snapshot, error in
             guard let snapshot = snapshot else{return}
@@ -59,6 +60,44 @@ class PublicMemoViewModel:ObservableObject{
                             self.commentList.append(comment)
                         }else{
                             print("Error")
+                        }
+                    case .failure(let failure):
+                        print("Error decoding Memo \(failure.localizedDescription)")
+                    }
+                }else if diff.type == .modified{
+                    
+                    
+                    let result = Result{
+                        try diff.document.data(as: comment.self)
+                    }
+                    
+                    
+                    switch result {
+                    case .success(let success):
+                        if let comment = success{
+                            guard let index = self.commentList.firstIndex(where: {$0.uid == diff.document.documentID}) else{return}
+                            
+                            self.commentList[index] = comment
+                        }else{
+                            print("Error in comment make")
+                        }
+                    case .failure(let failure):
+                        
+                        print("Error decoding Memo \(failure.localizedDescription)")
+                    }
+                } else if diff.type == .removed{
+                    let result = Result{
+                        try diff.document.data(as: comment.self)
+                    }
+                    
+                    switch result {
+                    case .success(let success):
+                        if let comment = success{
+                            guard let index = self.commentList.firstIndex(where: {$0.uid == diff.document.documentID}) else{return}
+                            
+                            self.commentList.remove(at: index)
+                        } else{
+                            print("Error in Comment make")
                         }
                     case .failure(let failure):
                         print("Error decoding Memo \(failure.localizedDescription)")
@@ -83,6 +122,7 @@ class PublicMemoViewModel:ObservableObject{
         }
     }
     
+    //MARK: - Upload Data
     func uploadData(data:[String:Any]){
         guard let uuid = data["uid"] as? String else{return}
         reference
@@ -90,6 +130,7 @@ class PublicMemoViewModel:ObservableObject{
             .setData(data)
     }
     
+    //MARK: - Make Upload Data
     func makeInputData(type:userType,content:String) -> [String:Any]{
         var data:[String:Any] = [:]
         
@@ -115,12 +156,26 @@ class PublicMemoViewModel:ObservableObject{
         return data
     }
     
-    
+    //MARK: - 작성자 판별 메소드
     func isWriter(_ writerId:String)->Bool{
         guard let currentUser = Firebase.Auth.auth().currentUser else{return true}
         return writerId == currentUser.uid
     }
     
+    //MARK: - Toggle Like
+    func toggleLike(comment:comment){
+        
+        reference
+            .document(comment.uid)
+            .updateData(["isLike":!comment.isLike])
+    }
+    
+    //MARK: - Delete comment
+    func deleteData(comment:comment){
+        reference
+            .document(comment.uid)
+            .delete()
+    }
 }
 
 

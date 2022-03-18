@@ -64,6 +64,7 @@ struct PublicMemoView: View {
                                         .id(index)
                                         .environmentObject(self.viewmodel)
                                 }
+                                
                             }
                             
                         }else{
@@ -73,7 +74,7 @@ struct PublicMemoView: View {
                             .padding(.bottom)
                         }
                         
-
+                        
                     }
                     .padding(.horizontal)
                     .onChange(of: proxyIndex) { newValue in
@@ -100,7 +101,7 @@ struct PublicMemoView: View {
                 Divider()
                 
                 HStack{
-
+                    
                     TextField("댓글 달기", text: $commentText)
                         .textFieldStyle(.plain)
                         .onTapGesture {
@@ -115,7 +116,7 @@ struct PublicMemoView: View {
                     } label: {
                         Image(systemName: "paperplane.fill")
                     }
-
+                    
                 }
                 .padding([.horizontal,.bottom])
                 .padding(.top,5)
@@ -129,6 +130,7 @@ struct PublicMemoView: View {
 struct MemoCommentCellView:View{
     @EnvironmentObject var viewModel:PublicMemoViewModel
     let comment:comment
+    @State var stringTime:String = ""
     var body: some View{
         HStack{
             Image(systemName: "person.fill")
@@ -138,25 +140,38 @@ struct MemoCommentCellView:View{
             
             VStack(alignment:.leading,spacing:5){
                 CommentLabel(name: comment.writerName, comment: comment.content)
-                    .lineLimit(2)
                 
                 HStack{
                     //MARK: - 댓글 작성 시간 및 현재 시간 비교 후 일수 및 시간 작성
-                    Text("1일")
+                    Text(stringTime)
+                        .onAppear {
+                            viewModel.caculateDate(comment, completion: { stringTime in
+                                self.stringTime = stringTime
+                            })
+                        }
+                    
+                    if viewModel.isWriter(comment.writerId){
+                        Button {
+                            viewModel.deleteData(comment: comment)
+                        } label: {
+                            Text("삭제하기")
+                                .foregroundColor(.red)
+                        }
+                    }
                 }
                 .font(.footnote)
             }
             //MARK: - 댓글 더보기
-
+            
             Spacer()
             
             Button {
-                print(123)
+                viewModel.toggleLike(comment: comment)
             } label: {
-                Image(systemName: "heart")
+                Image(systemName: comment.isLike ? "heart.fill":"heart")
             }
             .disabled(viewModel.isWriter(comment.writerId))
-
+            
         }
     }
     
@@ -217,5 +232,50 @@ struct PublicMemoView_Previews: PreviewProvider {
                             secondMeal: ["일반식"],
                             thirdMeal: nil)
         )
+        .onAppear {
+            viewModel.commentList = [comment(writerId: "example", writerName: "이경민", content: "없이 불러 애기 가슴속에 않은 부끄러운 오면 이네들은 지나고 까닭입니다. 위에도 못 이름과, 파란 프랑시스 하나에 이제 별 있습니다. 이름을 때 언덕 옥 동경과 불러 이름자 토끼, 별에도 있습니다. 사람들의 하나 나는 북간도에 내일 헤일 청춘이 있습니다. 이웃 내 그리고 자랑처럼 봄이 시와 오는 별 봅니다. 덮어 애기 오는 다하지 위에 사랑과 까닭이요, 많은 까닭입니다. 다 풀이 써 별이 같이 된 아름다운 했던 까닭입니다. 멀리 잠, 애기 내린 까닭이요, 라이너 있습니다. 노루, 이름을 풀이 때 계십니다. 하나의 벌써 아스라히 둘 같이 것은 어머니, 계절이 가을 봅니다. 애기 노새, 걱정도 버리었습니다.", time: "12:00", isLike: false)]
+        }
+        
+        //        MemoCommentCellView(comment: comment(writerId: "example", writerName: "이경민", content: "없이 불러 애기 가슴속에 않은 부끄러운 오면 이네들은 지나고 까닭입니다. 위에도 못 이름과, 파란 프랑시스 하나에 이제 별 있습니다. 이름을 때 언덕 옥 동경과 불러 이름자 토끼, 별에도 있습니다. 사람들의 하나 나는 북간도에 내일 헤일 청춘이 있습니다. 이웃 내 그리고 자랑처럼 봄이 시와 오는 별 봅니다. 덮어 애기 오는 다하지 위에 사랑과 까닭이요, 많은 까닭입니다. 다 풀이 써 별이 같이 된 아름다운 했던 까닭입니다. 멀리 잠, 애기 내린 까닭이요, 라이너 있습니다. 노루, 이름을 풀이 때 계십니다. 하나의 벌써 아스라히 둘 같이 것은 어머니, 계절이 가을 봅니다. 애기 노새, 걱정도 버리었습니다.", time: "12:00", isLike: false))
+        //            .environmentObject(viewModel)
+        //            .previewLayout(.sizeThatFits)
+    }
+}
+
+extension PublicMemoViewModel{
+    func caculateDate(_ comment:comment,completion:@escaping(String)->Void){
+        let dates = comment.time.components(separatedBy: ["-",":"," "])
+        
+        guard let year = Int(dates[0]),
+              let month = Int(dates[1]),
+              let day = Int(dates[2]),
+              let hour = Int(dates[3]),
+              let minute = Int(dates[4]) else {return}
+        
+        
+        let calendar = Calendar(identifier: .gregorian)
+        let comp = DateComponents(year:year,month: month,day: day,hour: hour,minute: minute)
+        
+        if let startDate = calendar.date(from: comp){
+            let offsetComps = calendar.dateComponents([.year,.month,.day,.hour,.minute], from: startDate, to: Date())
+            if case let (y?,m?,d?,h?,minute?) = (offsetComps.year,offsetComps.month,offsetComps.day,offsetComps.hour,offsetComps.minute){
+                print(y)
+                
+                if y > 0{
+                    completion("\(y)년")
+                }else if m > 0{
+                    completion("\(m)달")
+                }else if d > 0{
+                    completion("\(d)일")
+                }else if h > 0{
+                    completion("\(h)시간")
+                }else if minute > 0{
+                    completion("\(minute)분")
+                }else if minute < 0{
+                    completion("지금")
+                }
+                
+            }
+        }
     }
 }
