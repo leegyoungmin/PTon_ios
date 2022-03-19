@@ -33,7 +33,7 @@ struct TrainerBaseView: View {
                 .onTapGesture {
                     self.trainerSelectedIndex = 0
                 }
-            TrainerChattingListView(chattingListViewModel: ChattingListViewModel(trainername:trainerBaseViewModel.trainername,fitnessCode: trainerBaseViewModel.fitnessCode))
+            TrainerChattingListView(trainees: trainerBaseViewModel.trainerbasemodel.trainee, trainerName: trainerBaseViewModel.trainername, fitnessCode: trainerBaseViewModel.fitnessCode)
                 .tabItem {
                     Image(systemName: "message.fill")
                 }

@@ -8,21 +8,25 @@
 import SwiftUI
 
 struct PublicMemoView: View {
+    //MARK: - PROPERTIES
     @StateObject var viewmodel:PublicMemoViewModel
     @State var commentText:String = ""
     @State var proxyIndex:Int = 0
     let currentMemo:Memo
     
-    func validationMeal()->Bool{
+    //식단 empty 처리 함수
+    func validationMeal() -> Bool{
         return (self.currentMemo.firstMeal?.isEmpty ?? true) && (self.currentMemo.secondMeal?.isEmpty ?? true) && (self.currentMemo.thirdMeal?.isEmpty ?? true)
     }
     
+    //MARK: - VIEW
     var body: some View {
         VStack(spacing:0) {
             ScrollView {
                 ScrollViewReader { proxy in
                     VStack(alignment:.leading,spacing:5){
                         
+                        //MARK: - HEADER SECTION
                         Text(currentMemo.time.replacingOccurrences(of: "-", with: "."))
                             .font(.callout)
                             .foregroundColor(.gray.opacity(0.5))
@@ -35,6 +39,7 @@ struct PublicMemoView: View {
                             .multilineTextAlignment(.leading)
                             .frame(minHeight:200,alignment: .top)
                         
+                        //MARK: FOOD SECTION
                         if !validationMeal(){
                             Text("식단")
                                 .font(.largeTitle)
@@ -57,15 +62,18 @@ struct PublicMemoView: View {
                         Divider()
                             .padding(.vertical)
                         
+                        //MARK: - COMMENT SECTION
+                        //comment List에 대한 분기처리
                         if !viewmodel.commentList.isEmpty{
                             VStack(spacing:20){
-                                ForEach(viewmodel.commentList.indices,id:\.self) { index in
+                                ForEach(viewmodel.commentList.sorted(by: {$0.time >= $1.time}).indices,id:\.self) { index in
                                     MemoCommentCellView(comment: viewmodel.commentList[index])
                                         .id(index)
                                         .environmentObject(self.viewmodel)
                                 }
                                 
                             }
+                            .padding(.bottom)
                             
                         }else{
                             VStack{
@@ -78,6 +86,7 @@ struct PublicMemoView: View {
                     }
                     .padding(.horizontal)
                     .onChange(of: proxyIndex) { newValue in
+                        //proxy index 변경처리를 통한 스크롤 컨트롤
                         withAnimation {
                             if newValue == 0{
                                 UIApplication.shared.endEditing()
@@ -122,6 +131,9 @@ struct PublicMemoView: View {
                 .padding(.top,5)
                 
             }
+        }
+        .onDisappear {
+            viewmodel.viewDisapper()
         }
     }
 }
@@ -218,6 +230,7 @@ struct MemoMealCellView:View{
     }
 }
 
+//MARK: - PREVIEWS
 struct PublicMemoView_Previews: PreviewProvider {
     static var viewModel = PublicMemoViewModel(userId: "asd", userName: "asd", trainerId: "asd", trainerName: "asd", memoId: "asd")
     static var previews: some View {
@@ -259,7 +272,7 @@ extension PublicMemoViewModel{
         if let startDate = calendar.date(from: comp){
             let offsetComps = calendar.dateComponents([.year,.month,.day,.hour,.minute], from: startDate, to: Date())
             if case let (y?,m?,d?,h?,minute?) = (offsetComps.year,offsetComps.month,offsetComps.day,offsetComps.hour,offsetComps.minute){
-                print(y)
+                print(minute)
                 
                 if y > 0{
                     completion("\(y)년")
@@ -271,7 +284,7 @@ extension PublicMemoViewModel{
                     completion("\(h)시간")
                 }else if minute > 0{
                     completion("\(minute)분")
-                }else if minute < 0{
+                }else if minute == 0{
                     completion("지금")
                 }
                 

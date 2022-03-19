@@ -18,12 +18,12 @@ struct TrainerBaseModel{
     var name:String?
     var email:String?
     var fitnessCode:String?
-    var trainee:[trainee]?
+    var trainee:[trainee]
 }
 
 //MARK: VIEWMODEL
 class TrainerBaseViewModel:ObservableObject{
-    @Published var trainerbasemodel = TrainerBaseModel()
+    @Published var trainerbasemodel = TrainerBaseModel(trainee: [])
     let reference = FirebaseDatabase.Database.database().reference()
     var rawValue:Int = UserDefaults.standard.integer(forKey: "LoginApi")
     var loginApi:LoginType
@@ -31,7 +31,7 @@ class TrainerBaseViewModel:ObservableObject{
     init(){
         self.loginApi = LoginType(rawValue: rawValue) ?? .none
         
-        registerToken {
+        self.registerToken {
             self.fetchData {
                 print(self.trainerbasemodel)
             }
@@ -47,6 +47,8 @@ class TrainerBaseViewModel:ObservableObject{
         guard let fitnessCode = trainerbasemodel.fitnessCode else{return ""}
         return fitnessCode
     }
+    
+
     
     //FCM 토큰 저장 메소드
     func registerToken(completion:@escaping()->Void){
@@ -84,7 +86,8 @@ class TrainerBaseViewModel:ObservableObject{
                               let username = values?.value as? String else{return}
                         
                         let trainee = trainee(username: username, useremail: username, userid: userid)
-                        self.trainerbasemodel.trainee?.append(trainee)
+                        self.trainerbasemodel.trainee.append(trainee)
+                        
                     }
                 }else{
                     print("Trainee is Empty")

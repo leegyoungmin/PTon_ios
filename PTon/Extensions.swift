@@ -295,3 +295,15 @@ extension ImageChache{
         return imageCache
     }
 }
+
+extension String{
+    var bool:Bool{
+        if self.lowercased() == "false"{
+            return false
+        }else if self.lowercased() == "true"{
+            return true
+        }else{
+            return false
+        }
+    }
+}

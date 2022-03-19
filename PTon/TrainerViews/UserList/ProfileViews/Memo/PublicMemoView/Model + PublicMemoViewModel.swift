@@ -37,77 +37,55 @@ class PublicMemoViewModel:ObservableObject{
         self.trainerName = trainerName
         self.memoId = memoId
         
+        // Collection 지정
         self.reference = Firestore.firestore().collection("Memo").document(trainerId).collection(userId).document(memoId).collection("Comment")
         
+        //데이터 구독함수 실행
         ObserveData()
     }
     
-    //TODO: - Read Data
-    //MARK: - 가독성을 위한 함수 분리 작업
+    //MARK: - 데이터 구독 함수
     func ObserveData(){
-        reference.addSnapshotListener { snapshot, error in
+        reference.order(by: "time").addSnapshotListener { snapshot, error in
             guard let snapshot = snapshot else{return}
             
             snapshot.documentChanges.forEach { diff in
-                if diff.type == .added{
-                    let result = Result{
-                        try diff.document.data(as: comment.self)
-                    }
-                    
-                    switch result {
-                    case .success(let success):
-                        if let comment = success{
-                            self.commentList.append(comment)
-                        }else{
-                            print("Error")
-                        }
-                    case .failure(let failure):
-                        print("Error decoding Memo \(failure.localizedDescription)")
-                    }
-                }else if diff.type == .modified{
-                    
-                    
-                    let result = Result{
-                        try diff.document.data(as: comment.self)
-                    }
-                    
-                    
-                    switch result {
-                    case .success(let success):
-                        if let comment = success{
-                            guard let index = self.commentList.firstIndex(where: {$0.uid == diff.document.documentID}) else{return}
-                            
-                            self.commentList[index] = comment
-                        }else{
-                            print("Error in comment make")
-                        }
-                    case .failure(let failure):
-                        
-                        print("Error decoding Memo \(failure.localizedDescription)")
-                    }
-                } else if diff.type == .removed{
-                    let result = Result{
-                        try diff.document.data(as: comment.self)
-                    }
-                    
-                    switch result {
-                    case .success(let success):
-                        if let comment = success{
-                            guard let index = self.commentList.firstIndex(where: {$0.uid == diff.document.documentID}) else{return}
-                            
-                            self.commentList.remove(at: index)
-                        } else{
-                            print("Error in Comment make")
-                        }
-                    case .failure(let failure):
-                        print("Error decoding Memo \(failure.localizedDescription)")
-                    }
+                
+                let result = Result{
+                    try diff.document.data(as: comment.self)
                 }
+                
+                self.loadData(diff.type, result: result)
+                
             }
         }
     }
     
-    //TODO: - Create Data
+    //MARK: - 리스너 값 처리 함수
+    func loadData(_ changeType:DocumentChangeType,result:Result<comment?,Error>){
+        switch result{
+        case .success(let comment):
+            if let comment = comment{
+                if changeType == .added{
+                    self.commentList.append(comment)
+                }
+                else{
+                    guard let index = self.commentList.firstIndex(where: {$0.uid == comment.uid}) else {return}
+                    
+                    if changeType == .removed{
+                        self.commentList.remove(at: index)
+                    }
+                    if changeType == .modified{
+                        self.commentList[index] = comment
+                    }
+                }
+            }
+        case .failure(let error):
+            print("Error decoding comment \(error.localizedDescription)")
+        }
+    }
+    
+    //TODO: - 유저 타입에 따른 데이터 분기 처리 함수
     func setCommentData(_ content:String){
         
         guard let currentUser = Firebase.Auth.auth().currentUser else{return}
@@ -122,7 +100,7 @@ class PublicMemoViewModel:ObservableObject{
         }
     }
     
-    //MARK: - Upload Data
+    //MARK: - 데이터 업로드 함수
     func uploadData(data:[String:Any]){
         guard let uuid = data["uid"] as? String else{return}
         reference
@@ -130,29 +108,23 @@ class PublicMemoViewModel:ObservableObject{
             .setData(data)
     }
     
-    //MARK: - Make Upload Data
+    //MARK: - 업로드 데이터 생성 함수
     func makeInputData(type:userType,content:String) -> [String:Any]{
-        var data:[String:Any] = [:]
+        var data:[String:Any] = [
+            "uid" : UUID().uuidString,
+            "content" : content,
+            "time" : convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
+            "isLike" : false
+        ]
         
         if type == .trainer{
-            data = [
-                "uid" : UUID().uuidString,
-                "writerId" : trainerId,
-                "writerName" : trainerName,
-                "content" : content,
-                "time" : convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
-                "isLike" : false
-            ]
+            data["witerId"] = trainerId
+            data["writerName"] = trainerName
         }else if type == .user{
-            data = [
-                "uid" : UUID().uuidString,
-                "writerId" : userId,
-                "writerName" : userName,
-                "content" : content,
-                "time" : convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
-                "isLike" : false
-            ]
+            data["witerId"] = userId
+            data["writerName"] = userName
         }
+        
         return data
     }
     
@@ -162,7 +134,7 @@ class PublicMemoViewModel:ObservableObject{
         return writerId == currentUser.uid
     }
     
-    //MARK: - Toggle Like
+    //MARK: - 좋아요 변경 함수
     func toggleLike(comment:comment){
         
         reference
@@ -170,11 +142,20 @@ class PublicMemoViewModel:ObservableObject{
             .updateData(["isLike":!comment.isLike])
     }
     
-    //MARK: - Delete comment
+    //MARK: - 댓글 삭제 버튼
     func deleteData(comment:comment){
         reference
             .document(comment.uid)
             .delete()
+    }
+    
+    //MARK: - 리스너 제거 메소드 (뷰가 사라질 경우, 리스너를 분리한다.)
+    func viewDisapper(){
+        let listener = reference.addSnapshotListener { querySnapshot, error in}
+        
+        print("Detached")
+        
+        listener.remove()
     }
 }
 

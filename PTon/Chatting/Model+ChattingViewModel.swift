@@ -56,6 +56,7 @@ class ChattingViewModel:ObservableObject{
             .child(self.fitnessCode)
             .child(trainerid)
             .child(userid)
+            .child("chat")
             .observeSingleEvent(of:.value, with: { snapshot in
                 self.Messages.removeAll(keepingCapacity: true)
                 for child in snapshot.children{
@@ -110,6 +111,7 @@ class ChattingViewModel:ObservableObject{
         }
     }
     
+    
     func send(){
         guard let trainerid = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
         
@@ -149,6 +151,7 @@ class ChattingViewModel:ObservableObject{
                 .child(fitnessCode)
                 .child(trainerid)
                 .child(userid)
+                .child("chat")
                 .childByAutoId()
                 .setValue(values) { error, reference in
                     if error == nil{
@@ -156,6 +159,9 @@ class ChattingViewModel:ObservableObject{
                 }
         }
     }
+    
+
+    
     
     func imageAppend(image:Data){
         let message = Message(content: "ChatsImage", time: getStringTime(), date: getStringDate(), user: ChattingUser(name: trainername, isCurrentUser: true), data: image)
@@ -215,6 +221,7 @@ class ChattingViewModel:ObservableObject{
             .child(self.fitnessCode)
             .child(trainerid)
             .child(self.userid)
+            .child("chat")
             .childByAutoId()
             .setValue(values) { error, reference in
                 if error == nil{
@@ -261,6 +268,7 @@ class ChattingViewModel:ObservableObject{
                 .child(fitnessCode)
                 .child(trainerid)
                 .child(userid)
+                .child("chat")
                 .childByAutoId()
                 .setValue(values) { error, reference in
                     if error == nil{
