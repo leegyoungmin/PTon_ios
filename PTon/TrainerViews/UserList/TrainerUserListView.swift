@@ -83,7 +83,7 @@ struct TrainerUserListView: View {
                 .searchable(text: $searchText)
                 
                 NavigationLink(isActive: $isPresentChat) {
-                    ChatView(ChattingViewModel: ChattingViewModel(trainerUserListViewModel.userid(userindex), trainername: trainerUserListViewModel.trainername!, fitnessCode: trainerUserListViewModel.fitnessCode!, username: trainerUserListViewModel.getUserName(userindex)))
+                    Text("Example")
                 } label: {
                     EmptyView()
                 }

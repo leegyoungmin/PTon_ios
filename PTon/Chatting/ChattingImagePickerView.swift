@@ -10,8 +10,9 @@ import SwiftUI
 import Firebase
 import PhotosUI
 
+//MARK: - Chatting Image Picker View
 struct ChattingImagePickerView:UIViewControllerRepresentable{
-    @EnvironmentObject var viewmodel:ChattingViewModel
+    @EnvironmentObject var viewmodel:ChattingInputViewModel
     @Binding var isPresented:Bool
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
@@ -48,13 +49,7 @@ struct ChattingImagePickerView:UIViewControllerRepresentable{
                     guard let image = image as? UIImage,
                           let data = image.jpegData(compressionQuality: 0.8) else{return}
                     
-                    DispatchQueue.main.async {
-                        self.parent.viewmodel.imageAppend(image: data)
-                        
-                        self.parent.viewmodel.uploadImage(data) { path in
-                            self.parent.viewmodel.sendImage(path: path)
-                        }
-                    }
+                    self.parent.viewmodel.uploadImage(data)
                     
                 }
             }
@@ -64,9 +59,10 @@ struct ChattingImagePickerView:UIViewControllerRepresentable{
     }
 }
 
+//MARK: - Chatting Camera View
 struct ChattingCameraView:UIViewControllerRepresentable{
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var viewmodel:ChattingViewModel
+    @EnvironmentObject var viewmodel:ChattingInputViewModel
     let sourceType : UIImagePickerController.SourceType = .camera
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<ChattingCameraView>) -> UIImagePickerController {
@@ -95,13 +91,7 @@ struct ChattingCameraView:UIViewControllerRepresentable{
             if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
                let data = image.jpegData(compressionQuality: 0.8){
                 
-                DispatchQueue.main.async {
-                    self.parent.viewmodel.imageAppend(image: data)
-                    
-                    self.parent.viewmodel.uploadImage(data) { path in
-                        self.parent.viewmodel.sendImage(path: path)
-                    }
-                }
+                self.parent.viewmodel.uploadImage(data)
             }
             parent.dismiss.callAsFunction()
         }

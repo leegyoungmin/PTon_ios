@@ -33,7 +33,7 @@ class TrainerBaseViewModel:ObservableObject{
         
         self.registerToken {
             self.fetchData {
-                print(self.trainerbasemodel)
+                print(self.trainerbasemodel.trainee)
             }
         }
     }
@@ -48,6 +48,10 @@ class TrainerBaseViewModel:ObservableObject{
         return fitnessCode
     }
     
+    var trainerId:String{
+        let trainerId = FirebaseAuth.Auth.auth().currentUser!.uid
+        return trainerId
+    }
 
     
     //FCM 토큰 저장 메소드

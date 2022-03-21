@@ -16,6 +16,21 @@ struct trainee:Hashable{
     var useremail:String?
     var userid:String?
     var userProfile:String?
+    
+    var userName:String {
+        guard let username = username else {
+            return ""
+        }
+        
+        return username
+    }
+    var userId:String {
+        guard let userid = userid else {
+            return ""
+        }
+        
+        return userid
+    }
 }
 
 //MARK: VIEWMODEL

@@ -16,6 +16,10 @@ struct ChattingImageView: View {
         if currentUser{
             ImageElementView()
                 .environmentObject(self.viewmodel)
+                .onAppear {
+                    print("is current User \(currentUser)")
+                }
+
         }else{
             
             HStack{
@@ -29,6 +33,8 @@ struct ChattingImageView: View {
                         .font(.system(size: 25))
                         .rotationEffect(Angle(degrees: -180))
                 }
+            }.onAppear {
+                print("is current User \(currentUser)")
             }
             
         }
@@ -46,16 +52,17 @@ struct ImageElementView:View{
         ZStack{
             
             HStack{
+                Spacer()
                 ProgressView()
                     .progressViewStyle(.circular)
                     .frame(minWidth:250,minHeight:400)
                     .background(isHidden ? .clear:.gray.opacity(0.2))
                     .cornerRadius(5)
-                Spacer()
+
             }
             
-            
             HStack{
+                Spacer()
                 
                 Image(uiImage: image)
                     .resizable()
@@ -67,10 +74,7 @@ struct ImageElementView:View{
                             self.image = image
                         }
                     }
-                    .rotationEffect(Angle(degrees: -180))
                     .cornerRadius(5)
-                
-                Spacer()
             }
             
         }
@@ -80,6 +84,7 @@ struct ImageElementView:View{
         .fullScreenCover(isPresented: $isOpen) {
             ZoomImageView(image: image, isOpen: $isOpen)
         }
+        
     }
 }
 

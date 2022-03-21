@@ -90,7 +90,7 @@ struct UserBaseView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack{
                     NavigationLink {
-                        UserChattingView(viewModel: UserChattingViewModel(userid: UserBaseViewModel.userid, trainerid: UserBaseViewModel.trainerid, username: UserBaseViewModel.username, fitnessCode: UserBaseViewModel.fitnessCode))
+//                        UserChattingView(viewModel: UserChattingViewModel(userid: UserBaseViewModel.userid, trainerid: UserBaseViewModel.trainerid, username: UserBaseViewModel.username, fitnessCode: UserBaseViewModel.fitnessCode))
                     } label: {
                         Image(systemName: "message.fill").foregroundColor(Color.purple)
                     }
