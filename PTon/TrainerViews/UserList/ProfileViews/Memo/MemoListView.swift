@@ -38,7 +38,7 @@ struct MemoListView:View{
                             ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
                                 ZStack{
                                     NavigationLink {
-                                        DetailMemoView(viewmodel: DetailMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid), currentMemo:memo)
+                                        DetailMemoView(viewmodel: DetailMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid, userProfile: viewmodel.userProfile), currentMemo:memo)
                                     } label: {
                                         EmptyView()
                                     }
@@ -71,7 +71,7 @@ struct MemoListView:View{
                             ForEach(viewmodel.memos.filter{$0.isPrivate == true},id:\.self) { memo in
                                 ZStack{
                                     NavigationLink {
-                                        DetailMemoView(viewmodel: DetailMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid), currentMemo:memo)
+                                        DetailMemoView(viewmodel: DetailMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid, userProfile: viewmodel.userProfile), currentMemo:memo)
                                     } label: {
                                         EmptyView()
                                     }
@@ -131,7 +131,7 @@ struct MemoListCellView:View{
             }
             
             HStack{
-                Text(memo.time)
+                Text(memo.time.replacingOccurrences(of: "-", with: "."))
                     .font(.body)
                     .foregroundColor(.gray.opacity(0.5))
                 Spacer()
@@ -159,7 +159,7 @@ struct MemoListView_Previews:PreviewProvider{
             isPrivate: false,
             firstMeal: ["식사1"],
             secondMeal: ["식사2"],
-            thirdMeal: [])
+            thirdMeal: [], snack: [])
         )
         .previewLayout(.sizeThatFits)
     }

@@ -17,7 +17,7 @@ struct HomeView: View {
             VStack{
                 
                 NavigationLink {
-                    MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.trainerid, userid: viewmodel.userid),
+                    MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.trainerid, userid: viewmodel.userid, userProfile: viewmodel.imageUrl),
                                  userName: viewmodel.username, trainerId: viewmodel.trainerid, trainerName: "트레이너")
                 } label: {
                     Text("메모로")

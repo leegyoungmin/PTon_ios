@@ -153,7 +153,7 @@ struct ProfileView: View {
                             ProfileButton(icons[3])
                         }
                         NavigationLink {
-                            MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.traineid, userid: viewmodel.trainee.userId),
+                            MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.traineid, userid: viewmodel.trainee.userId, userProfile: viewmodel.trainee.userProfile ?? ""),
                                          userName: viewmodel.trainee.userName,
                                          trainerId: viewmodel.traineid,
                                          trainerName: self.trainerName)

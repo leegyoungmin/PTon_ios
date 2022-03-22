@@ -16,12 +16,12 @@ struct memo{
     var isprivate:Bool = false
     var title:String
     var content:String
-    var meal:[meal]?
+    var meal:[meal]
 }
 
 struct meal{
-    var mealType:mealType?
-    var foodList:[String]?
+    var mealType:mealType
+    var foodList:[String]
 }
 
 //MARK: - ViewModel
@@ -30,6 +30,7 @@ class MemoCreateViewModel:ObservableObject{
     @Published var meals:[meal] = [
         meal(mealType: .first, foodList: []),
         meal(mealType: .second, foodList: []),
+        meal(mealType: .snack, foodList: []),
         meal(mealType: .third, foodList: [])
     ]
     
@@ -40,14 +41,10 @@ class MemoCreateViewModel:ObservableObject{
         self.userid = userid
     }
     
-    func fetchData(){
-        print("Fetch Data")
-    }
-    
     func updateData(data:memo){
         print(data)
         guard let trainerid = Firebase.Auth.auth().currentUser?.uid else{return}
-        
+
         let reference = db.collection("Memo").document(trainerid).collection(userid)
         var values : [String:Any] = [
             "uuid":data.uuid,
@@ -57,14 +54,10 @@ class MemoCreateViewModel:ObservableObject{
             "time":convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm")
         ]
         
-        if let meal = data.meal{
-            meal.forEach { meal in
-                if meal.foodList != nil,meal.mealType != nil {
-                    values[meal.mealType!.rawValue] = meal.foodList!
-                }
-            }
+        data.meal.forEach{
+            values[$0.mealType.rawValue] = $0.foodList
         }
-        
+
         reference.document(data.uuid).setData(values)
     }
     

@@ -28,14 +28,16 @@ class DetailMemoViewModel:ObservableObject{
     let trainerId:String
     let trainerName:String
     let memoId:String
+    let userProfile:String
     let reference:CollectionReference
     
-    init(userId:String,userName:String,trainerId:String,trainerName:String,memoId:String){
+    init(userId:String,userName:String,trainerId:String,trainerName:String,memoId:String,userProfile:String){
         self.userId = userId
         self.userName = userName
         self.trainerId = trainerId
         self.trainerName = trainerName
         self.memoId = memoId
+        self.userProfile = userProfile
         
         // Collection 지정
         self.reference = Firestore.firestore().collection("Memo").document(trainerId).collection(userId).document(memoId).collection("Comment")
@@ -157,6 +159,7 @@ class DetailMemoViewModel:ObservableObject{
             "uuid":data.uuid,
             mealType.first.rawValue:data.firstMeal,
             mealType.second.rawValue:data.secondMeal,
+            mealType.snack.rawValue:data.snack,
             mealType.third.rawValue:data.thirdMeal
         ]
         
@@ -173,6 +176,18 @@ class DetailMemoViewModel:ObservableObject{
         print("Detached")
         
         listener.remove()
+    }
+    
+    func isTrainer()->Bool{
+        guard let currentUser = Firebase.Auth.auth().currentUser?.uid else{return true}
+        
+        if trainerId == currentUser{
+            return true
+        }else if userId == currentUser{
+            return false
+        }else{
+            return true
+        }
     }
     
 }

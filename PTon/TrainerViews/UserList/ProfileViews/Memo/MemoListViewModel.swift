@@ -19,6 +19,7 @@ struct Memo:Codable,Hashable{
     var firstMeal:[String]
     var secondMeal:[String]
     var thirdMeal:[String]
+    var snack:[String]
     
     enum CodingKeys:String,CodingKey{
         case uuid
@@ -28,6 +29,7 @@ struct Memo:Codable,Hashable{
         case isPrivate
         case firstMeal = "아침"
         case secondMeal = "점심"
+        case snack = "간식"
         case thirdMeal = "저녁"
     }
 }
@@ -38,11 +40,13 @@ class MemoListViewModel:ObservableObject{
     
     let userid:String
     let trainerid:String
+    let userProfile:String
     let db = Firestore.firestore()
     
-    init(trainerid:String,userid:String){
+    init(trainerid:String,userid:String,userProfile:String){
         self.trainerid = trainerid
         self.userid = userid
+        self.userProfile = userProfile
         
         observeData()
     }

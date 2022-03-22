@@ -51,12 +51,16 @@ struct DetailMemoView: View {
                                     .fontWeight(.bold)
                                     .padding(.vertical)
                                 
-                                MemoMealCellView(title:"아침",meals: currentMemo.firstMeal)
-                                
-                                MemoMealCellView(title:"점심",meals: currentMemo.secondMeal)
-                                
-                                MemoMealCellView(title:"저녁",meals: currentMemo.thirdMeal)
-                               
+                                Group{
+                                    MemoMealCellView(title:"아침",meals: currentMemo.firstMeal)
+                                    
+                                    MemoMealCellView(title:"점심",meals: currentMemo.secondMeal)
+                                    
+                                    MemoMealCellView(title:"간식",meals: currentMemo.snack)
+                                    
+                                    MemoMealCellView(title:"저녁",meals: currentMemo.thirdMeal)
+                                }
+                                .padding(.bottom,10)
                             }
                             
                             Divider()
@@ -69,8 +73,11 @@ struct DetailMemoView: View {
                                     VStack(spacing:20){
                                         ForEach(viewmodel.commentList.sorted(by: {$0.time >= $1.time}).indices,id:\.self) { index in
                                             MemoCommentCellView(comment: viewmodel.commentList[index])
-                                                .id(index)
+                                                .id(index+1)
                                                 .environmentObject(self.viewmodel)
+                                                .onAppear {
+                                                    print("\(index) ::: \(viewmodel.commentList.sorted(by: {$0.time >= $1.time})[index])")
+                                                }
                                         }
                                         
                                     }
@@ -88,7 +95,10 @@ struct DetailMemoView: View {
                         .onChange(of: proxyIndex) { newValue in
                             //proxy index 변경처리를 통한 스크롤 컨트롤
                             withAnimation {
-                                if newValue == 0{
+                                
+                                print(newValue)
+                                
+                                if newValue < 0{
                                     UIApplication.shared.endEditing()
                                 }else{
                                     proxy.scrollTo(newValue, anchor: .bottom)
@@ -100,7 +110,7 @@ struct DetailMemoView: View {
                 .navigationTitle(currentMemo.title)
                 .navigationBarTitleDisplayMode(.large)
                 .onTapGesture {
-                    proxyIndex = 0
+                    proxyIndex = -1
                 }
                 
                 if currentMemo.isPrivate == false{
@@ -113,7 +123,7 @@ struct DetailMemoView: View {
                             TextField("댓글 달기", text: $commentText)
                                 .textFieldStyle(.plain)
                                 .onTapGesture {
-                                    proxyIndex = viewmodel.commentList.count - 1
+                                    proxyIndex = viewmodel.commentList.endIndex
                                 }
                             
                             Button {
@@ -137,14 +147,13 @@ struct DetailMemoView: View {
                 
             }else{
                 ScrollView(.vertical, showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 0){
+                    VStack(alignment:.leading,spacing:5){
                         Text(currentMemo.time.replacingOccurrences(of: "-", with: "."))
                             .font(.callout)
                             .foregroundColor(.gray.opacity(0.5))
                         
                         TextEditor(text: $currentMemo.content)
-                            .font(.body)
-                            .padding(.top)
+                            .font(.title3)
                             .multilineTextAlignment(.leading)
                             .frame(minHeight:200,alignment: .top)
                         
@@ -159,17 +168,19 @@ struct DetailMemoView: View {
                         mealEditCell(mealType: "점심",meals: $currentMemo.secondMeal)
                             .padding(.bottom)
                         
+                        mealEditCell(mealType: "간식",meals: $currentMemo.snack)
+                            .padding(.bottom)
+                        
                         mealEditCell(mealType: "저녁", meals: $currentMemo.thirdMeal)
                             .padding(.bottom)
                         
-                    }
-                    .padding(.horizontal)
-                    .navigationTitle(currentMemo.title)
-                    .navigationBarTitleDisplayMode(.large)
-                    .onTapGesture {
-                        withAnimation {
-                            UIApplication.shared.endEditing()
-                        }
+                    }.padding(.horizontal)
+                }
+                .navigationTitle(currentMemo.title)
+                .navigationBarTitleDisplayMode(.large)
+                .onTapGesture {
+                    withAnimation {
+                        UIApplication.shared.endEditing()
                     }
                 }
             }
@@ -196,6 +207,7 @@ struct DetailMemoView: View {
         }
     }
 }
+
 struct mealEditCell:View{
     let mealType:String
     @Binding var meals:[String]
@@ -254,10 +266,20 @@ struct MemoCommentCellView:View{
     @State var stringTime:String = ""
     var body: some View{
         HStack{
-            Image(systemName: "person.fill")
-                .resizable()
-                .frame(width: 50, height: 50, alignment: .center)
-                .clipShape(Circle())
+            
+            if viewModel.isTrainer(){
+                Image("defaultImage")
+                    .resizable()
+                    .frame(width: 50, height: 50, alignment: .center)
+                    .clipShape(Circle())
+                    .background(
+                        Circle()
+                            .stroke(backgroundColor,lineWidth: 2)
+                    )
+            }
+            else{
+                URLImageView(urlString: viewModel.userProfile, imageSize: 50, youtube: false)
+            }
             
             VStack(alignment:.leading,spacing:5){
                 CommentLabel(name: comment.writerName, comment: comment.content)
@@ -306,44 +328,41 @@ struct MemoCommentCellView:View{
 struct MemoMealCellView:View{
     let title:String
     let meals:[String]
-    let gridItemLayout = Array(repeating: GridItem(.flexible(),spacing: 10), count: 2)
     var body: some View{
         
-        if meals.count > 1{
-            DisclosureGroup {
-                LazyVGrid(columns: gridItemLayout, alignment: .leading,spacing: 10) {
-                    ForEach(meals.indices,id:\.self) { index in
-                        Text(meals[index])
-                            .lineLimit(1)
-                    }
-                }
-            } label: {
-                Text(title)
-            }
-            .padding()
-            .background(Color("Background"))
-            .cornerRadius(10)
-            .tint(Color.accentColor)
+        VStack(alignment: .leading, spacing: 10){
+            Text(title)
+                .font(.title2)
+                .fontWeight(.semibold)
             
-        }else if meals.count == 1{
-            HStack{
-                Text(title)
-                    .foregroundColor(.accentColor)
-                Spacer()
-                Text(meals.first!)
+            if meals.isEmpty{
+                HStack{
+                    Spacer()
+                    
+                    Text("\(title)에 지정된 음식이 없습니다.")
+                    
+                    Spacer()
+                }
+
+            }else{
+                ForEach(meals,id:\.self) { meal in
+                    HStack{
+                        Text(meal)
+                        Spacer()
+                    }
+                    .padding(10)
+                    .background(Color("Background"))
+                    .cornerRadius(10)
+                }
             }
-            .padding()
-            .background(Color("Background"))
-            .cornerRadius(10)
-        }else{
-            EmptyView()
         }
+        .padding(.horizontal)
     }
 }
 
 //MARK: - PREVIEWS
 struct PublicMemoView_Previews: PreviewProvider {
-    static var viewModel = DetailMemoViewModel(userId: "asd", userName: "asd", trainerId: "asd", trainerName: "asd", memoId: "asd")
+    static var viewModel = DetailMemoViewModel(userId: "asd", userName: "asd", trainerId: "asd", trainerName: "asd", memoId: "asd", userProfile: "")
     static var previews: some View {
         //        PublicMemoView(viewmodel: viewModel, currentMemo:
         //                    Memo(
@@ -385,7 +404,6 @@ extension DetailMemoViewModel{
         if let startDate = calendar.date(from: comp){
             let offsetComps = calendar.dateComponents([.year,.month,.day,.hour,.minute], from: startDate, to: Date())
             if case let (y?,m?,d?,h?,minute?) = (offsetComps.year,offsetComps.month,offsetComps.day,offsetComps.hour,offsetComps.minute){
-                print(minute)
                 
                 if y > 0{
                     completion("\(y)년 전")

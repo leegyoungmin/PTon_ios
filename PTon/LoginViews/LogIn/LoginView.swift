@@ -28,6 +28,10 @@ struct LoginView: View {
         NavigationView{
 
             VStack{
+                
+                Image("defaultImage")
+                    .controlSize(.large)
+                
                 Button(action: {
                     self.loginViewModel.kakaoLogin()
                     

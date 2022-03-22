@@ -10,6 +10,9 @@ import SwiftUI
 import Combine
 import Firebase
 
+//Colors
+let backgroundColor = Color("Background")
+
 extension Bundle{
     func decode<T:Codable>(_ file:String)->T{
         //1. Locate json

@@ -11,16 +11,21 @@ import AlertToast
 enum mealType:String,CaseIterable{
     case first = "아침"
     case second = "점심"
+    case snack = "간식"
     case third = "저녁"
 }
 
 struct MemoCreateView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject var viewmodel : MemoCreateViewModel
     @State var isPrivate : Bool = false
     @State var title:String = ""
     @State var content:String = "내용을 입력해주세요."
-    @State var MealCount:Int = 0
     @State var selectedIndex = 1
+    
+    @State var firstMealCount:Int = 0
+    @State var secondMealCount:Int = 0
+    @State var thirdMealCount:Int = 0
     
     init(viewmodel:MemoCreateViewModel){
         _viewmodel = StateObject.init(wrappedValue: viewmodel)
@@ -29,61 +34,52 @@ struct MemoCreateView: View {
     var body: some View {
         
         ScrollView(.vertical, showsIndicators: false) {
-            VStack{
+            VStack(alignment: .leading){
                 
                 TextField("제목을 입력하세요.", text: $title)
                     .font(.title)
                     .padding(.vertical)
                 
                 
-                GroupBox{
-                    Toggle(isOn: $isPrivate) {
-                        Text("비공개 설정")
-                    }
+                Toggle(isOn: $isPrivate) {
+                    Text("비공개 설정")
                 }
+                .padding()
+                .background(
+                    backgroundColor
+                )
+                .cornerRadius(15)
                 
+                TextEditor(text: $content)
+                    .foregroundColor(content == "내용을 입력해주세요." ? .gray:.black)
+                    .padding()
+                    .background(backgroundColor)
+                    .frame(minHeight:250,maxHeight:300)
+                    .cornerRadius(15)
+                    .onTapGesture {
+                        if content == "내용을 입력해주세요."{
+                            content = ""
+                        }
+                    }
                 
-                GroupBox {
+                Text("식단")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.vertical)
+                
+                Group{
+                    mealCellView(title: "아침",index: 0)
+                       
+                    mealCellView(title: "점심",index: 1)
                     
-                    TextEditor(text: $content)
-                        .foregroundColor(content == "내용을 입력해주세요." ? .gray:.black)
-                        .background(.clear)
-                        .frame(minHeight:100,maxHeight:300)
-                        .onTapGesture {
-                            if content == "내용을 입력해주세요."{
-                                content = ""
-                            }
-                        }
-                } label: {
-                    HStack(){
-                        Text("메모")
-                            .font(.title2)
-                        Spacer()
-                    }
+                    mealCellView(title: "간식",index: 2)
+                    
+                    mealCellView(title: "저녁",index: 3)
                 }
+                .padding(.horizontal,10)
+                .environmentObject(self.viewmodel)
                 
-                GroupBox {
-                    VStack{
-                        ForEach(0...MealCount,id:\.self){index in
-                            mealCellView(mealIndex: index, mealCount: $MealCount)
-                                .environmentObject(self.viewmodel)
-                        }
-                        
-                        Button {
-                            MealCount += 1
-                        } label: {
-                            Text("추가하기")
-                        }
-                        .disabled(MealCount == 2)
 
-                    }
-                } label: {
-                    HStack(){
-                        Text("식단")
-                            .font(.title2)
-                        Spacer()
-                    }
-                }
             }
         }
         .padding(.horizontal)
@@ -94,10 +90,14 @@ struct MemoCreateView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Text("저장하기")
                     .onTapGesture {
+                        let data = memo(isprivate: isPrivate, title: title, content: content, meal: viewmodel.meals)
                         
-                        let data = memo(isprivate:isPrivate,title: title, content: content, meal: viewmodel.meals)
+                        DispatchQueue.main.async {
+                            dismiss.callAsFunction()
+                            viewmodel.updateData(data: data)
+                        }
                         
-                        viewmodel.updateData(data: data)
+
                     }
             }
         }
@@ -109,37 +109,58 @@ struct MemoCreateView: View {
 
 struct mealCellView:View{
     @EnvironmentObject var viewmodel:MemoCreateViewModel
-    let titles = ["아침","점심","저녁"]
-    let mealIndex:Int
-    @State var mealText = ""
-    @Binding var mealCount:Int
+    let title:String
+    let index:Int
     var body: some View{
-        VStack {
-            HStack{
-                Text("\(titles[mealIndex])")
-                    .foregroundColor(.accentColor)
-                Spacer()
+        
+        VStack(alignment: .leading, spacing: 10){
+            Text(title)
+                .font(.title2)
+                .fontWeight(.semibold)
+            
+            ForEach(viewmodel.meals[index].foodList.indices,id:\.self) { mealIndex in
                 
-                Button {
-                    if mealCount != 0{
-                        mealCount -= 1
+                HStack{
+                    TextField("음식을 작성해주세요.", text: $viewmodel.meals[index].foodList[mealIndex])
+                        
+                    Spacer()
+                    
+                    Button {
+                        viewmodel.meals[index].foodList.remove(at: mealIndex)
+                        
+                    } label: {
+                        Image(systemName: "xmark.circle")
                     }
-                } label: {
-                    Image(systemName: "xmark.circle")
+
                 }
+                .padding(10)
+                .background(backgroundColor)
+                .cornerRadius(10)
 
             }
-            TextEditor(text: $mealText)
-                .frame(minHeight:40)
+            
+            Button {
+                viewmodel.meals[index].foodList.append("")
+            } label: {
+                HStack{
+                    Spacer()
+                    
+                    Label {
+                        Text("추가하기")
+                    } icon: {
+                        Image(systemName: "plus")
+                    }
+                    
+                    Spacer()
+
+                }
+            }
+            .buttonStyle(.plain)
+            .padding(10)
+            .background(backgroundColor)
+            .cornerRadius(10)
         }
-        .padding()
-        .background(.white)
-        .cornerRadius(10)
-        .onChange(of: mealText) { newValue in
-            print("Memo Create View  new Value : \(newValue)")
-            viewmodel.meals[mealIndex].foodList = mealText.components(separatedBy: ",")
-            print("Memo Create View model meals : \(viewmodel.meals)")
-        }
+        
     }
 }
 

@@ -49,7 +49,9 @@ class TrainerBaseViewModel:ObservableObject{
     }
     
     var trainerId:String{
-        let trainerId = FirebaseAuth.Auth.auth().currentUser!.uid
+        
+        guard let trainerId = FirebaseAuth.Auth.auth().currentUser?.uid else{return ""}
+        
         return trainerId
     }
 
