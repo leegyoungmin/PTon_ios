@@ -11,7 +11,7 @@ import FirebaseFirestoreSwift
 
 //MARK: - Model
 struct comment:Hashable,Codable{
-    var uid:String = UUID().uuidString
+    var uid:String
     var writerId:String
     var writerName:String
     var content:String
@@ -20,7 +20,7 @@ struct comment:Hashable,Codable{
 }
 
 //MARK: - ViewModel
-class PublicMemoViewModel:ObservableObject{
+class DetailMemoViewModel:ObservableObject{
     @Published var commentList:[comment] = []
     
     let userId:String
@@ -81,7 +81,7 @@ class PublicMemoViewModel:ObservableObject{
                 }
             }
         case .failure(let error):
-            print("Error decoding comment \(error.localizedDescription)")
+            print("Error decoding comment \(error)")
         }
     }
     
@@ -118,7 +118,7 @@ class PublicMemoViewModel:ObservableObject{
         ]
         
         if type == .trainer{
-            data["witerId"] = trainerId
+            data["writerId"] = trainerId
             data["writerName"] = trainerName
         }else if type == .user{
             data["witerId"] = userId
@@ -149,14 +149,32 @@ class PublicMemoViewModel:ObservableObject{
             .delete()
     }
     
+    func updateMemoData(data:Memo){
+        let reference = Firestore.firestore().collection("Memo").document(trainerId).collection(userId).document(data.uuid)
+        let data:[String:Any] = [
+            "content":data.content,
+            "time":convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
+            "uuid":data.uuid,
+            mealType.first.rawValue:data.firstMeal,
+            mealType.second.rawValue:data.secondMeal,
+            mealType.third.rawValue:data.thirdMeal
+        ]
+        
+        reference.updateData(data)
+    }
+    
     //MARK: - 리스너 제거 메소드 (뷰가 사라질 경우, 리스너를 분리한다.)
-    func viewDisapper(){
+    func viewDisapper(data:Memo){
+        
+        updateMemoData(data: data)
+        
         let listener = reference.addSnapshotListener { querySnapshot, error in}
         
         print("Detached")
         
         listener.remove()
     }
+    
 }
 
 

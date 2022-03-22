@@ -27,32 +27,69 @@ struct MemoListView:View{
             
             
             VStack{
-                List{
-                    if selectedIndex == 0{
-                        ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
-                            ZStack{
-                                NavigationLink {
-                                    PublicMemoView(viewmodel: PublicMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid), currentMemo: memo)
-                                } label: {
-                                    EmptyView()
-                                }
-                                .buttonStyle(.plain)
-                                .opacity(0.0)
-                                
-                                MemoListCellView(memo: memo)
-
-                            }
-                        }
+                
+                if selectedIndex == 0{
+                    if viewmodel.memos.filter{$0.isPrivate == false}.isEmpty{
+                        Spacer()
+                        Text("저장된 메모가 없습니다.")
+                        Spacer()
                     }else{
-                        ForEach(viewmodel.memos.filter{$0.isPrivate == true},id:\.self) { memo in
-                            MemoListCellView(memo: memo)
+                        List{
+                            ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
+                                ZStack{
+                                    NavigationLink {
+                                        DetailMemoView(viewmodel: DetailMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid), currentMemo:memo)
+                                    } label: {
+                                        EmptyView()
+                                    }
+                                    .buttonStyle(.plain)
+                                    .opacity(0.0)
+                                    
+                                    MemoListCellView(memo: memo)
+
+                                }
+                            }
+                            .onDelete { indexset in
+                                guard let index = indexset.first else{return}
+                                viewmodel.deleteData(data: viewmodel.memos.filter{$0.isPrivate == false}[index])
+                            }
+                            
                         }
+                        .listStyle(.plain)
+                        .listRowSeparator(.hidden)
+                        .padding()
                     }
                     
+                }else{
+                    
+                    if viewmodel.memos.filter{$0.isPrivate == true}.isEmpty{
+                        Spacer()
+                        Text("저장된 메모가 없습니다.")
+                        Spacer()
+                    }else{
+                        List{
+                            ForEach(viewmodel.memos.filter{$0.isPrivate == true},id:\.self) { memo in
+                                ZStack{
+                                    NavigationLink {
+                                        DetailMemoView(viewmodel: DetailMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid), currentMemo:memo)
+                                    } label: {
+                                        EmptyView()
+                                    }
+                                    .buttonStyle(.plain)
+                                    .opacity(0.0)
+                                    
+                                    MemoListCellView(memo: memo)
+
+                                }
+                            }
+                        }
+                        .listStyle(.plain)
+                        .listRowSeparator(.hidden)
+                        .padding()
+                    }
+                    
+
                 }
-                .listStyle(.plain)
-                .listRowSeparator(.hidden)
-                .padding()
                 
                 HStack{
                     Spacer()
@@ -72,6 +109,9 @@ struct MemoListView:View{
             }
         }
         .background(Color("Background"))
+        .onDisappear {
+            viewmodel.viewDisAppear()
+        }
     }
 }
 
@@ -119,7 +159,7 @@ struct MemoListView_Previews:PreviewProvider{
             isPrivate: false,
             firstMeal: ["식사1"],
             secondMeal: ["식사2"],
-            thirdMeal: nil)
+            thirdMeal: [])
         )
         .previewLayout(.sizeThatFits)
     }

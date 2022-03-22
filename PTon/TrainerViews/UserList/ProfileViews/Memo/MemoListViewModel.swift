@@ -13,12 +13,12 @@ import FirebaseFirestoreSwift
 struct Memo:Codable,Hashable{
     let uuid:String
     let title:String
-    let content:String
+    var content:String
     let time:String
     let isPrivate:Bool
-    let firstMeal:[String]?
-    let secondMeal:[String]?
-    let thirdMeal:[String]?
+    var firstMeal:[String]
+    var secondMeal:[String]
+    var thirdMeal:[String]
     
     enum CodingKeys:String,CodingKey{
         case uuid
@@ -47,63 +47,51 @@ class MemoListViewModel:ObservableObject{
         observeData()
     }
     
-    func fetchData(){
-        guard let trainerid = Firebase.Auth.auth().currentUser?.uid else {return}
-        
-        self.memos.removeAll(keepingCapacity: true)
-        
-        
-        db.collection("Memo").document(trainerid).collection(userid).getDocuments { (querySnapshot,error) in
-            if let error = error{
-                print("Error Getting documents ::: \(error.localizedDescription)")
-            }else{
-                querySnapshot?.documents.forEach{ document in
-                    print("\(document.documentID) ::: \(document.data())")
-                    
-                    let result = Result {
-                        try document.data(as: Memo.self)
-                    }
-                    
-                    switch result {
-                    case .success(let Memo):
-                        if let memo = Memo{
-                            print("MEMO ::: \(memo)")
-                            self.memos.append(memo)
-                        }else{
-                            print("Document does not Exist")
-                        }
-                    case .failure(let failure):
-                        print("Error decoding Memo ::: \(failure)")
-                    }
-                }
-            }
-        }
-            
-    }
-    
     func observeData(){
         db.collection("Memo").document(trainerid).collection(userid).order(by: "time",descending: true).addSnapshotListener { querySnapshot, error in
             guard let snapshot = querySnapshot else{return}
             
             snapshot.documentChanges.forEach { diff in
-                if diff.type == .added{
-                    let result = Result{
-                        try diff.document.data(as: Memo.self)
-                    }
-                    
-                    switch result {
-                    case .success(let success):
-                        if let memo = success{
-                            self.memos.append(memo)
-                        }else{
-                            print("Error")
-                        }
-                    case .failure(let failure):
-                        print("Error decoding Memo")
-                    }
+                let result = Result{
+                    try diff.document.data(as: Memo.self)
                 }
+                
+                self.ChangeData(diff, result: result)
             }
         }
+    }
+    
+    func ChangeData(_ diff:DocumentChange,result:Result<Memo?,Error>){
+        switch result {
+        case .success(let success):
+            if let memo = success{
+                switch diff.type{
+                case .added:
+                    self.memos.append(memo)
+                case .modified:
+                    guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
+                    
+                    self.memos[index] = memo
+                case .removed:
+                    guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
+                    
+                    self.memos.remove(at: index)
+                }
+            }else{
+                print("Error")
+            }
+        case .failure(let failure):
+            print("Error decoding Memo ::: \(failure)")
+        }
+    }
+    
+    func deleteData(data:Memo){
+        db.collection("Memo").document(trainerid).collection(userid).document(data.uuid).delete()
+    }
+    
+    func viewDisAppear(){
+        let listener = db.collection("Memo").document(trainerid).collection(userid).addSnapshotListener { snapshot, error in}
+        listener.remove()
     }
     
 }
