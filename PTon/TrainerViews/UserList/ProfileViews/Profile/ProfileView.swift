@@ -22,6 +22,7 @@ struct ProfileView: View {
     @Binding var isChatting:Bool
     @State var isPresentBottomSheet:Bool = false
     @State var memberShipType:membershipType?
+    @Binding var index:Int
     let trainerName:String
     var body: some View {
         
@@ -73,9 +74,9 @@ struct ProfileView: View {
                     
                     
                     VStack(spacing:20){
-                        URLImageView(urlString: viewmodel.userUrl, imageSize: 200, youtube: false)
+                        URLImageView(urlString: viewmodel.trainee.userProfile, imageSize: 200, youtube: false)
                         
-                        Text(viewmodel.userName).font(.system(size: 25)).fontWeight(.semibold)+Text(" 회원님")
+                        Text(viewmodel.trainee.userName).font(.system(size: 25)).fontWeight(.semibold)+Text(" 회원님")
                             .font(.system(size: 25))
                             .fontWeight(.light)
                         
@@ -128,6 +129,7 @@ struct ProfileView: View {
                     LazyVGrid(columns: grids, alignment: .center){
                         
                         Button {
+                            self.index = 1
                             self.isChatting = true
                             dismiss()
                         } label: {
@@ -141,18 +143,18 @@ struct ProfileView: View {
                         }
                         
                         NavigationLink {
-                            StretchingRequestView(stretchingViewModel: StretchingViewModel(trainerid: viewmodel.traineid, userid:viewmodel.userid))
+                            StretchingRequestView(stretchingViewModel: StretchingViewModel(trainerid: viewmodel.traineid, userid:viewmodel.trainee.userId))
                         } label: {
                             ProfileButton(icons[2])
                         }
                         NavigationLink {
-                            SurveyView(surveyViewModel: SurveyViewModel(viewmodel.traineid, viewmodel.userid))
+                            SurveyView(surveyViewModel: SurveyViewModel(viewmodel.traineid, viewmodel.trainee.userId))
                         } label: {
                             ProfileButton(icons[3])
                         }
                         NavigationLink {
-                            MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.traineid, userid: viewmodel.userid),
-                                         userName: viewmodel.userName,
+                            MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.traineid, userid: viewmodel.trainee.userId),
+                                         userName: viewmodel.trainee.userName,
                                          trainerId: viewmodel.traineid,
                                          trainerName: self.trainerName)
                                 .navigationTitle("")
@@ -162,7 +164,7 @@ struct ProfileView: View {
                         }
                         NavigationLink {
                             RequestedExerciseView(
-                                viewmodel: RequestedExerciseViewModel(viewmodel.userid),
+                                viewmodel: RequestedExerciseViewModel(viewmodel.trainee.userId),
                                 fitnessCode: viewmodel.fitnessCode)
                             
                         } label: {
@@ -194,13 +196,14 @@ struct ProfileView: View {
 //                }
 //            }
         }
-        
+        //TODO: - chatting room navigation
         
     }
     
     func TappedChatting(completion:@escaping(String?)->Void){
         self.ispresent = false
-        completion(viewmodel.userid)
+        self.isChatting = true
+        completion(viewmodel.trainee.userId)
     }
     
     func ProfileButton(_ icon:icon) -> some View{

@@ -23,29 +23,10 @@ class ChattingInputViewModel:ObservableObject{
         self.trainerName = trainerName
         self.userName = userName
         self.fitnessCode = fitnessCode
-        
-        ChangeRead()
     }
     
     
-    //TODO: - chatting 읽음 처리
-    func ChangeRead(){
-        reference
-            .child(fitnessCode)
-            .child(trainerId)
-            .child(userId)
-            .child("chat")
-            .observe(.value) { snapshot in
-                
-                for child in snapshot.children{
-                    let snapshot = child as! DataSnapshot
-                    if snapshot.childSnapshot(forPath: "receiver").value as? String == self.trainerId,
-                       snapshot.childSnapshot(forPath: "read").value as? String == "false"{
-                        snapshot.ref.updateChildValues(["read":"true"])
-                    }
-                }
-            }
-    }
+
     
     
     func sendText(_ message:String){
@@ -87,6 +68,29 @@ class ChattingInputViewModel:ObservableObject{
             
             sendText(message)
         }
+    }
+    //TODO: - chatting 읽음 처리
+    func ChangeRead(){
+        reference
+            .child(fitnessCode)
+            .child(trainerId)
+            .child(userId)
+            .child("chat")
+            .observeSingleEvent(of: .value, with: { snapshot in
+                for child in snapshot.children{
+                    let childSnapshot = child as! DataSnapshot
+                    print("All Value in snapshot :::: \(snapshot)")
+                    
+                    if childSnapshot.childSnapshot(forPath: "receiver").value as? String == self.trainerId,
+                       childSnapshot.childSnapshot(forPath: "read").value as? String == "false"{
+                        childSnapshot.ref.updateChildValues(["read":"true"])
+                    }
+                }
+            })
+    }
+    
+    func viewDisAppear(){
+        ChangeRead()
     }
 }
 

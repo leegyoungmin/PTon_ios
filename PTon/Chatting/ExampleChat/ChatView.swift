@@ -10,46 +10,51 @@ import ToastUI
 
 struct ChatView: View {
     @StateObject var viewModel:ChattingInputViewModel
-    @Binding var messages:[message]
+    @EnvironmentObject var chattingRoomViewModel:ChattingViewModel
     @State var showAdd:Bool = false
     @State var isShowImage:Bool = false
     @State var isShowCamera:Bool = false
     @State var isShowCalendar:Bool = false
     @State var typingMessage = ""
+    let userProfileImage:String?
     
-    init(messages:Binding<[message]>,viewModel:ChattingInputViewModel){
-        _messages = messages
+    init(viewModel:ChattingInputViewModel,userProfileImage:String?){
         _viewModel = StateObject.init(wrappedValue: viewModel)
+        self.userProfileImage = userProfileImage
     }
+    
     
     var body: some View {
         VStack(spacing:0){
             //MARK: - 채팅 리스트
             ScrollView(.vertical, showsIndicators: false){
-                ForEach(messages.indices,id:\.self) { index in
+                let messages = chattingRoomViewModel.ChattingRoom.Messages
+                ForEach(messages.indices.reversed(),id:\.self) { index in
                     
                     if index == 0 || messages[index-1].date != messages[index].date{
                         VStack{
-                            chattingDateView(messages[index].date)
-                                .padding()
                             
                             if messages[index].content.hasPrefix("ChatsImage"){
                                 ChattingImageView(viewmodel: ChattingImageViewModel(path: messages[index].content),
                                                   currentUser: messages[index].isCurrentUser)
                             }else{
-                                MessageView(currentMessage: messages[index])
+                                MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
                             }
+                            
+                            chattingDateView(messages[index].date)
+                                .padding()
                         }
                     } else {
                         if messages[index].content.hasPrefix("ChatsImage"){
                             ChattingImageView(viewmodel: ChattingImageViewModel(path: messages[index].content),
                                               currentUser: messages[index].isCurrentUser)
                         }else{
-                            MessageView(currentMessage: messages[index])
+                            MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
                         }
                     }
                 }
             }
+            .padding(.vertical,5)
             .onTapGesture {
                 withAnimation {
                     showAdd = false
@@ -58,6 +63,7 @@ struct ChatView: View {
             }
             .padding(.horizontal)
             .background(Color("Background"))
+            .rotationEffect(.degrees(-180))
             
             //MARK: - 채팅 입력창
             HStack{
@@ -150,6 +156,9 @@ struct ChatView: View {
             }
         }
         .navigationTitle(viewModel.userName)
+        .onDisappear {
+            viewModel.viewDisAppear()
+        }
         
     }
 }
@@ -166,6 +175,7 @@ func chattingDateView(_ date:String)->some View{
             .cornerRadius(20)
         Spacer()
     }
+    .rotationEffect(.degrees(-180))
  
 }
 

@@ -41,12 +41,14 @@ class TrainerUserListViewModel:ObservableObject{
         return trainerid
     }
     let reference = FirebaseDatabase.Database.database().reference()
-    var trainername:String?
-    var fitnessCode:String?
+    var trainername:String
+    var fitnessCode:String
     
     init(){
-        getTrainerName()
-        fetchData()
+        self.trainername = ""
+        self.fitnessCode = ""
+        self.getTrainerName()
+        self.fetchData()
     }
     
     //트레이너 이름 및 코드 불러오기 함수
@@ -58,8 +60,12 @@ class TrainerUserListViewModel:ObservableObject{
             .observeSingleEvent(of: .value) { snapshot in
                 guard let values = snapshot.value as? [String:Any] else{return}
                 print(values)
-                self.trainername = values["name"] as? String
-                self.fitnessCode = values["fitnessCode"] as? String
+                
+                guard let trainerName = values["name"] as? String,
+                      let fitnessCode = values["fitnessCode"] as? String else{return}
+                
+                self.trainername = trainerName
+                self.fitnessCode = fitnessCode
             }
     }
     
@@ -92,7 +98,6 @@ class TrainerUserListViewModel:ObservableObject{
                             .child(userid)
                             .child("photoUri")
                             .observeSingleEvent(of: .value) { snapshot in
-                                
                                 if snapshot.exists(){
                                     guard let url = snapshot.value as? String else{return}
                                     self.trainees.append(trainee(username: name, useremail: "", userid: userid, userProfile: url))

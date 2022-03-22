@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TrainerUserListView: View {
+    @EnvironmentObject var baseViewmodel:TrainerBaseViewModel
     @StateObject var trainerUserListViewModel = TrainerUserListViewModel()
     @State var isShowSheet:Bool = false
     @State var isChatClicked:Bool = false
@@ -15,7 +16,6 @@ struct TrainerUserListView: View {
     @State var userindex:Int = 0
     @State var searchText:String = ""
     @Binding var baseIndex:Int
-    let trainerName:String
     var body: some View {
         
         ZStack{
@@ -69,21 +69,32 @@ struct TrainerUserListView: View {
                         }
                         .fullScreenCover(isPresented: $isShowSheet, onDismiss: DidDissMiss) {
                             ProfileView(
-                                viewmodel: ProfileViewModel(userid: trainerUserListViewModel.userid(userindex),
-                                                            trainerid: trainerUserListViewModel.trainerid,
-                                                            fitnessCode: trainerUserListViewModel.fitnessCode!,
-                                                            userName: trainerUserListViewModel.getUserName(userindex),
-                                                            userUrl: trainerUserListViewModel.trainees[userindex].userProfile),
+                                viewmodel: ProfileViewModel(baseViewmodel.trainerId,
+                                                            trainerUserListViewModel.fitnessCode,
+                                                            baseViewmodel.trainerbasemodel.trainee[userindex]
+                                                           ),
                                 ispresent: $isShowSheet,
                                 isChatting: $isPresentChat,
-                                trainerName: self.trainerName)
+                                index: $baseIndex,
+                                trainerName: baseViewmodel.trainername)
                         }
                 }
                 .listStyle(.plain)
                 .searchable(text: $searchText)
                 
                 NavigationLink(isActive: $isPresentChat) {
-                    Text("Example")
+                    LazyView(
+                        ChatView(viewModel: ChattingInputViewModel(baseViewmodel.trainerId,
+                                                                   trainerName: baseViewmodel.trainername,
+                                                                   trainerUserListViewModel.userid(userindex),
+                                                                   userName: trainerUserListViewModel.trainees[userindex].userName,
+                                                                   baseViewmodel.fitnessCode),
+                                 userProfileImage: trainerUserListViewModel.trainees[userindex].userProfile)
+                        .environmentObject(ChattingViewModel(trainee: trainerUserListViewModel.trainees[userindex],
+                                                             baseViewmodel.trainerId,
+                                                             baseViewmodel.trainername,
+                                                             baseViewmodel.fitnessCode))
+                    )
                 } label: {
                     EmptyView()
                 }
@@ -113,9 +124,7 @@ struct TrainerUserListView: View {
     }
     
     func DidDissMiss(){
-        print("did DissMiss")
         if self.isChatClicked == true{
-            baseIndex = 1
             isPresentChat = true
         }
     }
@@ -148,8 +157,19 @@ struct userListRowView:View{
 //MARK: - PREVIEWS
 struct TrainerUserListView_Previews: PreviewProvider {
     static var previews: some View {
-        TrainerUserListView(baseIndex: .constant(0), trainerName: "이경민")
+        TrainerUserListView(baseIndex: .constant(0))
         //        userListRowView(item: trainee(username: "이경민", useremail: "cow970814@naver.com", userid: "asd", userProfile: "asdasd"))
         //            .previewLayout(.sizeThatFits)
+    }
+}
+
+struct LazyView<Content:View>:View{
+    let build: () -> Content
+    init(_ build:@autoclosure @escaping ()->Content){
+        self.build = build
+    }
+    
+    var body:Content{
+        build()
     }
 }

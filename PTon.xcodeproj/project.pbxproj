@@ -69,6 +69,10 @@
 		1888F9B627B6808100EBAA43 /* Stretching.json in Resources */ = {isa = PBXBuildFile; fileRef = 1888F9B527B6808100EBAA43 /* Stretching.json */; };
 		1888F9BC27B6818600EBAA43 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1888F9BB27B6818600EBAA43 /* Extensions.swift */; };
 		1888F9BF27B6878100EBAA43 /* SurveyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1888F9BE27B6878100EBAA43 /* SurveyViewModel.swift */; };
+		188B2AAB27E701B8004B9DA9 /* Model + ChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */; };
+		188B2AAE27E70361004B9DA9 /* ChatRoomListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */; };
+		188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAF27E70AE2004B9DA9 /* ChatView.swift */; };
+		188B2AB227E854AC004B9DA9 /* ChattingInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */; };
 		1893940527ABAF0100B4DB8A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893940427ABAF0100B4DB8A /* LoginView.swift */; };
 		1893960927ABDE0200B4DB8A /* UserBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893960827ABDE0200B4DB8A /* UserBaseView.swift */; };
 		1893961727ABF3E700B4DB8A /* TrainerBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893961627ABF3E700B4DB8A /* TrainerBaseView.swift */; };
@@ -85,8 +89,6 @@
 		18EE19E727B3C1D300CCA16D /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EE19E627B3C1D300CCA16D /* ProfileView.swift */; };
 		18EE19E927B416EE00CCA16D /* ContentMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EE19E827B416EE00CCA16D /* ContentMessageView.swift */; };
 		18EE19EB27B417B500CCA16D /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EE19EA27B417B500CCA16D /* MessageView.swift */; };
-		18EE19F127B4193900CCA16D /* Model+ChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EE19F027B4193900CCA16D /* Model+ChattingViewModel.swift */; };
-		18EE19F327B4199C00CCA16D /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18EE19F227B4199C00CCA16D /* ChatView.swift */; };
 		18FC42C327D98ECB00002BB3 /* ChattingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FC42C227D98ECB00002BB3 /* ChattingImageView.swift */; };
 		E311F5453E4B64EBBD303AB3 /* Pods_PTon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F9578388726DFD032C19429 /* Pods_PTon.framework */; };
 /* End PBXBuildFile section */
@@ -155,6 +157,10 @@
 		1888F9B527B6808100EBAA43 /* Stretching.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Stretching.json; sourceTree = "<group>"; };
 		1888F9BB27B6818600EBAA43 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1888F9BE27B6878100EBAA43 /* SurveyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewModel.swift; sourceTree = "<group>"; };
+		188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + ChattingViewModel.swift"; sourceTree = "<group>"; };
+		188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListView.swift; sourceTree = "<group>"; };
+		188B2AAF27E70AE2004B9DA9 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingInputViewModel.swift; sourceTree = "<group>"; };
 		1893940427ABAF0100B4DB8A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1893940627ABAF0200B4DB8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1893941327ABAF8B00B4DB8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -173,8 +179,6 @@
 		18EE19E627B3C1D300CCA16D /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		18EE19E827B416EE00CCA16D /* ContentMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentMessageView.swift; sourceTree = "<group>"; };
 		18EE19EA27B417B500CCA16D /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
-		18EE19F027B4193900CCA16D /* Model+ChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+ChattingViewModel.swift"; sourceTree = "<group>"; };
-		18EE19F227B4199C00CCA16D /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		18FC42C227D98ECB00002BB3 /* ChattingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingImageView.swift; sourceTree = "<group>"; };
 		3F501A48A1DD34BA7FA418EF /* Pods-PTon.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PTon.debug.xcconfig"; path = "Target Support Files/Pods-PTon/Pods-PTon.debug.xcconfig"; sourceTree = "<group>"; };
 		7F9578388726DFD032C19429 /* Pods_PTon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PTon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -300,8 +304,7 @@
 		183308EF27BE319F00890212 /* Chatting */ = {
 			isa = PBXGroup;
 			children = (
-				18EE19F227B4199C00CCA16D /* ChatView.swift */,
-				18EE19F027B4193900CCA16D /* Model+ChattingViewModel.swift */,
+				188B2AAC27E702CC004B9DA9 /* ExampleChat */,
 				183308F027BE31A400890212 /* ChattingSubViews */,
 				183CE8CA27D89B0E00A8B789 /* ChattingImagePickerView.swift */,
 			);
@@ -470,6 +473,17 @@
 				18301DF927CFB2BB00B77057 /* SurveyResultView.swift */,
 			);
 			path = Survey;
+			sourceTree = "<group>";
+		};
+		188B2AAC27E702CC004B9DA9 /* ExampleChat */ = {
+			isa = PBXGroup;
+			children = (
+				188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */,
+				188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */,
+				188B2AAF27E70AE2004B9DA9 /* ChatView.swift */,
+				188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */,
+			);
+			path = ExampleChat;
 			sourceTree = "<group>";
 		};
 		189393F627ABAF0100B4DB8A = {
@@ -714,6 +728,7 @@
 				186437AD27AE5C7A0045615E /* UserBodyInfoViewModel.swift in Sources */,
 				18B7D94227E09C8A00400310 /* MemoListViewModel.swift in Sources */,
 				184F14F527B8FF7F00E5AF07 /* StretchingRequestView.swift in Sources */,
+				188B2AAE27E70361004B9DA9 /* ChatRoomListView.swift in Sources */,
 				185687E927B272EA00753D5B /* TrainerScheduleView.swift in Sources */,
 				18EE19DE27B38C3100CCA16D /* NavigationBarColor.swift in Sources */,
 				183E745C27AD20B00075B058 /* BaseInformationPage.swift in Sources */,
@@ -731,7 +746,6 @@
 				18184FC427C3554B00BBEB5E /* KcalSettingViewModel.swift in Sources */,
 				1833C64B27BCD0C40096E3E4 /* RequestedStretchingView.swift in Sources */,
 				18EE19E727B3C1D300CCA16D /* ProfileView.swift in Sources */,
-				18EE19F327B4199C00CCA16D /* ChatView.swift in Sources */,
 				183E745327ACFC1F0075B058 /* Buttons.swift in Sources */,
 				18301DFA27CFB2BB00B77057 /* SurveyResultView.swift in Sources */,
 				1833091427BE3E2800890212 /* SubExerciseViews.swift in Sources */,
@@ -741,12 +755,14 @@
 				185687F327B274CB00753D5B /* Model+TrainerBaseViewModel.swift in Sources */,
 				186ABA1627AD5ACA00E73F86 /* BodyInfoPage.swift in Sources */,
 				1893961727ABF3E700B4DB8A /* TrainerBaseView.swift in Sources */,
+				188B2AAB27E701B8004B9DA9 /* Model + ChattingViewModel.swift in Sources */,
 				1833C65227BD04DF0096E3E4 /* UserChattingViewModel.swift in Sources */,
 				1833091B27BEC51700890212 /* YouTubeView.swift in Sources */,
 				1833C65427BD5B7B0096E3E4 /* Notification.swift in Sources */,
 				1847AE6627B4E3C700F484E6 /* Model+ChattingListViewModel.swift in Sources */,
 				186E832727BA800C00CBB25E /* MembershipViewModel.swift in Sources */,
 				18CFFF5A27BBF09D00BB95DA /* HomeView.swift in Sources */,
+				188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */,
 				1833090D27BE3C6900890212 /* RequestedExerciseSubViews.swift in Sources */,
 				1833091227BE3E1700890212 /* RequestingExerciseView.swift in Sources */,
 				1888F9BC27B6818600EBAA43 /* Extensions.swift in Sources */,
@@ -758,6 +774,7 @@
 				182DADB027B2815500D15C56 /* UserAddViewModel.swift in Sources */,
 				187D876B27DB422400495576 /* TrainerScheduleCreateView.swift in Sources */,
 				18EE19EB27B417B500CCA16D /* MessageView.swift in Sources */,
+				188B2AB227E854AC004B9DA9 /* ChattingInputViewModel.swift in Sources */,
 				18EE19E927B416EE00CCA16D /* ContentMessageView.swift in Sources */,
 				187D876D27DB440200495576 /* Model + ScheduleViewModel.swift in Sources */,
 				1888F9BF27B6878100EBAA43 /* SurveyViewModel.swift in Sources */,
@@ -767,7 +784,6 @@
 				187165B427B0059400C4FC6C /* PTonApp.swift in Sources */,
 				185687E527B272D300753D5B /* TrainerUserListView.swift in Sources */,
 				18368C3A27C0D5AD001ACFA6 /* PhotoPickerView.swift in Sources */,
-				18EE19F127B4193900CCA16D /* Model+ChattingViewModel.swift in Sources */,
 				18CFFF5C27BBF6E800BB95DA /* UserProfileView.swift in Sources */,
 				184F14FA27B9191700E5AF07 /* StretchingThumnailView.swift in Sources */,
 				183CE8CB27D89B0E00A8B789 /* ChattingImagePickerView.swift in Sources */,

@@ -33,7 +33,7 @@ class TrainerBaseViewModel:ObservableObject{
         
         self.registerToken {
             self.fetchData {
-                print(self.trainerbasemodel.trainee)
+                self.getUserProfileImage()
             }
         }
     }
@@ -99,6 +99,21 @@ class TrainerBaseViewModel:ObservableObject{
                 
                 completion()
             }
+    }
+    
+    func getUserProfileImage(){
+        for (index,value) in trainerbasemodel.trainee.enumerated(){
+            reference
+                .child("User")
+                .child(value.userId)
+                .child("photoUri")
+                .observeSingleEvent(of: .value) { snapshot in
+                    
+                    guard let url = snapshot.value as? String else{return}
+                    
+                    self.trainerbasemodel.trainee[index].userProfile = url
+                }
+        }
     }
     
     //TODO: 로그 아웃 메소드

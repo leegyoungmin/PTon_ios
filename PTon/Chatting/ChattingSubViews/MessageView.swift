@@ -9,15 +9,13 @@ import SwiftUI
 
 struct MessageView: View {
     var currentMessage:message
+    let userProfileUrl:String?
     var body: some View {
         HStack(alignment: .bottom){
 
             if !currentMessage.isCurrentUser{
                 HStack(alignment:.bottom){
-                    Image(systemName: "person.fill")
-                        .resizable()
-                        .frame(width: 40, height: 40, alignment: .center)
-                        .cornerRadius(20)
+                    URLImageView(urlString: userProfileUrl, imageSize: 50, youtube: false)
                     ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: currentMessage.isCurrentUser)
                     Text(currentMessage.time)
                     Spacer()
@@ -29,14 +27,15 @@ struct MessageView: View {
                 ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: currentMessage.isCurrentUser)
             }
         }
+        .rotationEffect(.degrees(-180))
     }
 }
 
 struct MessageView_previews:PreviewProvider{
     static var previews: some View{
         Group{
-            MessageView(currentMessage: message(content: "asd", time: "12:00", date: "03.21", data: nil, isRead: false, isCurrentUser: false))
-            MessageView(currentMessage: message(content: "asd", time: "12:00", date: "03.21", data: nil, isRead: false, isCurrentUser: true))
+//            MessageView(currentMessage: message(chatId: "", content: "asd", time: "12:00", date: "03.21", data: nil, isRead: false, isCurrentUser: false))
+//            MessageView(currentMessage: message(chatId: "", content: "asd", time: "12:00", date: "03.21", data: nil, isRead: false, isCurrentUser: true))
         }
         .previewLayout(.sizeThatFits)
 

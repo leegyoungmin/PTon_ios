@@ -25,18 +25,22 @@ struct ChatRoomListCellView:View{
     @StateObject var viewModel:ChattingViewModel
     var body: some View{
         
-        //TODO: - 유저 이미지 불러오기
         NavigationLink {
-            ChatView(messages: $viewModel.ChattingRoom.Messages,
-                     viewModel:ChattingInputViewModel(viewModel.trainerId, trainerName: viewModel.trainerName, viewModel.trainee.userId, userName: viewModel.trainee.userName, viewModel.fitnessCode))
+            ChatView(viewModel: ChattingInputViewModel(viewModel.trainerId,
+                                                       trainerName: viewModel.trainerName,
+                                                       viewModel.trainee.userId,
+                                                       userName: viewModel.trainee.userName,
+                                                       viewModel.fitnessCode),
+                     userProfileImage: viewModel.trainee.userProfile)
+            .environmentObject(self.viewModel)
         } label: {
-            let lastMessage = viewModel.ChattingRoom.Messages.last ?? message(content: "", time: "", date: "", isRead: false, isCurrentUser: false)
+            let lastMessage = viewModel.ChattingRoom.Messages.last ?? message(chatId: "", content: "", time: "", date: "", isRead: false, isCurrentUser: false)
             HStack{
-                Image(systemName: "person.fill")
-                    .clipShape(Circle())
-                    .font(.system(size: 50))
+                URLImageView(urlString: viewModel.trainee.userProfile,
+                             imageSize: 50,
+                             youtube: false)
                 
-                VStack(alignment:.leading,spacing:10){
+                VStack(alignment:.leading,spacing:0){
                     HStack{
                         Text(viewModel.trainee.userName)
                         
@@ -59,17 +63,14 @@ struct ChatRoomListCellView:View{
                         
                         Spacer()
                         
-                        if viewModel.unReadCount != 0{
-                            Text("\(viewModel.unReadCount)")
-                                .foregroundColor(.white)
-                                .padding(10)
-                                .background(
-                                    Circle()
-                                        .fill(Color.accentColor)
-                                )
-                        }else{
-                            EmptyView()
-                        }
+                        Text("\(viewModel.ChattingRoom.Messages.filter({$0.isRead == false && $0.isCurrentUser == false}).count)")
+                            .foregroundColor(.white)
+                            .padding(8)
+                            .background(
+                                Circle()
+                                    .fill(Color.accentColor)
+                            )
+                            .opacity(viewModel.unReadCount == 0 ? 0:1)
                         
 
                     }

@@ -52,7 +52,7 @@ struct TrainerScheduleView: View {
                 ScrollView(.vertical, showsIndicators: false) {
                     ForEach(viewmodel.schedules,id: \.self) { schedule in
                         TrainerScheduleCellView(isshowEndView: $isshowEndView, schedule: schedule)
-
+                            .environmentObject(self.viewmodel)
                     }
                 }
                 .background(.white)

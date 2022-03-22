@@ -84,6 +84,7 @@ struct ImageElementView:View{
         .fullScreenCover(isPresented: $isOpen) {
             ZoomImageView(image: image, isOpen: $isOpen)
         }
+        .rotationEffect(.degrees(-180))
         
     }
 }

@@ -17,6 +17,7 @@ struct chattingRoom:Hashable{
 }
 
 struct message:Hashable{
+    var chatId:String
     var content:String
     var time:String
     var date:String
@@ -55,10 +56,10 @@ class ChattingViewModel:ObservableObject{
                 .child(trainee.userId)
                 .child("chat")
                 .observe(.childAdded) { snapshot in
-                    
+                    let key = snapshot.key
                     guard let values = snapshot.value as? [String:Any] else{return}
                     
-                    let currentMessage = self.makeDataForm(values, trainerId: self.trainerId)
+                    let currentMessage = self.makeDataForm(values, trainerId: self.trainerId, chatId: key)
                     self.ChattingRoom.Messages.append(currentMessage)
                 }
             
@@ -71,12 +72,27 @@ class ChattingViewModel:ObservableObject{
                     guard let isFavorite = snapshot.value as? Bool else{return}
                     self.ChattingRoom.favorite = isFavorite
                 }
+            
+            reference
+                .child(fitnessCode)
+                .child(trainerId)
+                .child(trainee.userId)
+                .child("chat")
+                .observe(.childChanged) { snapshot in
+                    let key = snapshot.key
+                    guard let values = snapshot.value as? [String:Any] else{return}
+                    
+                    let currentMessage = self.makeDataForm(values, trainerId: self.trainerId, chatId: key)
+                    
+                    guard let index = self.ChattingRoom.Messages.firstIndex(where: {$0.chatId == key}) else{return}
+                    self.ChattingRoom.Messages[index] = currentMessage
+                }
         }
     }
     
-    func makeDataForm(_ values:[String:Any],trainerId:String)->message{
+    func makeDataForm(_ values:[String:Any],trainerId:String,chatId:String)->message{
         
-        let currentMessage = message(content: "", time: "", date: "", data: nil, isRead: false, isCurrentUser: false)
+        let currentMessage = message(chatId: chatId, content: "", time: "", date: "", data: nil, isRead: false, isCurrentUser: false)
         
         guard let receiver = values["receiver"] as? String,
               let receiverName = values["receivername"] as? String,
@@ -87,7 +103,7 @@ class ChattingViewModel:ObservableObject{
               let date = values["date"] as? String,
               let sender = values["sender"] as? String else{return currentMessage}
         
-        return message(content: content, time: time, date: date, data: nil, isRead: isRead.bool, isCurrentUser: sender == trainerId)
+        return message(chatId: chatId, content: content, time: time, date: date, data: nil, isRead: isRead.bool, isCurrentUser: sender == trainerId)
     }
     
     func changeFavorite(){

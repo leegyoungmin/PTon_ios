@@ -19,20 +19,16 @@ class ProfileViewModel:ObservableObject{
     let TAG = "FETCH PROFILEVIEWMODEL - "
     @Published var MemberShip = memberShip()
     
-    let userid:String
     let traineid:String
     let fitnessCode:String
-    let userName:String
-    var userUrl:String?
+    let trainee:trainee
     
     let reference = Firebase.Database.database().reference().child("Membership")
     
-    init(userid:String,trainerid:String,fitnessCode:String,userName:String,userUrl:String?){
-        self.userid = userid
+    init(_ trainerid:String,_ fitnessCode:String,_ trainee:trainee){
         self.traineid = trainerid
         self.fitnessCode = fitnessCode
-        self.userName = userName
-        self.userUrl = userUrl
+        self.trainee = trainee
         
         fetchMemberShip()
     }
@@ -40,7 +36,7 @@ class ProfileViewModel:ObservableObject{
     
     func fetchMemberShip(){
         reference
-            .child(userid)
+            .child(trainee.userId)
             .observe(.value) { snapshot in
                 print(self.TAG + "\(snapshot)")
                 
@@ -73,13 +69,13 @@ class ProfileViewModel:ObservableObject{
     
     func setDateData(_ data:[String:String]){
         reference
-            .child(userid)
+            .child(trainee.userId)
             .updateChildValues(data)
     }
     
     func setLisenceData(_ data:[String:String]){
         reference
-            .child(userid)
+            .child(trainee.userId)
             .updateChildValues(data)
     }
 }

@@ -25,7 +25,7 @@ struct TrainerBaseView: View {
     }
     var body: some View {
         TabView(selection: $trainerSelectedIndex) {
-            TrainerUserListView(baseIndex: $trainerSelectedIndex,trainerName: trainerBaseViewModel.trainername)
+            TrainerUserListView(baseIndex: $trainerSelectedIndex)
                 .tabItem {
                     Image(systemName: "person")
                 }
@@ -33,6 +33,7 @@ struct TrainerBaseView: View {
                 .onTapGesture {
                     self.trainerSelectedIndex = 0
                 }
+                .environmentObject(self.trainerBaseViewModel)
             
             ChatRoomListView(trainees: trainerBaseViewModel.trainerbasemodel.trainee,
                          trainerId: trainerBaseViewModel.trainerId,
