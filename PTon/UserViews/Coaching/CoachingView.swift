@@ -8,243 +8,216 @@
 import SwiftUI
 
 struct CoachingView: View {
-    
-    @State var tabIndex = 0
-    @State var showingCalendar = false //showingAlert
-    @State var selectedDate: Date? = nil //savedDate
-    @State var selectedStringDate: String? //savedObjDate
-    @State var nowDate: String = "" //tempDate
-    @State var trainerId: String
+    @StateObject var viewModel:CoachViewModel
+    let compareType:[String] = ["Fitness","Aerobic","Back","Chest","Arm","Leg","Shoulder","Abs"]
+    @State private var selectedTab = 0
+    @State var selectedDate = Date()
+    @State var exerciseType = RequestingExerciseType.allCases.map({$0.rawValue})
     
     var body: some View {
-        VStack{
-            HStack{
-                Image(systemName: "calendar")
-                    .resizable()
-                    .frame(width: 32, height: 32, alignment: .trailing)
-                    .onTapGesture{
-                        showingCalendar = true
-                    }
-                Spacer()
-                
-                
-                //날짜 보여주기
-                //현재: 2021-02-18
-//TODO: 보여주는 창은 2월 18일
-                Text(selectedStringDate ?? nowDate)
-                    .onAppear{
-                        nowDate = { () -> String in
-                            let formatterYear = DateFormatter()
-                            formatterYear.dateFormat = "yyyy-MM-dd"
-                            return formatterYear.string(from: Date())
-                        }()
-                    }
-                    .onChange(of: self.selectedStringDate){ newValue in
-                        nowDate = newValue!
-                    }
-                Spacer()
-            }
-            .padding(.horizontal)
-            
-            
-            //날짜 띄우기
-            //TODO: animation IOS 15.0 버전에 맞게 value 추가 y축 계산
-            if showingCalendar{
-                CoachDatePicker(showingCalendar: $showingCalendar,
-                                selectedDate: $selectedDate,
-                                selectedStringDate: $selectedStringDate,
-                                selectingDate: selectedDate ?? Date())
-//                    .animation(.linear)
-                    .transition(.opacity)
-            }
-            
-            
-            CoachTabBar(tabIndex: $tabIndex)
-            switch(tabIndex){
-            case 0: CoachingRoutineView()
-            case 1: CoachingFitnessView(date: nowDate, trainerId: self.trainerId)
-            case 2: CoachingCompoundView(date: nowDate, trainerId: self.trainerId)
-            case 3: CoachingBackView(date: nowDate, trainerId: self.trainerId)
-            case 4: CoachingChestView(date: nowDate, trainerId: self.trainerId)
-            case 5: CoachingArmView(date: nowDate, trainerId: self.trainerId)
-            case 6: CoachingLegView(date: nowDate, trainerId: self.trainerId)
-            case 7: CoachingAbsView(date: nowDate, trainerId: self.trainerId)
-            default: CoachingRoutineView()
-            }
-            Spacer()
-        }
-        .navigationBarHidden(false)
-    }
-}
-
-struct CoachDatePicker: View{
-    
-    @Binding var showingCalendar: Bool
-    @Binding var selectedDate: Date?
-    @Binding var selectedStringDate: String?
-    @State var selectingDate: Date = Date()
-    
-    var body: some View{
-        ZStack{
-            Color.black.opacity(0.3)
-                .edgesIgnoringSafeArea(.all)
-            
-            VStack{
-                DatePicker("Coaching", selection: $selectingDate, in: Date()..., displayedComponents: [.date])
-                    .datePickerStyle(.graphical)
-                    
-                Divider()
-                
-                HStack{
-                    Button(action: {
-                        print("취소 버튼 Clicked")
-                        showingCalendar = false
-                    }, label: {
-                        Text("취소")
-                    })
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        selectedDate = selectingDate
-                        var savedStringDate: String = ""
-                        savedStringDate = DateFormattertoString(date: selectingDate)
-                        selectedStringDate = savedStringDate
-                        showingCalendar = false
-                    }, label: {
-                        Text("저장")
-                            .bold()
-                    })
-                    
+        VStack(spacing:0){
+            //TODO: - 날짜 제한하기
+            weekDatePickerView(currentDate: $selectedDate)
+                .onChange(of: selectedDate) { newValue in
+                    viewModel.reloadData(newValue)
                 }
                 .padding(.horizontal)
+                .padding(.bottom)
+            
+            Tabs(tabs: $exerciseType,
+                 selection: $selectedTab,
+                 underlineColor: .accentColor) { title, isSelected in
+                Text(title)
+                    .font(.system(size: 14))
+                    .fontWeight(.semibold)
+                    .foregroundColor(isSelected ? .black:Color(uiColor: UIColor.lightGray))
             }
-            .padding()
-            .background(Color.white
-                            .cornerRadius(30))
+            
+            VStack{
+                if exerciseType[selectedTab] == "Fitness"{
+                    if viewModel.coachExerciseList.filter({$0.exerciseType == "Fitness"}).isEmpty{
+                        nullTextView()
+                    }else{
+                        ScrollView(.vertical, showsIndicators: false) {
+                            ForEach(viewModel.coachExerciseList.filter({$0.exerciseType == "Fitness"}),id:\.self){ exercise in
+                                CoachingFitnessExercise(selectedDate: $selectedDate, exercise: exercise)
+                                    .environmentObject(self.viewModel)
+                                    .padding(.horizontal)
+                                    .padding(.vertical,5)
+                            }
+                        }
+                    }
+                } else if exerciseType[selectedTab] == "유산소"{
+                    if viewModel.coachExerciseList.filter({$0.exerciseType == "Aerobic"}).isEmpty{
+                        nullTextView()
+                    }else{
+                        ScrollView(.vertical, showsIndicators: false) {
+                            ForEach(viewModel.coachExerciseList.filter({$0.exerciseType == "Aerobic"}),id:\.self) { exercise in
+                                CoachingAerobicCellView(selectedDate: $selectedDate, exercise: exercise)
+                                    .environmentObject(self.viewModel)
+                                    .padding(.horizontal)
+                                    .padding(.vertical,5)
+                            }
+                        }
+                    }
+                } else{
+                    if viewModel.coachExerciseList.filter({$0.exercisePart == compareType[selectedTab]}).isEmpty{
+                        nullTextView()
+                    }else{
+                        ScrollView(.vertical, showsIndicators: false) {
+                            ForEach(viewModel.coachExerciseList.filter({$0.exercisePart == compareType[selectedTab]}),id:\.self){ exercise in
+                                CoachingAnAerobicCellView(selectedDate: $selectedDate, exercise: exercise)
+                                    .environmentObject(self.viewModel)
+                                    .padding(.horizontal)
+                                    .padding(.vertical,5)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.top,10)
+            .background(backgroundColor)
         }
+        .navigationBarTitleDisplayMode(.inline)
+        
     }
     
-    func DateFormattertoString(date: Date?) -> String{
-        let dateFormatter = Foundation.DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter.string(from: date ?? Date())
-    }
-    
-}
-
-
-struct CoachTabBar: View{
-    @Binding var tabIndex: Int
-    
-    var body: some View{
-        ScrollView(.horizontal, showsIndicators: false, content: {
-            HStack(spacing: 30){
-                TabBarButton(text: "루틴", isSelected: .constant(tabIndex == 0))
-                    .onTapGesture {
-                        onButtonTapped(index: 0)
-                    }
-                TabBarButton(text: "피트니스", isSelected: .constant(tabIndex == 1))
-                    .onTapGesture {
-                        onButtonTapped(index: 1)
-                    }
-                TabBarButton(text: "복합운동", isSelected: .constant(tabIndex == 2))
-                    .onTapGesture {
-                        onButtonTapped(index: 2)
-                    }
-                TabBarButton(text: "등", isSelected: .constant(tabIndex == 3))
-                    .onTapGesture{
-                        onButtonTapped(index: 3)
-                    }
-                TabBarButton(text: "가슴", isSelected: .constant(tabIndex == 4))
-                    .onTapGesture {
-                        onButtonTapped(index: 4)
-                    }
-                TabBarButton(text: "팔", isSelected: .constant(tabIndex == 5))
-                    .onTapGesture{
-                        onButtonTapped(index: 5)
-                    }
-                TabBarButton(text: "다리", isSelected: .constant(tabIndex == 6))
-                    .onTapGesture {
-                        onButtonTapped(index: 6)
-                    }
-                TabBarButton(text: "복근", isSelected: .constant(tabIndex == 7))
-                    .onTapGesture {
-                        onButtonTapped(index: 7)
-                    }
+    @ViewBuilder
+    func nullTextView() -> some View{
+        VStack{
+            Spacer()
+            HStack{
+                Spacer()
+                Text("요청된 운동이 없습니다.")
                 Spacer()
             }
-        })
-            .border(width: 1, edges: [.bottom], color: .black)
+            
+            Spacer()
+        }
     }
-    private func onButtonTapped(index: Int){
-        withAnimation{tabIndex = index}
+}
+
+struct CoachingFitnessExercise:View{
+    @EnvironmentObject var viewModel:CoachViewModel
+    @Binding var selectedDate:Date
+    @State var exercise:coachExercise
+    var body: some View{
+        if exercise.exercisePart == "AnAerobic"{
+            CoachingAnAerobicCellView(selectedDate: $selectedDate, exercise: exercise)
+                .environmentObject(self.viewModel)
+        }else if exercise.exercisePart == "Aerobic"{
+            CoachingAerobicCellView(selectedDate: $selectedDate, exercise: exercise)
+                .environmentObject(self.viewModel)
+        }
+    }
+}
+
+struct CoachingAerobicCellView:View{
+    @EnvironmentObject var viewModel:CoachViewModel
+    @Binding var selectedDate:Date
+    @State var exercise:coachExercise
+    var body: some View{
+        HStack(spacing:10){
+            URLImageView(urlString: exercise.imageUrl, imageSize: 50, youtube: false)
+            
+            VStack(alignment: .leading, spacing: 5){
+                Text(exercise.exerciseName)
+                    .font(.body)
+                
+                Text("추천 \(exercise.minute ?? 0) 분")
+                    .font(.footnote)
+                    .foregroundColor(.gray)
+                
+                Text("예상 칼로리")
+                    .foregroundColor(.accentColor)
+                    .font(.system(size: 15))
+            }
+            
+            Spacer()
+            
+            Button {
+                viewModel.ToggleDone(exercise, selectedDate: selectedDate)
+                guard let index = viewModel.coachExerciseList.firstIndex(where: {$0.exerciseName == self.exercise.exerciseName}) else{return}
+                self.viewModel.coachExerciseList[index].isDone.toggle()
+            } label: {
+                Image(systemName: exercise.isDone ? "checkmark.circle":"circle")
+            }
+            .disabled(
+                convertString(content: selectedDate, dateFormat: "yyyy-MM-dd") != convertString(content: Date(), dateFormat: "yyyy-MM-dd")
+            )
+            
+        }
+        .padding()
+        .background(.white)
+        .cornerRadius(3)
+        .shadow(color: .gray.opacity(0.2), radius: 1, x: -1, y: -1)
+        .shadow(color: .gray.opacity(0.2), radius: 1, x: 1, y: 1)
+        
+    }
+}
+
+struct CoachingAnAerobicCellView:View{
+    @EnvironmentObject var viewModel:CoachViewModel
+    @Binding var selectedDate:Date
+    @State var exercise:coachExercise
+    var body: some View{
+        HStack(spacing:10){
+            URLImageView(urlString: exercise.imageUrl, imageSize: 50, youtube: false)
+            
+            VStack(alignment: .leading, spacing: 5){
+                Text(exercise.exerciseName)
+                    .font(.body)
+                
+                HStack{
+                    Text("\(exercise.weight ?? 0)kg")
+                    
+                    Divider()
+                        .frame(height:10)
+                    
+                    Text("\(exercise.time ?? 0)회")
+                    
+                    Divider()
+                        .frame(height:10)
+                    
+                    Text("\(exercise.sets ?? 0)세트")
+                }
+                .foregroundColor(.gray)
+                .font(.footnote)
+                
+                Text("예상 칼로리")
+                    .foregroundColor(.accentColor)
+                    .font(.system(size: 15))
+            }
+            
+            Spacer()
+            
+            Button {
+                viewModel.ToggleDone(exercise, selectedDate: selectedDate)
+                guard let index = viewModel.coachExerciseList.firstIndex(where: {$0.exerciseName == self.exercise.exerciseName}) else{return}
+                self.viewModel.coachExerciseList[index].isDone.toggle()
+                
+            } label: {
+                Image(systemName: exercise.isDone ? "checkmark.circle":"circle")
+            }
+            .disabled(
+                convertString(content: selectedDate, dateFormat: "yyyy-MM-dd") != convertString(content: Date(), dateFormat: "yyyy-MM-dd")
+            )
+            
+        }
+        .padding()
+        .background(.white)
+        .cornerRadius(3)
+        .shadow(color: .gray.opacity(0.2), radius: 1, x: -1, y: -1)
+        .shadow(color: .gray.opacity(0.2), radius: 1, x: 1, y: 1)
     }
 }
 
 struct CoachingView_Previews:PreviewProvider{
+    static var dummyExercise = coachExercise(exerciseName: "example", exerciseType: "AnAerobic", exercisePart: "Back", sets: 10, weight: 10, time: 10, minute: 20, parameter: 3.2, imageUrl: "", isDone: false)
     static var previews: some View{
-        CoachingView(trainerId: "ㅁㄴㅇㅁㄴㅇ")
-    }
-}
-
-struct TabBarButton: View{
-    let text: String
-    @Binding var isSelected: Bool
-    
-    var body: some View{
-        Text(text)
-            .fontWeight(isSelected ? .heavy : .regular)
-            .font(.system(size: 20))
-            .padding(.bottom, 10)
-            .border(width: isSelected ? 2: 1, edges: [.bottom], color: .black)
-    }
-    
-}
-
-
-struct EdgeBorder: Shape{
-    var width: CGFloat
-    var edges: [Edge]
-    
-    func path(in rect: CGRect) -> Path{
-        var path = Path()
-        for edge in edges {
-            var x: CGFloat{
-                switch edge{
-                case .top, .bottom, .leading: return rect.minX
-                case .trailing: return rect.maxX - width
-                }
-            }
-            
-            var y: CGFloat{
-                switch edge{
-                case .top, .leading, .trailing: return rect.minY
-                case .bottom: return rect.maxY - width
-                }
-            }
-            var w: CGFloat{
-                switch edge{
-                case .top, .bottom: return rect.width
-                case .leading, .trailing: return self.width
-                }
-            }
-            
-            var h: CGFloat{
-                switch edge{
-                case .top, .bottom: return self.width
-                case .leading, .trailing: return rect.height
-                }
-            }
-            
-            path.addPath(Path(CGRect(x: x, y: y, width: w, height: h)))
-        }
-        return path
-    }
-}
-
-extension View{
-    func border(width: CGFloat, edges: [Edge], color: SwiftUI.Color) -> some View{
-        overlay(EdgeBorder(width: width, edges: edges).foregroundColor(color))
+        CoachingView(viewModel: CoachViewModel("3yvE0bnUEHbvDKasU1Orf7DhvjX2", "kakao:1967260938"))
+        //        CoachingAnAerobicCellView(exercise: dummyExercise)
+        //            .previewLayout(.sizeThatFits)
+        //            .padding()
     }
 }

@@ -42,7 +42,7 @@ struct UserBaseView: View {
                     selectedIndex = 2
                 }
             
-            CoachingView(trainerId: UserBaseViewModel.trainerid)
+            CoachingView(viewModel: CoachViewModel(UserBaseViewModel.trainerid, UserBaseViewModel.userid))
                 .tabItem {
                     Label("코칭", systemImage: "person.fill")
                 }
@@ -52,7 +52,6 @@ struct UserBaseView: View {
                 }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .accentColor(.purple)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 HStack{
@@ -69,7 +68,7 @@ struct UserBaseView: View {
                             Text("요청")
                                 .font(.title2)
                                 .fontWeight(.bold)
-                                .foregroundColor(StretchingIndex == .request ? .purple:.gray)
+                                .foregroundColor(StretchingIndex == .request ? .accentColor:.gray)
                         }.buttonStyle(.plain)
                         
                         Button {
@@ -79,7 +78,7 @@ struct UserBaseView: View {
                             Text("전체")
                                 .font(.title2)
                                 .fontWeight(.bold)
-                                .foregroundColor(StretchingIndex == .all ? .purple:.gray)
+                                .foregroundColor(StretchingIndex == .all ? .accentColor:.gray)
                         }.buttonStyle(.plain)
                         
                     }
@@ -92,7 +91,8 @@ struct UserBaseView: View {
                     NavigationLink {
 //                        UserChattingView(viewModel: UserChattingViewModel(userid: UserBaseViewModel.userid, trainerid: UserBaseViewModel.trainerid, username: UserBaseViewModel.username, fitnessCode: UserBaseViewModel.fitnessCode))
                     } label: {
-                        Image(systemName: "message.fill").foregroundColor(Color.purple)
+                        Image(systemName: "message.fill")
+                            .foregroundColor(Color.accentColor)
                     }
                     .buttonStyle(.plain)
                     
@@ -103,7 +103,7 @@ struct UserBaseView: View {
                         }
                     } label: {
                         Text("로그 아웃")
-                            .foregroundColor(Color.purple)
+                            .foregroundColor(Color.accentColor)
                     }
                 }
             }

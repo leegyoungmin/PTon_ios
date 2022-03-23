@@ -42,7 +42,7 @@ class DetailMemoViewModel:ObservableObject{
         // Collection 지정
         self.reference = Firestore.firestore().collection("Memo").document(trainerId).collection(userId).document(memoId).collection("Comment")
         
-        //데이터 구독함수 실행
+        // 데이터 구독함수 실행
         ObserveData()
     }
     
@@ -58,7 +58,6 @@ class DetailMemoViewModel:ObservableObject{
                 }
                 
                 self.loadData(diff.type, result: result)
-                
             }
         }
     }
@@ -77,6 +76,7 @@ class DetailMemoViewModel:ObservableObject{
                     if changeType == .removed{
                         self.commentList.remove(at: index)
                     }
+                    
                     if changeType == .modified{
                         self.commentList[index] = comment
                     }
@@ -89,7 +89,6 @@ class DetailMemoViewModel:ObservableObject{
     
     //TODO: - 유저 타입에 따른 데이터 분기 처리 함수
     func setCommentData(_ content:String){
-        
         guard let currentUser = Firebase.Auth.auth().currentUser else{return}
         
         //Trainer일 경우
@@ -138,7 +137,6 @@ class DetailMemoViewModel:ObservableObject{
     
     //MARK: - 좋아요 변경 함수
     func toggleLike(comment:comment){
-        
         reference
             .document(comment.uid)
             .updateData(["isLike":!comment.isLike])
@@ -170,10 +168,7 @@ class DetailMemoViewModel:ObservableObject{
     func viewDisapper(data:Memo){
         
         updateMemoData(data: data)
-        
         let listener = reference.addSnapshotListener { querySnapshot, error in}
-        
-        print("Detached")
         
         listener.remove()
     }
@@ -191,5 +186,3 @@ class DetailMemoViewModel:ObservableObject{
     }
     
 }
-
-

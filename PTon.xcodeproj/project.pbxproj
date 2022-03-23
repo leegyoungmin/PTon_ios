@@ -12,7 +12,6 @@
 		181DE20827B10C10002F33B2 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181DE20727B10C10002F33B2 /* Error.swift */; };
 		18236D3B27DB6BA300B0D619 /* TrainerCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18236D3A27DB6BA300B0D619 /* TrainerCalendarView.swift */; };
 		182AB1AA27C8C7C200381C55 /* CoachingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AB1A927C8C7C200381C55 /* CoachingView.swift */; };
-		182AB1AC27C8C7E000381C55 /* CoachingSubViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AB1AB27C8C7E000381C55 /* CoachingSubViews.swift */; };
 		182AB1AE27C8C7F400381C55 /* Model+CoachingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AB1AD27C8C7F400381C55 /* Model+CoachingViewModel.swift */; };
 		182DADA927B277BC00D15C56 /* Model+TrainerUserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182DADA827B277BC00D15C56 /* Model+TrainerUserListViewModel.swift */; };
 		182DADAD27B27BB500D15C56 /* UserAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182DADAC27B27BB500D15C56 /* UserAddView.swift */; };
@@ -69,6 +68,9 @@
 		1888F9B627B6808100EBAA43 /* Stretching.json in Resources */ = {isa = PBXBuildFile; fileRef = 1888F9B527B6808100EBAA43 /* Stretching.json */; };
 		1888F9BC27B6818600EBAA43 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1888F9BB27B6818600EBAA43 /* Extensions.swift */; };
 		1888F9BF27B6878100EBAA43 /* SurveyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1888F9BE27B6878100EBAA43 /* SurveyViewModel.swift */; };
+		1889B98727EAD5B400C9AFE1 /* ReadModeMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889B98627EAD5B400C9AFE1 /* ReadModeMemoView.swift */; };
+		1889B98927EAD64400C9AFE1 /* EditModeMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889B98827EAD64400C9AFE1 /* EditModeMemoView.swift */; };
+		1889B98D27EB78EB00C9AFE1 /* WeekDatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889B98C27EB78EB00C9AFE1 /* WeekDatePickerView.swift */; };
 		188B2AAB27E701B8004B9DA9 /* Model + ChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */; };
 		188B2AAE27E70361004B9DA9 /* ChatRoomListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */; };
 		188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAF27E70AE2004B9DA9 /* ChatView.swift */; };
@@ -99,7 +101,6 @@
 		181DE20727B10C10002F33B2 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		18236D3A27DB6BA300B0D619 /* TrainerCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainerCalendarView.swift; sourceTree = "<group>"; };
 		182AB1A927C8C7C200381C55 /* CoachingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachingView.swift; sourceTree = "<group>"; };
-		182AB1AB27C8C7E000381C55 /* CoachingSubViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachingSubViews.swift; sourceTree = "<group>"; };
 		182AB1AD27C8C7F400381C55 /* Model+CoachingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+CoachingViewModel.swift"; sourceTree = "<group>"; };
 		182DADA827B277BC00D15C56 /* Model+TrainerUserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+TrainerUserListViewModel.swift"; sourceTree = "<group>"; };
 		182DADAC27B27BB500D15C56 /* UserAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAddView.swift; sourceTree = "<group>"; };
@@ -157,6 +158,9 @@
 		1888F9B527B6808100EBAA43 /* Stretching.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Stretching.json; sourceTree = "<group>"; };
 		1888F9BB27B6818600EBAA43 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1888F9BE27B6878100EBAA43 /* SurveyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyViewModel.swift; sourceTree = "<group>"; };
+		1889B98627EAD5B400C9AFE1 /* ReadModeMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadModeMemoView.swift; sourceTree = "<group>"; };
+		1889B98827EAD64400C9AFE1 /* EditModeMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditModeMemoView.swift; sourceTree = "<group>"; };
+		1889B98C27EB78EB00C9AFE1 /* WeekDatePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDatePickerView.swift; sourceTree = "<group>"; };
 		188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + ChattingViewModel.swift"; sourceTree = "<group>"; };
 		188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListView.swift; sourceTree = "<group>"; };
 		188B2AAF27E70AE2004B9DA9 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
@@ -219,8 +223,8 @@
 			isa = PBXGroup;
 			children = (
 				182AB1A927C8C7C200381C55 /* CoachingView.swift */,
-				182AB1AB27C8C7E000381C55 /* CoachingSubViews.swift */,
 				182AB1AD27C8C7F400381C55 /* Model+CoachingViewModel.swift */,
+				1889B98C27EB78EB00C9AFE1 /* WeekDatePickerView.swift */,
 			);
 			path = Coaching;
 			sourceTree = "<group>";
@@ -304,9 +308,11 @@
 		183308EF27BE319F00890212 /* Chatting */ = {
 			isa = PBXGroup;
 			children = (
-				188B2AAC27E702CC004B9DA9 /* ExampleChat */,
+				188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */,
+				188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */,
+				188B2AAF27E70AE2004B9DA9 /* ChatView.swift */,
+				188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */,
 				183308F027BE31A400890212 /* ChattingSubViews */,
-				183CE8CA27D89B0E00A8B789 /* ChattingImagePickerView.swift */,
 			);
 			path = Chatting;
 			sourceTree = "<group>";
@@ -314,6 +320,7 @@
 		183308F027BE31A400890212 /* ChattingSubViews */ = {
 			isa = PBXGroup;
 			children = (
+				183CE8CA27D89B0E00A8B789 /* ChattingImagePickerView.swift */,
 				18EE19E827B416EE00CCA16D /* ContentMessageView.swift */,
 				18EE19EA27B417B500CCA16D /* MessageView.swift */,
 				18FC42C227D98ECB00002BB3 /* ChattingImageView.swift */,
@@ -438,6 +445,7 @@
 		184FCCC427E1F0A8007DCB8F /* DetailMemoView */ = {
 			isa = PBXGroup;
 			children = (
+				1889B98527EAD5A100C9AFE1 /* Views */,
 				185E010A27EA03770048F2B0 /* DetailMemoView.swift */,
 				1888E3B827E33C7200EC80A9 /* Model + DetailMemoViewModel.swift */,
 			);
@@ -456,11 +464,9 @@
 		186F11E327B7D7E3004BED0F /* Memo */ = {
 			isa = PBXGroup;
 			children = (
+				1889B98B27EAD7FB00C9AFE1 /* MemoListView */,
+				1889B98A27EAD7ED00C9AFE1 /* CreateMemoView */,
 				184FCCC427E1F0A8007DCB8F /* DetailMemoView */,
-				186F11E427B7D7EC004BED0F /* MemoListView.swift */,
-				186F11E627B7D821004BED0F /* MemoCreateView.swift */,
-				18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */,
-				18B7D94127E09C8A00400310 /* MemoListViewModel.swift */,
 			);
 			path = Memo;
 			sourceTree = "<group>";
@@ -475,15 +481,31 @@
 			path = Survey;
 			sourceTree = "<group>";
 		};
-		188B2AAC27E702CC004B9DA9 /* ExampleChat */ = {
+		1889B98527EAD5A100C9AFE1 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */,
-				188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */,
-				188B2AAF27E70AE2004B9DA9 /* ChatView.swift */,
-				188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */,
+				1889B98627EAD5B400C9AFE1 /* ReadModeMemoView.swift */,
+				1889B98827EAD64400C9AFE1 /* EditModeMemoView.swift */,
 			);
-			path = ExampleChat;
+			path = Views;
+			sourceTree = "<group>";
+		};
+		1889B98A27EAD7ED00C9AFE1 /* CreateMemoView */ = {
+			isa = PBXGroup;
+			children = (
+				186F11E627B7D821004BED0F /* MemoCreateView.swift */,
+				18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */,
+			);
+			path = CreateMemoView;
+			sourceTree = "<group>";
+		};
+		1889B98B27EAD7FB00C9AFE1 /* MemoListView */ = {
+			isa = PBXGroup;
+			children = (
+				186F11E427B7D7EC004BED0F /* MemoListView.swift */,
+				18B7D94127E09C8A00400310 /* MemoListViewModel.swift */,
+			);
+			path = MemoListView;
 			sourceTree = "<group>";
 		};
 		189393F627ABAF0100B4DB8A = {
@@ -736,9 +758,9 @@
 				1833091927BEC44000890212 /* VideoPlayer.swift in Sources */,
 				184F14FC27B91CD500E5AF07 /* Model + StretchingViewModel.swift in Sources */,
 				1833090B27BE3C4D00890212 /* MonthYearPickerView.swift in Sources */,
-				182AB1AC27C8C7E000381C55 /* CoachingSubViews.swift in Sources */,
 				186437A627AE45500045615E /* Model+BaseViewModel.swift in Sources */,
 				18CFFF5F27BBF92500BB95DA /* StretchingView.swift in Sources */,
+				1889B98727EAD5B400C9AFE1 /* ReadModeMemoView.swift in Sources */,
 				18FC42C327D98ECB00002BB3 /* ChattingImageView.swift in Sources */,
 				1854529F27B2421C001F2B9F /* Model+UserBaseViewModel.swift in Sources */,
 				18B7D94027E08E4100400310 /* Model + MemoCreateViewModel.swift in Sources */,
@@ -751,6 +773,7 @@
 				1833090727BE3C0B00890212 /* RequestedExerciseView.swift in Sources */,
 				1833C64D27BCECAC0096E3E4 /* AllStretchingView.swift in Sources */,
 				18236D3B27DB6BA300B0D619 /* TrainerCalendarView.swift in Sources */,
+				1889B98D27EB78EB00C9AFE1 /* WeekDatePickerView.swift in Sources */,
 				185687F327B274CB00753D5B /* Model+TrainerBaseViewModel.swift in Sources */,
 				186ABA1627AD5ACA00E73F86 /* BodyInfoPage.swift in Sources */,
 				1893961727ABF3E700B4DB8A /* TrainerBaseView.swift in Sources */,
@@ -774,6 +797,7 @@
 				182DADB027B2815500D15C56 /* UserAddViewModel.swift in Sources */,
 				187D876B27DB422400495576 /* TrainerScheduleCreateView.swift in Sources */,
 				18EE19EB27B417B500CCA16D /* MessageView.swift in Sources */,
+				1889B98927EAD64400C9AFE1 /* EditModeMemoView.swift in Sources */,
 				188B2AB227E854AC004B9DA9 /* ChattingInputViewModel.swift in Sources */,
 				18EE19E927B416EE00CCA16D /* ContentMessageView.swift in Sources */,
 				187D876D27DB440200495576 /* Model + ScheduleViewModel.swift in Sources */,
