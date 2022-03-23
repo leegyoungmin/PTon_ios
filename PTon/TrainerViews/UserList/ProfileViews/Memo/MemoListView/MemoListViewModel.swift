@@ -51,6 +51,7 @@ class MemoListViewModel:ObservableObject{
         observeData()
     }
     
+    //MARK: - 데이터 변화 감지 메소드
     func observeData(){
         db.collection("Memo").document(trainerid).collection(userid).order(by: "time",descending: true).addSnapshotListener { querySnapshot, error in
             guard let snapshot = querySnapshot else{return}
@@ -65,6 +66,7 @@ class MemoListViewModel:ObservableObject{
         }
     }
     
+    //MARK: - 데이터 변경 감지에 대한 데이터 처리 메소드
     func ChangeData(_ diff:DocumentChange,result:Result<Memo?,Error>){
         switch result {
         case .success(let success):
@@ -89,23 +91,15 @@ class MemoListViewModel:ObservableObject{
         }
     }
     
+    //MARK: - 데이터 제거 메소드
     func deleteData(data:Memo){
         db.collection("Memo").document(trainerid).collection(userid).document(data.uuid).delete()
     }
     
+    //MARK: - 리스너 제거 메소드
     func viewDisAppear(){
         let listener = db.collection("Memo").document(trainerid).collection(userid).addSnapshotListener { snapshot, error in}
         listener.remove()
     }
     
 }
-
-
-//MARK: - 속도 측정 (1)
-//    .getDocuments { querySnapshot, error in
-//    guard let documents = querySnapshot?.documents,error == nil else{return}
-//
-//    self.memos = documents.compactMap{ querySnapshot -> Memo in
-//        let data = try? querySnapshot.data(as:Memo.self)
-//        return data!
-//    }

@@ -8,81 +8,78 @@
 import SwiftUI
 
 struct StretchingRequestView: View {
+    //MARK: - PROPERTIES
     @Environment(\.dismiss) var dismiss
     let Stretchings:[Stretching] = Bundle.main.decode("Stretching.json")
     @StateObject var stretchingViewModel:StretchingViewModel
     @State var selectedDay = Date()
+    
+    //MARK: - VIEW
     var body: some View {
-        ZStack{
-            Color("Background").edgesIgnoringSafeArea(.all)
-            
-            VStack{
-                HStack{
-                    DatePicker("", selection: $stretchingViewModel.selectedDay,displayedComponents: .date)
-                        .environment(\.locale, Locale(identifier: "ko_KR"))
-                        .labelsHidden()
-                        .onChange(of: stretchingViewModel.selectedDay) { newValue in
-                            stretchingViewModel.fetchData()
-                        }
-                    
-                    Spacer()
-                    
-                    Button {
-                        stretchingViewModel.setTrainerStretching {
-                            stretchingViewModel.setUserStretching {
-                                dismiss.callAsFunction()
-                            }
-                        }
-                    } label: {
-                        Text("저장하기")
-                            .underline()
-                            .foregroundColor(.accentColor)
+        VStack{
+            HStack{
+                DatePicker("", selection: $stretchingViewModel.selectedDay,displayedComponents: .date)
+                    .environment(\.locale, Locale(identifier: "ko_KR"))
+                    .labelsHidden()
+                    .onChange(of: stretchingViewModel.selectedDay) { newValue in
+                        stretchingViewModel.fetchData()
                     }
-                    
-                }
-                .padding(.horizontal)
-                .padding(.top,10)
                 
-                ScrollView(.vertical, showsIndicators: false){
-                    ForEach(stretchingViewModel.trainerList.indices,id:\.self) { index in
-                        
-                        HStack{
-                            URLImageView(urlString:"https://img.youtube.com/vi/\(Stretchings[index].videoID)/maxresdefault.jpg", imageSize: 100, youtube: true)
-                            
-                            VStack(alignment:.leading,spacing:5){
-                                HStack{
-                                    Text(Stretchings[index].title)
-                                        .font(.title3)
-                                        .fontWeight(.semibold)
-                                    
-                                    Spacer()
-                                    
-                                    Button {
-                                        stretchingViewModel.trainerList[index].Checked.toggle()
-                                    } label: {
-                                        Image(systemName: stretchingViewModel.trainerList[index].Checked ? "checkmark.circle.fill":"circle")
-                                            .foregroundColor(stretchingViewModel.trainerList[index].Checked ? Color.accentColor:.gray)
-                                            .font(.title3)
-                                    }
-
-                                }
-                                
-                                Text(Stretchings[index].explain)
-                                    .lineLimit(1)
-                                    .multilineTextAlignment(.leading)
-                                    .font(.footnote)
-                            }
+                Spacer()
+                
+                Button {
+                    stretchingViewModel.setTrainerStretching {
+                        stretchingViewModel.setUserStretching {
+                            dismiss.callAsFunction()
                         }
-                        .padding(.horizontal,10)
                     }
+                } label: {
+                    Text("저장하기")
+                        .underline()
+                        .foregroundColor(.accentColor)
                 }
-                .padding(10)
-                .background(.white)
-                .cornerRadius(5)
-                .padding()
+                
             }
-               
+            
+            ScrollView(.vertical, showsIndicators: false){
+                ForEach(stretchingViewModel.trainerList.indices,id:\.self) { index in
+                    
+                    HStack{
+                        URLImageView(urlString:"https://img.youtube.com/vi/\(Stretchings[index].videoID)/maxresdefault.jpg", imageSize: 100, youtube: true)
+                        
+                        VStack(alignment:.leading,spacing:5){
+                            HStack{
+                                Text(Stretchings[index].title)
+                                    .font(.title3)
+                                    .fontWeight(.semibold)
+                                
+                                Spacer()
+                                
+                                Button {
+                                    stretchingViewModel.trainerList[index].Checked.toggle()
+                                } label: {
+                                    Image(systemName: stretchingViewModel.trainerList[index].Checked ? "checkmark.circle.fill":"circle")
+                                        .foregroundColor(stretchingViewModel.trainerList[index].Checked ? Color.accentColor:.gray)
+                                        .font(.title3)
+                                }
+
+                            }
+                            
+                            Text(Stretchings[index].explain)
+                                .lineLimit(1)
+                                .multilineTextAlignment(.leading)
+                                .font(.footnote)
+                        }
+                    }
+                    .padding(10)
+                }
+            }
+            .background(.white)
+            .padding(.bottom)
+            
         }
+        .padding(.horizontal)
+        .background(backgroundColor.edgesIgnoringSafeArea(.all))
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
@@ -145,6 +142,7 @@ struct SwiftUIWrapper<T: View>: UIViewControllerRepresentable {
 }
 
 
+//MARK: - PREVIEWS
 struct StretchingRequestView_Previews: PreviewProvider {
     static var previews: some View {
         Group{

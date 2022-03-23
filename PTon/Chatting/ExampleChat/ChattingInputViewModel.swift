@@ -66,6 +66,18 @@ class ChattingInputViewModel:ObservableObject{
            let timeString = convertString(content: date, dateFormat: "HH시 mm분") as? String{
             let message = "\(self.trainerName) 트레이너님이 " + dateString + " " + timeString + "에 PT 일정을 예약하셨습니다."
             
+            let data:[String:Any] = [
+                "Checked":false,
+                "Time":convertString(content: date, dateFormat: "HH:mm")
+            ]
+            
+            Firebase.Database.database().reference()
+                .child("Reservation")
+                .child(trainerId)
+                .child(convertString(content: date, dateFormat: "yyyy-MM-dd"))
+                .child(userId)
+                .setValue(data)
+            
             sendText(message)
         }
     }

@@ -41,6 +41,8 @@ class MemoCreateViewModel:ObservableObject{
         self.userid = userid
     }
     
+    
+    //MARK: - 데이터 업데이트 메소드
     func updateData(data:memo){
         print(data)
         guard let trainerid = Firebase.Auth.auth().currentUser?.uid else{return}
@@ -61,6 +63,7 @@ class MemoCreateViewModel:ObservableObject{
         reference.document(data.uuid).setData(values)
     }
     
+    //MARK: - 데이터 재정의 메소드
     func disAppear(){
         self.meals = [
             meal(mealType: .first, foodList: []),

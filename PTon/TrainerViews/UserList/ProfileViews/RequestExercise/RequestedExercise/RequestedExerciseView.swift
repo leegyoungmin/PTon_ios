@@ -13,7 +13,7 @@ struct RequestedExerciseView: View {
     @StateObject var viewmodel:RequestedExerciseViewModel
     @State var selectedDate = Date()
     let fitnessCode:String
-    let exerciseType:[String] = ["Fitness","Aerobic","Back","Chest","Abs","Arm","Leg","Shoulder"]
+    let exerciseType:[String] = ["Fitness","Aerobic","Back","Chest","Arm","Leg","Shoulder","Abs"]
     var body: some View {
         VStack{
             DatePicker("날짜선택", selection: $selectedDate,displayedComponents: .date)
@@ -72,13 +72,39 @@ struct RequestedExerciseView: View {
     }
 }
 struct RequestedSectionView:View{
+    //MARK: - PROPERTIES
     @EnvironmentObject var viewmodel:RequestedExerciseViewModel
     let title:String
     let exercises:[requestedExercise]
+    
+    private func changeDescription(_ rowString:String) -> String{
+        var description:String = ""
+        
+        if rowString == "Aerobic"{
+            description = "유산소"
+        }else if rowString == "Back"{
+            description = "등"
+        }else if rowString == "Chest"{
+            description = "가슴"
+        }else if rowString == "Abs"{
+            description = "복근"
+        }else if rowString == "Arm"{
+            description = "팔"
+        }else if rowString == "Leg"{
+            description = "하체"
+        }else if rowString == "Shoulder"{
+            description = "어깨"
+        }else if rowString == "Fitness"{
+            description = "센터 운동"
+        }
+        
+        return description
+    }
+    
     var body: some View{
         if !exercises.isEmpty{
             Section {
-                RequestedListHeaderView(title: title)
+                RequestedListHeaderView(title: changeDescription(title))
                 
                 ForEach(exercises,id:\.self) { exercise in
                     if exercise.type == "Aerobic"{
@@ -88,6 +114,13 @@ struct RequestedSectionView:View{
                         RequestedExerciseAnAerobicCellView(exercise: exercise)
                             .environmentObject(self.viewmodel)
                     }
+                }
+            }
+        }else{
+            Section{
+                RequestedListHeaderView(title: changeDescription(title))
+                HStack{
+                    Text("\(changeDescription(title)) 파트에 저장된 운동이 없습니다.")
                 }
             }
         }

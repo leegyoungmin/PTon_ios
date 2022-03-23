@@ -36,6 +36,9 @@ struct PTONApp: App {
                         NaverThirdPartyLoginConnection.getSharedInstance().receiveAccessToken(url)
                     }
                 }
+                .onAppear {
+                    print(Firebase.Auth.auth().currentUser)
+                }
         }
     }
 }

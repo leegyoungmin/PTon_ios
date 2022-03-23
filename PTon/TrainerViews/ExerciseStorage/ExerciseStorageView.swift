@@ -19,22 +19,49 @@ struct ExerciseStorageView: View {
     var uid: String = Auth.auth().currentUser?.uid ?? "default"
     var part = ["Aerobic", "Back", "Chest", "Leg", "Arm", "Abs", "Shoulder"]
     
+    //MARK: - FUCTIONS
+    private func changeDescription(_ rowString:String) -> String{
+        var description:String = ""
+        
+        if rowString == "Aerobic"{
+            description = "유산소"
+        }else if rowString == "Back"{
+            description = "등"
+        }else if rowString == "Chest"{
+            description = "가슴"
+        }else if rowString == "Abs"{
+            description = "복근"
+        }else if rowString == "Arm"{
+            description = "팔"
+        }else if rowString == "Leg"{
+            description = "하체"
+        }else if rowString == "Shoulder"{
+            description = "어깨"
+        }else if rowString == "Fitness"{
+            description = "센터 운동"
+        }
+        
+        return description
+    }
     
     var body: some View {
         VStack{
             HStack{
                 Picker("", selection: $selection) {
-                    ForEach(0..<part.count){
-                        Text(part[$0])
+                    ForEach(part.indices,id:\.self){ index in
+                        Text(changeDescription(part[index]))
                     }
                 }
                 .onChange(of: selection) { newValue in
                     viewModel.StorageList.removeAll(keepingCapacity: true)
                     searchedText = ""
                 }
+                .padding(.leading,10)
+                
+                Divider()
                 
                 TextField("", text: $searchedText)
-                    .textFieldStyle(.roundedBorder)
+                
                 Button {
                     if searchedText.count > 1{
                         self.searching = true
@@ -52,19 +79,24 @@ struct ExerciseStorageView: View {
                     }
                 } label: {
                     Image(systemName: "magnifyingglass")
-                        .foregroundColor(.black)
-                        .font(.system(size: 30))
-                        .frame(width: 50, height: 50, alignment: .trailing)
+                        .font(.system(size: 25))
+                        .foregroundColor(.gray.opacity(0.2))
                 }
+                .padding(.trailing,10)
             }
+            .background(.white)
+            .cornerRadius(3)
             .padding(.horizontal)
+            .padding(.top)
             .alert(isPresented: $isPresentAlertView){
                 Alert(title: Text(""), message: Text("운동 명칭을 한자 이상 입력해주세요."),
                       dismissButton: .default(Text("확인")))
             }
+            .frame(height: 60, alignment: .center)
+            
             
             if self.viewModel.StorageList.count > 0{
-                List{
+                ScrollView(.vertical, showsIndicators: false){
                     ForEach(viewModel.StorageList.indices, id: \.self){ index in
                         
                         SelectionCell(item: viewModel.StorageList[index],
@@ -76,7 +108,9 @@ struct ExerciseStorageView: View {
                         .environmentObject(self.viewModel)
                     }
                 }
-                .listStyle(.plain)
+                .background(.white)
+                .padding()
+                .cornerRadius(3)
             }else if searching{
                 Spacer()
                 ProgressView()
@@ -88,6 +122,7 @@ struct ExerciseStorageView: View {
                 Spacer()
             }
         }
+        .background(backgroundColor.edgesIgnoringSafeArea(.all))
         .onTapGesture(count: 1) {
             UIApplication.shared.endEditing()
         }
@@ -115,62 +150,46 @@ struct SelectionCell: View{
     let index:Int
     let uid: String = Auth.auth().currentUser?.uid ?? "default"
     var body: some View{
-        
-        VStack {
-            Divider()
-            HStack{
-                HStack{
-                    AsyncImage(
-                        url: URL(string: item.exerciseURL),
-                        content: { image in
-                            image.resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: 50, maxHeight: 50)
-                        }, placeholder: {
-                            ProgressView()
-                                .frame(width: 50, height: 50, alignment: .center)
-                        })
-                    VStack(alignment:.leading){
-                        Text(String(item.exerciseName))
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .foregroundColor(.black)
-                            .lineLimit(1)
-                            .multilineTextAlignment(.leading)
-                            .minimumScaleFactor(0.5)
-                        
-                        Text(String(item.exerciseEngName))
-                            .font(.body)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                            .multilineTextAlignment(.leading)
-                            .foregroundColor(.gray)
-                    }
-                }
-                Spacer()
+        HStack{
+            URLImageView(urlString: item.exerciseURL, imageSize: 50, youtube: false)
+            
+            VStack(alignment:.leading,spacing: 5){
+                Text(String(item.exerciseName))
+                    .font(.body)
+                    .fontWeight(.bold)
+                    .foregroundColor(.black)
+                    .lineLimit(1)
+                    .multilineTextAlignment(.leading)
+                    .minimumScaleFactor(0.5)
                 
-                Button {
-                    if item.iscontains{
-                        viewModel.deleteExistingExercise(searchpart, item.exerciseName) {
-                            viewModel.StorageList[index].iscontains = false
-                        }
-                    }else{
-                        viewModel.setExerciseStorage(part: searchpart, item: item) {
-                            viewModel.StorageList[index].iscontains = true
-                        }
-                    }
-                } label: {
-                    Text(item.iscontains ? "담음":"담기")
-                        .padding(.horizontal)
-                        .padding(.vertical,5)
-                        .foregroundColor(item.iscontains ? .white:.black)
-                }
-                .disabled(storeExerciseCheck)
-                .buttonStyle(PlainButtonStyle())
-                .background(item.iscontains ? .gray:.purple)
-                .cornerRadius(25)
+                Text(String(item.exerciseEngName))
+                    .font(.body)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .multilineTextAlignment(.leading)
+                    .foregroundColor(.gray)
             }
+            
+            Spacer()
+            
+            Button {
+                if item.iscontains{
+                    viewModel.deleteExistingExercise(searchpart, item.exerciseName) {
+                        viewModel.StorageList[index].iscontains = false
+                    }
+                }else{
+                    viewModel.setExerciseStorage(part: searchpart, item: item) {
+                        viewModel.StorageList[index].iscontains = true
+                    }
+                }
+            } label: {
+                Image(systemName: item.iscontains ? "checkmark.circle":"circle")
+                    .foregroundColor(item.iscontains ? .gray:.accentColor)
+            }
+            .buttonStyle(PlainButtonStyle())
         }
+        .padding(.horizontal)
+        .padding(.vertical,5)
     }
 }
 @ViewBuilder

@@ -183,7 +183,7 @@ struct URLImageView:View{
     @ObservedObject var urlImageModel:UrlImageModel
     let imageSize:CGFloat
     let youtube:Bool
-    static let defaultImage = ProgressView()
+    static let defaultImage = Image("defaultImage")
     init(urlString:String?,imageSize:CGFloat,youtube:Bool){
         urlImageModel = UrlImageModel(urlString: urlString)
         self.imageSize = imageSize
@@ -207,8 +207,14 @@ struct URLImageView:View{
         }
         else{
             URLImageView.defaultImage
-                .progressViewStyle(.circular)
+                .resizable()
+                .scaledToFit()
                 .frame(width: imageSize, height: imageSize, alignment: .center)
+                .clipShape(Circle())
+                .background(
+                    Circle()
+                        .stroke(.gray)
+                )
         }
 
     }
