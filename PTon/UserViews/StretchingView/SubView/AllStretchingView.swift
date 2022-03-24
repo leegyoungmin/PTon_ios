@@ -10,22 +10,31 @@ import SwiftUI
 struct AllStretchingView: View {
     let stretchings:[Stretching] = Bundle.main.decode("Stretching.json")
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            ForEach(stretchings.indices,id:\.self) { index in
-                NavigationLink {
-                    YouTubeView(index: index,
-                                videoTitle: stretchings[index].title,
-                                videoExplain: stretchings[index].explain,
-                                videoId: stretchings[index].videoID,
-                                isDone: false,
-                                type: .all,
-                                selectedDate: .constant(Date()))
-                } label: {
-                    StretchingCellView(stretching: stretchings[index])
+        VStack{
+            ScrollView(.vertical, showsIndicators: false) {
+                ForEach(stretchings.indices,id:\.self) { index in
+                    NavigationLink {
+                        YouTubeView(index: index,
+                                    videoTitle: stretchings[index].title,
+                                    videoExplain: stretchings[index].explain,
+                                    videoId: stretchings[index].videoID,
+                                    isDone: false,
+                                    type: .all,
+                                    selectedDate: .constant(Date()))
+                    } label: {
+                        StretchingCellView(stretching: stretchings[index])
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
+            .background(.white)
+            .cornerRadius(3)
+            .padding(.horizontal,18)
+            .padding(.vertical,25)
+            .shadow(color: .gray.opacity(0.2), radius: 5)
         }
+        .background(backgroundColor)
+
         
     }
 }
@@ -34,31 +43,7 @@ struct StretchingCellView:View{
     let stretching:Stretching
     var body: some View{
         HStack{
-            AsyncImage(url: URL(string: "https://img.youtube.com/vi/\(stretching.videoID)/maxresdefault.jpg")) { phase in
-                
-                switch phase{
-                case .empty:
-                    VStack{
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                    }
-                    .frame(width: 100, height: 60, alignment: .center)
-                case .success(let image):
-                    image.resizable()
-                        .scaledToFit()
-                        .frame(width: 100, height: 60, alignment: .leading)
-                case .failure(_):
-                    Image(systemName: "xmark")
-                        .scaledToFit()
-                        .frame(width: 100, height: 60, alignment: .center)
-                @unknown default:
-                    VStack{
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                    }
-                    .frame(width: 100, height: 60, alignment: .center)
-                }
-            }
+            URLImageView(urlString: "https://img.youtube.com/vi/\(stretching.videoID)/maxresdefault.jpg", imageSize: 50, youtube: true)
             
             Divider()
             
@@ -72,10 +57,10 @@ struct StretchingCellView:View{
                     .fontWeight(.regular)
                     .lineLimit(2)
             }
-            
             Spacer()
         }
-        .padding(.horizontal)
+        .padding(.horizontal,20)
+        .padding(.vertical,10)
     }
 }
 

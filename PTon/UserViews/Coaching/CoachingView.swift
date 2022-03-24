@@ -35,6 +35,7 @@ struct CoachingView: View {
             
             VStack{
                 if exerciseType[selectedTab] == "Fitness"{
+                    
                     if viewModel.coachExerciseList.filter({$0.exerciseType == "Fitness"}).isEmpty{
                         nullTextView()
                     }else{

@@ -24,7 +24,8 @@ struct UserBaseView: View {
                 .onTapGesture {
                     selectedIndex = 0
                 }
-            JornalView()
+            JornalView(trainerId: UserBaseViewModel.trainerid,
+                       userId: UserBaseViewModel.userid)
                 .tabItem {
                     Label("일지", systemImage: "bookmark.fill")
                 }

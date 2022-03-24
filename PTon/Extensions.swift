@@ -12,6 +12,9 @@ import Firebase
 
 //Colors
 let backgroundColor = Color("Background")
+let pink = Color("pink")
+let sky = Color("skyblue")
+let yello = Color("myyellow")
 
 extension Bundle{
     func decode<T:Codable>(_ file:String)->T{
@@ -200,9 +203,14 @@ struct URLImageView:View{
             }else{
                 Image(uiImage: urlImageModel.image!)
                     .resizable()
-                    .scaledToFit()
                     .frame(width: imageSize, height: imageSize, alignment: .center)
-                    .cornerRadius(imageSize/2)
+                    .clipShape(
+                        Circle()
+                    )
+                    .background(
+                        Circle()
+                            .stroke(.gray)
+                    )
             }
         }
         else{
@@ -313,6 +321,19 @@ extension String{
             return true
         }else{
             return false
+        }
+    }
+}
+
+extension View{
+    func placeholder<Content:View>(
+        when shouldShow:Bool,
+        alignment: Alignment = .leading,
+        @ViewBuilder placeholder: ()->Content
+    ) -> some View{
+        ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1:0)
+            self
         }
     }
 }

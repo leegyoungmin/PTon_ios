@@ -31,10 +31,7 @@ class ChattingImageViewModel:ObservableObject{
                         print("error : Can't convert Image")
                         return
                     }
-                    
-
                 }
-                
             }
     }
 }
