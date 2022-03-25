@@ -38,21 +38,26 @@ struct MealImagePickerView:UIViewControllerRepresentable{
         }
         
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            
             let itemProvider = results.first?.itemProvider
-            
             if let itemProvider = itemProvider,
                itemProvider.canLoadObject(ofClass: UIImage.self){
-                itemProvider.loadObject(ofClass: UIImage.self) { (image,error) in
-                    guard let image = image as? UIImage,
-                          let data = image.jpegData(compressionQuality: 0.8) else{return}
-                    self.parent.image = image
+                itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
+                    guard let image = reading as? UIImage,error == nil else{return}
                     
+                    DispatchQueue.main.async {
+                        self?.parent.image = image
+                        self?.parent.isPresented = false
+                    }
                 }
+            }else{
+                self.parent.image = UIImage()
+                self.parent.isPresented = false
             }
             
-            parent.isPresented = false
         }
+        
+        
+        
     }
 }
 //MARK: - Meal Camera View
@@ -88,9 +93,14 @@ struct MealCameraView:UIViewControllerRepresentable{
                let data = image.jpegData(compressionQuality: 0.8){
                 self.parent.image = image
                 print(data.debugDescription)
+                parent.dismiss.callAsFunction()
             }
-            parent.dismiss.callAsFunction()
 
+        }
+        
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            self.parent.image = UIImage()
+            parent.dismiss.callAsFunction()
         }
     }
 }

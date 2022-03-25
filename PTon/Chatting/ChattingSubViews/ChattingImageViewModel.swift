@@ -20,7 +20,7 @@ class ChattingImageViewModel:ObservableObject{
         FirebaseStorage.Storage.storage().reference()
             .child("ChatsImage")
             .child(path)
-            .getData(maxSize: 15 * 1024 * 1024) { data, error in
+            .getData(maxSize: 512 * 1024 * 1024) { data, error in
                 if error != nil{
                     print("error : \(error.debugDescription)")
                     return

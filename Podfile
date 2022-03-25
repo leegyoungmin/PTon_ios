@@ -32,4 +32,6 @@ target 'PTon' do
   pod 'Firebase/InAppMessaging'
   pod 'Firebase/Firestore'
   pod 'FirebaseFirestoreSwift', '8.1.0-beta'
+  pod 'SDWebImageSwiftUI'
+  pod 'FirebaseUI'
 end

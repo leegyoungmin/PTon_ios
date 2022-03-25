@@ -27,6 +27,7 @@ class MealRecordViewModel:ObservableObject{
     init(_ trainerId:String,_ userId:String){
         self.trainerId = trainerId
         self.userId = userId
+        
     }
     
     var breakFirstMeals: [userMeal]{
@@ -87,40 +88,89 @@ class MealRecordViewModel:ObservableObject{
         
     }
     
-    func setImageData(_ date:Date,index:Int,image:UIImage,foodName:String){
+    func setImageData(_ date:Date,index:Int,image:UIImage,foodName:String,ImageType:ImageType,uuid:String,completion:@escaping()->Void){
         
         guard let data = image.jpegData(compressionQuality: 0.8) else{return}
+        print("Image data size ::: \(data)")
         let jpg = "food_\(trainerId)_\(userId)_\(index)_\(convertString(content: date, dateFormat: "yyyy-MM-dd HH:mm"))"
+        let updateRef = self.reference.child("FoodPhoto").child(self.trainerId).child(self.userId).child(convertString(content: date, dateFormat: "yyyy-MM-dd")).child(self.changeMealType(index))
         
-        
-        
-        storage.child(jpg)
-            .putData(data, metadata: nil) { metadata, error in
-                guard error == nil else{return}
-                
-                self.storage.child(jpg)
-                    .downloadURL { url, error in
-                        if error == nil{
-                            guard let url = url?.absoluteString else{return}
-                            
-                            let settingData:[String:Any] = [
-                                "url":url,
-                                "foodName":foodName
-                            ]
-                            
-                            self.reference
-                                .child("FoodPhoto")
-                                .child(self.trainerId)
-                                .child(self.userId)
-                                .child(convertString(content: date, dateFormat: "yyyy-MM-dd"))
-                                .child(self.changeMealType(index))
-                                .childByAutoId()
-                                .updateChildValues(settingData)
+        if ImageType == .upload{
+            storage.child(jpg)
+                .putData(data, metadata: nil) { metadata, error in
+                    guard error == nil else{return}
+                    
+                    self.storage.child(jpg)
+                        .downloadURL { url, error in
+                            if error == nil{
+                                guard let url = url?.absoluteString else{return}
+                                
+                                let settingData:[String:Any] = [
+                                    "url":url,
+                                    "foodName":foodName
+                                ]
+                                
+                                updateRef
+                                    .childByAutoId()
+                                    .updateChildValues(settingData) { error, ref in
+                                        completion()
+                                    }
+                                
+                            }
                         }
-                    }
-                
-                
-            }
+                }
+        }else if ImageType == .update{
+            let settingData:[String:Any] = [
+                "foodName":foodName
+            ]
+            updateRef
+                .child(uuid)
+                .updateChildValues(settingData) { error, ref in
+                    completion()
+                }
+        }
+        
+        
+        
+    }
+    
+    func updateImageData(_ date:Date, index:Int,image:UIImage,foodName:String,completion:@escaping()->Void){
+        guard let data = image.jpegData(compressionQuality: 0.8) else{return}
+        print("Image data size ::: \(data)")
+        let jpg = "food_\(trainerId)_\(userId)_\(index)_\(convertString(content: date, dateFormat: "yyyy-MM-dd HH:mm"))"
+    }
+    
+    func removeData(_ meal:userMeal,_ date:Date){
+        
+        guard let index = self.userMeals.firstIndex(where: {$0.uuid == meal.uuid}) else{return}
+        
+        self.userMeals.remove(at: index)
+        
+        let deleteRef = reference.child("FoodPhoto").child(trainerId).child(userId).child(convertString(content: date, dateFormat: "yyyy-MM-dd"))
+        
+        switch meal.mealtype{
+        case .first:
+            deleteRef
+                .child("breakfirst")
+                .child(meal.uuid)
+                .removeValue()
+        case .second:
+            deleteRef
+                .child("launch")
+                .child(meal.uuid)
+                .removeValue()
+        case .snack:
+            deleteRef
+                .child("snack")
+                .child(meal.uuid)
+                .removeValue()
+        case .third:
+            deleteRef
+                .child("dinner")
+                .child(meal.uuid)
+                .removeValue()
+            
+        }
     }
     
     func changeMealType(_ index:Int) -> String{
@@ -139,18 +189,6 @@ class MealRecordViewModel:ObservableObject{
         
         return mealString
     }
-    
-    func downloadImage(url:String)->String{
-        var returnString = ""
-        storage
-            .child(url)
-            .downloadURL { url, error in
-                guard let urlString = url?.absoluteString else{return}
-                returnString = urlString
-            }
-        
-        return returnString
-    }
 }
 
 class MealImageViewModel:ObservableObject{
@@ -165,7 +203,7 @@ class MealImageViewModel:ObservableObject{
         FirebaseStorage.Storage.storage().reference()
             .child("food")
             .child(path)
-            .getData(maxSize: 15 * 1024 * 1024) { data, error in
+            .getData(maxSize: 1 * 1024 * 1024) { data, error in
                 if error != nil{
                     print("error : \(error.debugDescription)")
                     return

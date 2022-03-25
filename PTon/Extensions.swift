@@ -337,3 +337,8 @@ extension View{
         }
     }
 }
+
+
+//func loadLocalImage(fileName:String)->UIImage?{
+//
+//}

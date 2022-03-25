@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18036F2027EC3F9300EFAE56 /* MealViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F1F27EC3F9300EFAE56 /* MealViews.swift */; };
+		18036F2227EC3FA600EFAE56 /* TodayExerciseview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2127EC3FA600EFAE56 /* TodayExerciseview.swift */; };
+		18036F2427EC3FC500EFAE56 /* GymExerciseViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2327EC3FC500EFAE56 /* GymExerciseViews.swift */; };
+		18036F2627EC3FDE00EFAE56 /* UserBaseInfoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2527EC3FDE00EFAE56 /* UserBaseInfoViews.swift */; };
+		18036F2827EC632100EFAE56 /* Model + MealRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2727EC632100EFAE56 /* Model + MealRecordViewModel.swift */; };
+		18036F2B27EC639A00EFAE56 /* UserMealRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2A27EC639A00EFAE56 /* UserMealRecordView.swift */; };
+		18036F2D27ECA40B00EFAE56 /* MealCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */; };
+		18036F2F27ECAA8F00EFAE56 /* MealEditViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */; };
 		18184FC427C3554B00BBEB5E /* KcalSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18184FC327C3554B00BBEB5E /* KcalSettingViewModel.swift */; };
 		181C3F8427D73B7F00F7721A /* Profile + ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */; };
 		181DE20827B10C10002F33B2 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181DE20727B10C10002F33B2 /* Error.swift */; };
@@ -96,6 +104,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		18036F1F27EC3F9300EFAE56 /* MealViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealViews.swift; sourceTree = "<group>"; };
+		18036F2127EC3FA600EFAE56 /* TodayExerciseview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayExerciseview.swift; sourceTree = "<group>"; };
+		18036F2327EC3FC500EFAE56 /* GymExerciseViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GymExerciseViews.swift; sourceTree = "<group>"; };
+		18036F2527EC3FDE00EFAE56 /* UserBaseInfoViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBaseInfoViews.swift; sourceTree = "<group>"; };
+		18036F2727EC632100EFAE56 /* Model + MealRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + MealRecordViewModel.swift"; sourceTree = "<group>"; };
+		18036F2A27EC639A00EFAE56 /* UserMealRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMealRecordView.swift; sourceTree = "<group>"; };
+		18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCameraView.swift; sourceTree = "<group>"; };
+		18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealEditViews.swift; sourceTree = "<group>"; };
 		18184FC327C3554B00BBEB5E /* KcalSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KcalSettingViewModel.swift; sourceTree = "<group>"; };
 		181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Profile + ProfileViewModel.swift"; sourceTree = "<group>"; };
 		181DE20727B10C10002F33B2 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
@@ -208,6 +224,29 @@
 				9F73355D6E95310370E24563 /* Pods-PTon.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		18036F1E27EC3F8500EFAE56 /* SubViews */ = {
+			isa = PBXGroup;
+			children = (
+				18036F2927EC638200EFAE56 /* MealRecordView */,
+				18036F2127EC3FA600EFAE56 /* TodayExerciseview.swift */,
+				18036F2327EC3FC500EFAE56 /* GymExerciseViews.swift */,
+				18036F2527EC3FDE00EFAE56 /* UserBaseInfoViews.swift */,
+			);
+			path = SubViews;
+			sourceTree = "<group>";
+		};
+		18036F2927EC638200EFAE56 /* MealRecordView */ = {
+			isa = PBXGroup;
+			children = (
+				18036F1F27EC3F9300EFAE56 /* MealViews.swift */,
+				18036F2727EC632100EFAE56 /* Model + MealRecordViewModel.swift */,
+				18036F2A27EC639A00EFAE56 /* UserMealRecordView.swift */,
+				18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */,
+				18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */,
+			);
+			path = MealRecordView;
 			sourceTree = "<group>";
 		};
 		181C3F8227D73B5500F7721A /* Profile */ = {
@@ -409,6 +448,7 @@
 		18394DDB27C626A70092C617 /* Journal */ = {
 			isa = PBXGroup;
 			children = (
+				18036F1E27EC3F8500EFAE56 /* SubViews */,
 				18394DDC27C626B70092C617 /* JornalView.swift */,
 			);
 			path = Journal;
@@ -638,6 +678,7 @@
 				189393FC27ABAF0100B4DB8A /* Frameworks */,
 				189393FD27ABAF0100B4DB8A /* Resources */,
 				F9E68C19C93D27AB83A5FDB1 /* [CP] Embed Pods Frameworks */,
+				59610F91ECA84544D8D4BB85 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -720,6 +761,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		59610F91ECA84544D8D4BB85 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PTon/Pods-PTon-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PTon/Pods-PTon-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PTon/Pods-PTon-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		F9E68C19C93D27AB83A5FDB1 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -748,9 +806,12 @@
 				1893940527ABAF0100B4DB8A /* LoginView.swift in Sources */,
 				1833091027BE3E0300890212 /* Model + RequestingExerciseViewModel.swift in Sources */,
 				186437AD27AE5C7A0045615E /* UserBodyInfoViewModel.swift in Sources */,
+				18036F2027EC3F9300EFAE56 /* MealViews.swift in Sources */,
 				18B7D94227E09C8A00400310 /* MemoListViewModel.swift in Sources */,
 				184F14F527B8FF7F00E5AF07 /* StretchingRequestView.swift in Sources */,
+				18036F2B27EC639A00EFAE56 /* UserMealRecordView.swift in Sources */,
 				188B2AAE27E70361004B9DA9 /* ChatRoomListView.swift in Sources */,
+				18036F2227EC3FA600EFAE56 /* TodayExerciseview.swift in Sources */,
 				185687E927B272EA00753D5B /* TrainerScheduleView.swift in Sources */,
 				18EE19DE27B38C3100CCA16D /* NavigationBarColor.swift in Sources */,
 				183E745C27AD20B00075B058 /* BaseInformationPage.swift in Sources */,
@@ -769,6 +830,7 @@
 				18EE19E727B3C1D300CCA16D /* ProfileView.swift in Sources */,
 				183E745327ACFC1F0075B058 /* Buttons.swift in Sources */,
 				18301DFA27CFB2BB00B77057 /* SurveyResultView.swift in Sources */,
+				18036F2D27ECA40B00EFAE56 /* MealCameraView.swift in Sources */,
 				1833091427BE3E2800890212 /* SubExerciseViews.swift in Sources */,
 				1833090727BE3C0B00890212 /* RequestedExerciseView.swift in Sources */,
 				1833C64D27BCECAC0096E3E4 /* AllStretchingView.swift in Sources */,
@@ -779,6 +841,7 @@
 				1893961727ABF3E700B4DB8A /* TrainerBaseView.swift in Sources */,
 				188B2AAB27E701B8004B9DA9 /* Model + ChattingViewModel.swift in Sources */,
 				1833C65227BD04DF0096E3E4 /* UserChattingViewModel.swift in Sources */,
+				18036F2827EC632100EFAE56 /* Model + MealRecordViewModel.swift in Sources */,
 				1833091B27BEC51700890212 /* YouTubeView.swift in Sources */,
 				1833C65427BD5B7B0096E3E4 /* Notification.swift in Sources */,
 				1847AE6627B4E3C700F484E6 /* Model+ChattingListViewModel.swift in Sources */,
@@ -788,6 +851,7 @@
 				188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */,
 				1833090D27BE3C6900890212 /* RequestedExerciseSubViews.swift in Sources */,
 				1833091227BE3E1700890212 /* RequestingExerciseView.swift in Sources */,
+				18036F2427EC3FC500EFAE56 /* GymExerciseViews.swift in Sources */,
 				1888F9BC27B6818600EBAA43 /* Extensions.swift in Sources */,
 				186F11E527B7D7EC004BED0F /* MemoListView.swift in Sources */,
 				1888E3B927E33C7200EC80A9 /* Model + DetailMemoViewModel.swift in Sources */,
@@ -795,6 +859,7 @@
 				1839D37527B94D7F00EDF216 /* Model + RecordingExerciseViewModel.swift in Sources */,
 				1833091727BE8ECA00890212 /* Model+RequestStretchingViewModel.swift in Sources */,
 				182DADB027B2815500D15C56 /* UserAddViewModel.swift in Sources */,
+				18036F2F27ECAA8F00EFAE56 /* MealEditViews.swift in Sources */,
 				187D876B27DB422400495576 /* TrainerScheduleCreateView.swift in Sources */,
 				18EE19EB27B417B500CCA16D /* MessageView.swift in Sources */,
 				1889B98927EAD64400C9AFE1 /* EditModeMemoView.swift in Sources */,
@@ -823,6 +888,7 @@
 				1839D37127B9495200EDF216 /* ExerciseRecordView.swift in Sources */,
 				185687EB27B2732100753D5B /* ExerciseStorageView.swift in Sources */,
 				182DADA927B277BC00D15C56 /* Model+TrainerUserListViewModel.swift in Sources */,
+				18036F2627EC3FDE00EFAE56 /* UserBaseInfoViews.swift in Sources */,
 				1893960927ABDE0200B4DB8A /* UserBaseView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

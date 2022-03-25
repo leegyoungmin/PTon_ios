@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import SDWebImageSwiftUI
 
 //TODO: - 데이터 로컬 저장 및 로컬에서 불러오기
 struct MealViews:View{
@@ -19,6 +20,9 @@ struct MealViews:View{
     @State var isShowCamera:Bool = false
     @State var isEditMode:Bool = false
     @State var uiImage = UIImage()
+    @State var imageType:ImageType = .upload
+    @State var uuid:String = ""
+    @State var typingMessage:String = ""
     
     var body: some View{
         VStack{
@@ -50,25 +54,26 @@ struct MealViews:View{
                 
                 if selectedTabs == 0{
                     ForEach(viewModel.breakFirstMeals,id:\.self) { meal in
-                        userMealCellView(meal: meal)
+                        userMealCellView(meal: meal, date: selectedDate, selectedTab: selectedTabs,uuid: $uuid, imageUrl: $uiImage, isActivate: $isEditMode,imageType: $imageType, typingText: $typingMessage)                            .environmentObject(self.viewModel)
+
                     }
                 }
                 
                 if selectedTabs == 1{
                     ForEach(viewModel.lauchMeals,id:\.self){ meal in
-                        userMealCellView(meal: meal)
+                        userMealCellView(meal: meal, date: selectedDate, selectedTab: selectedTabs,uuid: $uuid, imageUrl: $uiImage, isActivate: $isEditMode,imageType: $imageType, typingText: $typingMessage)                            .environmentObject(self.viewModel)
                     }
                 }
                 
                 if selectedTabs == 2{
                     ForEach(viewModel.snackMeals,id:\.self){ meal in
-                        userMealCellView(meal: meal)
+                        userMealCellView(meal: meal, date: selectedDate, selectedTab: selectedTabs,uuid: $uuid, imageUrl: $uiImage, isActivate: $isEditMode,imageType: $imageType, typingText: $typingMessage)                            .environmentObject(self.viewModel)
                     }
                 }
                 
                 if selectedTabs == 3{
                     ForEach(viewModel.dinnerMeals,id:\.self){ meal in
-                        userMealCellView(meal: meal)
+                        userMealCellView(meal: meal, date: selectedDate, selectedTab: selectedTabs,uuid: $uuid, imageUrl: $uiImage, isActivate: $isEditMode,imageType: $imageType, typingText: $typingMessage)                            .environmentObject(self.viewModel)
                     }
                 }
                 
@@ -77,7 +82,7 @@ struct MealViews:View{
                 } label: {
                     VStack(alignment: .center){
                         Image(systemName: "photo.fill.on.rectangle.fill")
-                            .font(.system(size: 30))
+                            .font(.system(size: 40))
                             .padding()
                             .overlay(
                                 Circle()
@@ -94,12 +99,12 @@ struct MealViews:View{
                 
             }
             .padding()
-            .onAppear {
+            .onChange(of: selectedDate) { newValue in
                 viewModel.fetchData(selectedDate)
             }
             
             NavigationLink(isActive: $isEditMode) {
-                MealEditViews(image: $uiImage,selectedDate: selectedDate, index: selectedTabs)
+                MealEditViews(ispresented:$isEditMode,image: $uiImage, uuid: $uuid, imageType: imageType, selectedDate: selectedDate, index: selectedTabs, typingText: typingMessage)
                     .environmentObject(self.viewModel)
             } label: {
                 EmptyView()
@@ -124,7 +129,11 @@ struct MealViews:View{
             }
         }
         .fullScreenCover(isPresented: $isShowCamera,onDismiss: {
-            self.isEditMode = true
+            if self.uiImage != UIImage(){
+                self.typingMessage = ""
+                self.imageType = .upload
+                self.isEditMode = true
+            }
         }) {
             if self.cameraView == .camera{
                 MealCameraView(image: $uiImage,sourceType: .camera)
@@ -133,22 +142,82 @@ struct MealViews:View{
                 MealImagePickerView(image: $uiImage,isPresented: $isShowCamera)
             }
         }
+        .onAppear {
+            viewModel.fetchData(selectedDate)
+        }
     }
 }
 
 struct userMealCellView:View{
+    @EnvironmentObject var viewModel:MealRecordViewModel
     let meal:userMeal
+    let date:Date
+    let selectedTab:Int
+    @Binding var uuid:String
+    @Binding var imageUrl:UIImage
+    @Binding var isActivate:Bool
+    @Binding var imageType:ImageType
+    @Binding var typingText:String
+    @State var isLongPressed:Bool = false
+    @State var data = Data()
     var body: some View{
-        VStack{
-            
-            URLImageView(urlString: meal.url, imageSize: 80, youtube: false)
-            
-            Text(meal.name)
-                .font(.footnote)
-                .foregroundColor(.gray.opacity(0.5))
-            
-            Text("180kcal")
+        
+        Button {} label: {
+            VStack(alignment:.center){
+                WebImage(url: URL(string: meal.url))
+                    .onSuccess(perform: { image, data, cacheType in
+                        guard let data = data else{return}
+                        self.data = data
+                    })
+                    .resizable()
+                    .indicator(.activity)
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 80, height: 80, alignment: .center)
+                    .transition(.fade(duration: 0.5))
+                    .clipShape(Circle())
+                    .background(
+                        Circle()
+                            .stroke(.gray.opacity(0.5),lineWidth: 2)
+                    )
+                    .scaleEffect(isLongPressed ? 1.2:1.0)
+                    .overlay(
+                        
+                        Button(action: {
+                            viewModel.removeData(meal, date)
+                        }, label: {
+                            Image(systemName: "xmark.app")
+                                .font(.system(size: 15))
+                                .opacity(isLongPressed ? 1:0)
+                                .offset(x:-10,y:-10)
+                                .foregroundColor(.red)
+                        })
+                        .buttonStyle(.plain)
+                        ,alignment: .topLeading
+                    )
+                    .padding(.bottom,isLongPressed ? 5:0)
+                    
+                
+                Text(meal.name)
+                    .font(.footnote)
+                    .foregroundColor(.gray.opacity(0.5))
+                
+                Text("180kcal")
+            }
+            .simultaneousGesture(LongPressGesture().onEnded({ _ in
+                withAnimation {
+                    isLongPressed.toggle()
+                }
+            }))
+            .simultaneousGesture(TapGesture().onEnded{
+                guard let image = UIImage.sd_image(with: self.data) else{return}
+                self.uuid = meal.uuid
+                self.imageType = .update
+                self.imageUrl = image
+                self.typingText = meal.name
+                self.isActivate = true
+            })
         }
+        
     }
 }
 
