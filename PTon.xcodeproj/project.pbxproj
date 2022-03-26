@@ -15,6 +15,11 @@
 		18036F2B27EC639A00EFAE56 /* UserMealRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2A27EC639A00EFAE56 /* UserMealRecordView.swift */; };
 		18036F2D27ECA40B00EFAE56 /* MealCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */; };
 		18036F2F27ECAA8F00EFAE56 /* MealEditViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */; };
+		18055AAA27EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AA927EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift */; };
+		18055AAC27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AAB27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift */; };
+		18055AAE27EEFA5200CB2AFE /* TodayExerciseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AAD27EEFA5200CB2AFE /* TodayExerciseRecordView.swift */; };
+		18055AB027EF065400CB2AFE /* Exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = 18055AAF27EF065400CB2AFE /* Exercises.json */; };
+		18055AB227EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AB127EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift */; };
 		18184FC427C3554B00BBEB5E /* KcalSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18184FC327C3554B00BBEB5E /* KcalSettingViewModel.swift */; };
 		181C3F8427D73B7F00F7721A /* Profile + ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */; };
 		181DE20827B10C10002F33B2 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181DE20727B10C10002F33B2 /* Error.swift */; };
@@ -112,6 +117,11 @@
 		18036F2A27EC639A00EFAE56 /* UserMealRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMealRecordView.swift; sourceTree = "<group>"; };
 		18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCameraView.swift; sourceTree = "<group>"; };
 		18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealEditViews.swift; sourceTree = "<group>"; };
+		18055AA927EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayAerobicExerciseRecordView.swift; sourceTree = "<group>"; };
+		18055AAB27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayAnAerobicExerciseRecordView.swift; sourceTree = "<group>"; };
+		18055AAD27EEFA5200CB2AFE /* TodayExerciseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayExerciseRecordView.swift; sourceTree = "<group>"; };
+		18055AAF27EF065400CB2AFE /* Exercises.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Exercises.json; sourceTree = "<group>"; };
+		18055AB127EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + TodayExerciseRecordViewModel.swift"; sourceTree = "<group>"; };
 		18184FC327C3554B00BBEB5E /* KcalSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KcalSettingViewModel.swift; sourceTree = "<group>"; };
 		181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Profile + ProfileViewModel.swift"; sourceTree = "<group>"; };
 		181DE20727B10C10002F33B2 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
@@ -229,8 +239,8 @@
 		18036F1E27EC3F8500EFAE56 /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
+				18055AA827EEF9A400CB2AFE /* TodayExerciseView */,
 				18036F2927EC638200EFAE56 /* MealRecordView */,
-				18036F2127EC3FA600EFAE56 /* TodayExerciseview.swift */,
 				18036F2327EC3FC500EFAE56 /* GymExerciseViews.swift */,
 				18036F2527EC3FDE00EFAE56 /* UserBaseInfoViews.swift */,
 			);
@@ -247,6 +257,18 @@
 				18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */,
 			);
 			path = MealRecordView;
+			sourceTree = "<group>";
+		};
+		18055AA827EEF9A400CB2AFE /* TodayExerciseView */ = {
+			isa = PBXGroup;
+			children = (
+				18036F2127EC3FA600EFAE56 /* TodayExerciseview.swift */,
+				18055AA927EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift */,
+				18055AAB27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift */,
+				18055AAD27EEFA5200CB2AFE /* TodayExerciseRecordView.swift */,
+				18055AB127EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift */,
+			);
+			path = TodayExerciseView;
 			sourceTree = "<group>";
 		};
 		181C3F8227D73B5500F7721A /* Profile */ = {
@@ -576,6 +598,7 @@
 				1893941327ABAF8B00B4DB8A /* Info.plist */,
 				1888F9AF27B6806600EBAA43 /* SurvayData.json */,
 				1888F9B527B6808100EBAA43 /* Stretching.json */,
+				18055AAF27EF065400CB2AFE /* Exercises.json */,
 			);
 			path = PTon;
 			sourceTree = "<group>";
@@ -731,6 +754,7 @@
 				18B7D94827E0A07200400310 /* .gitignore in Resources */,
 				1833C65A27BD798E0096E3E4 /* GoogleService-Info.plist in Resources */,
 				1888F9B027B6806600EBAA43 /* SurvayData.json in Resources */,
+				18055AB027EF065400CB2AFE /* Exercises.json in Resources */,
 				1888F9B627B6808100EBAA43 /* Stretching.json in Resources */,
 				1893961827ABF94F00B4DB8A /* Assets.xcassets in Resources */,
 			);
@@ -835,6 +859,7 @@
 				1833090727BE3C0B00890212 /* RequestedExerciseView.swift in Sources */,
 				1833C64D27BCECAC0096E3E4 /* AllStretchingView.swift in Sources */,
 				18236D3B27DB6BA300B0D619 /* TrainerCalendarView.swift in Sources */,
+				18055AB227EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift in Sources */,
 				1889B98D27EB78EB00C9AFE1 /* WeekDatePickerView.swift in Sources */,
 				185687F327B274CB00753D5B /* Model+TrainerBaseViewModel.swift in Sources */,
 				186ABA1627AD5ACA00E73F86 /* BodyInfoPage.swift in Sources */,
@@ -851,6 +876,7 @@
 				188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */,
 				1833090D27BE3C6900890212 /* RequestedExerciseSubViews.swift in Sources */,
 				1833091227BE3E1700890212 /* RequestingExerciseView.swift in Sources */,
+				18055AAA27EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift in Sources */,
 				18036F2427EC3FC500EFAE56 /* GymExerciseViews.swift in Sources */,
 				1888F9BC27B6818600EBAA43 /* Extensions.swift in Sources */,
 				186F11E527B7D7EC004BED0F /* MemoListView.swift in Sources */,
@@ -877,11 +903,13 @@
 				184F14FA27B9191700E5AF07 /* StretchingThumnailView.swift in Sources */,
 				183CE8CB27D89B0E00A8B789 /* ChattingImagePickerView.swift in Sources */,
 				183308EC27BE309400890212 /* Model+ExerciseStorageViewModel.swift in Sources */,
+				18055AAC27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift in Sources */,
 				186F11E727B7D821004BED0F /* MemoCreateView.swift in Sources */,
 				181DE20827B10C10002F33B2 /* Error.swift in Sources */,
 				186E832527BA79F400CBB25E /* MemberShipView.swift in Sources */,
 				1833090927BE3C2600890212 /* Model+RequestedExerciseViewModel.swift in Sources */,
 				1888F9AA27B67FF000EBAA43 /* SurveyView.swift in Sources */,
+				18055AAE27EEFA5200CB2AFE /* TodayExerciseRecordView.swift in Sources */,
 				18EE19E427B3C1A200CCA16D /* ChattingListView.swift in Sources */,
 				1833C65027BD00C00096E3E4 /* UserChattingView.swift in Sources */,
 				182DADAD27B27BB500D15C56 /* UserAddView.swift in Sources */,

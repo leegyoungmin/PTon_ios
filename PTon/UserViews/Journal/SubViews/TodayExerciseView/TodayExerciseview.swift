@@ -10,6 +10,7 @@ import SwiftUI
 
 struct TodayExerciseView:View{
     @Binding var selectedDate:Date
+    @StateObject var viewModel:TodayExerciseViewModel
     var body: some View{
         VStack{
             HStack{
@@ -18,16 +19,19 @@ struct TodayExerciseView:View{
                 
                 Spacer()
                 
-                Button {
-                    print(123)
+                NavigationLink {
+                    TodayExerciseRecordView(selectedDate: selectedDate)
+                        .environmentObject(self.viewModel)
                 } label: {
                     Label {
                         Image(systemName: "plus.circle.fill")
                     } icon: {
                         Text("운동 등록하기")
                     }
-
+                    .foregroundColor(.accentColor)
                 }
+                .buttonStyle(.plain)
+                
             }//:HSTACK
             .padding()
             
@@ -72,7 +76,7 @@ struct TodayExerciseView:View{
 
 struct TodayExerciseView_Previews:PreviewProvider{
     static var previews: some View{
-        TodayExerciseView(selectedDate: .constant(Date()))
+        TodayExerciseView(selectedDate: .constant(Date()), viewModel: TodayExerciseViewModel(userId: "kakao:1967260938"))
             .previewLayout(.sizeThatFits)
             .padding()
             .background(backgroundColor)

@@ -22,7 +22,7 @@ struct JornalView: View {
                     .padding(.horizontal)
                     .padding(.vertical,20)
                 
-                TodayExerciseView(selectedDate: $selectedDate)
+                TodayExerciseView(selectedDate: $selectedDate, viewModel: TodayExerciseViewModel(userId: self.userId))
                     .padding(.horizontal)
                     .padding(.bottom,20)
                 
