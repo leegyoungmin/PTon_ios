@@ -44,6 +44,7 @@ struct TodayExerciseRecordView: View {
 struct TodayExerciseRecordView_Previews: PreviewProvider {
     static var previews: some View {
         TodayExerciseRecordView(selectedDate: Date())
+            .environmentObject(TodayExerciseViewModel(userId: "kakao:1967260938"))
     }
 }
 

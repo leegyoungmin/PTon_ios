@@ -35,20 +35,28 @@ struct TodayExerciseView:View{
             }//:HSTACK
             .padding()
             
-            HStack{
-                Spacer()
-                Text("기록된 운동이 없습니다.")
-                Spacer()
+            VStack{
+                ForEach(viewModel.todayExercises,id:\.self) { exercise in
+                    
+                    if exercise.hydro == "Aerobic"{
+                        todayExerciseAerobicCellView(exercise: exercise)
+                    }
+                    
+                    if exercise.hydro == "AnAerobic"{
+                        todayExerciseAnAerobicCellView(exercise: exercise)
+                    }
+                
+                }
             }
-            .frame(width: 300, height: 150, alignment: .center)
+            .padding(.horizontal)
             
             Divider()
             
             HStack{
                 infoLabel("시간", "clock.badge.checkmark")
-                infoLabel("시간", "person.fill")
-                infoLabel("시간", "person.fill")
-                infoLabel("시간", "person.fill")
+                infoLabel("횔동량", "person.fill")
+                infoLabel("1회 수", "person.fill")
+                infoLabel("세트 수", "person.fill")
             }
             .padding(.vertical)
             
@@ -74,12 +82,96 @@ struct TodayExerciseView:View{
     }
 }
 
+struct todayExerciseAerobicCellView:View{
+    let exercise:todayExercise
+    var body: some View{
+        HStack{
+            VStack(alignment: .leading){
+                Text(exercise.exerciseName)
+                
+                HStack{
+                    
+                    //MARK: - Kcal 세팅하기
+                    
+                    Text("200Kcal")
+                    
+                    RoundedRectangle(cornerRadius: 2)
+                        .frame(width:3,height: 18)
+                        .foregroundColor(.black)
+                    
+                    Text(exercise.time ?? "0")+Text("분")
+                    
+                }
+            }
+            
+            Spacer()
+
+        }
+        .padding()
+        .background(backgroundColor)
+        .cornerRadius(10)
+        
+    }
+}
+
+struct todayExerciseAnAerobicCellView:View{
+    let exercise:todayExercise
+    var body: some View{
+        HStack{
+            VStack(alignment: .leading){
+                HStack{
+                    Text(exercise.exerciseName)
+                    Text(exercise.part ?? "")
+                        .font(.footnote)
+                        .foregroundColor(.accentColor)
+                        .padding(5)
+                        .background(.white)
+                        .cornerRadius(5)
+                }
+                
+                HStack{
+                    Text("200Kcal")
+                    
+                    RoundedRectangle(cornerRadius: 2)
+                        .frame(width:3,height: 18)
+                        .foregroundColor(.black)
+                    
+                    
+                    Text(exercise.weight ?? "")+Text("Kg")
+                    
+                    Text("x")
+                    
+                    Text(exercise.time ?? "")+Text("회")
+                    
+                    Text(exercise.sets ?? "")+Text("세트")
+                    
+                    
+                }
+
+                
+            }
+            
+            Spacer()
+
+        }
+        .padding()
+        .background(backgroundColor)
+        .cornerRadius(10)
+    }
+}
+
 struct TodayExerciseView_Previews:PreviewProvider{
     static var previews: some View{
-        TodayExerciseView(selectedDate: .constant(Date()), viewModel: TodayExerciseViewModel(userId: "kakao:1967260938"))
+//        TodayExerciseView(selectedDate: .constant(Date()), viewModel: TodayExerciseViewModel(userId: "kakao:1967260938"))
+//            .previewLayout(.sizeThatFits)
+//            .padding()
+//            .background(backgroundColor)
+        todayExerciseAnAerobicCellView(exercise: todayExercise(uuid: "example", exerciseName: "Eaxmple Exercise", hydro: "AnAerobic", time: "3", part: "Back", sets: "20", weight: "10"))
             .previewLayout(.sizeThatFits)
             .padding()
-            .background(backgroundColor)
+        todayExerciseAerobicCellView(exercise: todayExercise(uuid: "example", exerciseName: "Example Exercise ", hydro: "Aerobic", hour: "1", minute: "30", time: "90"))
+            .previewLayout(.sizeThatFits)
+            .padding()
             
     }
 }

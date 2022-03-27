@@ -32,8 +32,9 @@ struct AnAerobic:Codable{
 struct todayExercise:Hashable{
     var uuid:String
     var exerciseName:String
-    var hour:Int
-    var minute:Int
+    var hydro:String
+    var hour:String?
+    var minute:String?
     var time:String?
     var part:String?
     var sets:String?
@@ -48,6 +49,8 @@ class TodayExerciseViewModel:ObservableObject{
     
     init(userId:String){
         self.userId = userId
+        
+        fetchData(Date())
     }
     
     
@@ -57,6 +60,39 @@ class TodayExerciseViewModel:ObservableObject{
             .child(userId)
             .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
             .observeSingleEvent(of: .value) { snapshot in
+                
+                for child in snapshot.children{
+                    let childSnapshot = child as! DataSnapshot
+                    let uuid = childSnapshot.key
+                    
+                    guard let values = childSnapshot.value as? [String:Any],
+                          let exercisePart = values["Hydro"] as? String,
+                          let exerciseName = values["Exercise"] as? String else{return}
+                    
+                    
+                    if exercisePart == "Aerobic"{
+                        guard let hour = values["Hour"] as? String,
+                              let minute = values["Minute"] as? String,
+                              let time = values["Time"] as? Int else {return}
+                        
+                        
+                        let currentExercise = todayExercise(uuid: uuid, exerciseName: exerciseName, hydro: exercisePart, hour: hour, minute: minute,time: String(time))
+                        self.todayExercises.append(currentExercise)
+                        
+                    }else if exercisePart == "AnAerobic"{
+                        guard let minute = values["Minute"] as? String,
+                              let part = values["Part"] as? String,
+                              let set = values["Sets"] as? String,
+                              let time = values["Time"] as? String,
+                              let weight = values["Weight"] as? String else{return}
+                        
+                        let currentExercise = todayExercise(uuid: uuid, exerciseName: exerciseName, hydro: exercisePart,minute: minute, time: time, part: part, sets: set, weight: weight)
+                        self.todayExercises.append(currentExercise)
+                    }
+                    
+                    print(childSnapshot)
+                }
+                
                 print("Data read ::: \(snapshot)")
             }
     }

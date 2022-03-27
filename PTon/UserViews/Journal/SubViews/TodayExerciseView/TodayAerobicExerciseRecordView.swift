@@ -99,7 +99,7 @@ struct TodayAerobicExeciseRecordView:View{
                 let minute = minuteText.isEmpty ? "0":minuteText
                 
                 let data:[String:Any] = [
-                    "Exercisename":exercises[selectedIndex],
+                    "Exercise":exercises[selectedIndex],
                     "Hour":hour,
                     "Minute":minute,
                     "Time":viewModel.convertTime(hour, minute),

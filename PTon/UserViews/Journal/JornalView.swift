@@ -13,26 +13,32 @@ struct JornalView: View {
     let userId:String
     var body: some View {
         VStack{
+            //Date picker view
             weekDatePickerView(currentDate: $selectedDate)
                 .padding(.horizontal)
                 .padding(.bottom,10)
             
+            //Component Views
             ScrollView(.vertical, showsIndicators: false){
                 MealViews(viewModel: MealRecordViewModel(self.trainerId, self.userId), selectedDate: $selectedDate)
                     .padding(.horizontal)
                     .padding(.vertical,20)
+                    .tag(1)
                 
                 TodayExerciseView(selectedDate: $selectedDate, viewModel: TodayExerciseViewModel(userId: self.userId))
                     .padding(.horizontal)
                     .padding(.bottom,20)
+                    .tag(2)
                 
                 GymExerciseViews(selectedDate: $selectedDate)
                     .padding(.horizontal)
                     .padding(.bottom,20)
+                    .tag(3)
                 
                 UserBaseInfoView(selectedDate: $selectedDate)
                     .padding(.horizontal)
                     .padding(.bottom,20)
+                    .tag(4)
                 
             }
             .background(backgroundColor)

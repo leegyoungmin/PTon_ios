@@ -230,6 +230,7 @@ struct TodayAnAerobicExerciseRecordView:View{
             .background(.white)
             .cornerRadius(5)
             .shadow(color: .gray.opacity(0.5), radius: 3)
+            .padding(.top)
             
             
             Spacer()
@@ -267,8 +268,6 @@ struct TodayAnAerobicExerciseRecordView:View{
         }//:VSTACK
         .padding(.horizontal)
         .background(backgroundColor.edgesIgnoringSafeArea(.all))
-        
-        
         
     }
 }
