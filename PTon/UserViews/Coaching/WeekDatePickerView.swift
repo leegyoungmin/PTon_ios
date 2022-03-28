@@ -131,7 +131,7 @@ extension Date{
         let range = calendar.range(of: .weekday, in: .month, for: startDate)!
 
         return range.compactMap{ day -> Date in
-            return calendar.date(byAdding: .day, value: day-4, to: startDate)!
+            return calendar.date(byAdding: .day, value: day, to: startDate)!
         }
     }
 }

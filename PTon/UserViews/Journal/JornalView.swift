@@ -25,15 +25,11 @@ struct JornalView: View {
                     .padding(.vertical,20)
                     .tag(1)
                 
+                //TODO: - Kcal Setting
                 TodayExerciseView(selectedDate: $selectedDate, viewModel: TodayExerciseViewModel(userId: self.userId))
                     .padding(.horizontal)
                     .padding(.bottom,20)
                     .tag(2)
-                
-                GymExerciseViews(selectedDate: $selectedDate)
-                    .padding(.horizontal)
-                    .padding(.bottom,20)
-                    .tag(3)
                 
                 UserBaseInfoView(selectedDate: $selectedDate)
                     .padding(.horizontal)

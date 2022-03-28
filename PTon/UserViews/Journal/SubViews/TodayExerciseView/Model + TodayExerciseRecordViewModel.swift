@@ -55,6 +55,7 @@ class TodayExerciseViewModel:ObservableObject{
     
     
     func fetchData(_ selectedDate:Date){
+        self.todayExercises.removeAll(keepingCapacity: true)
         reference
             .child("ExerciseRecord")
             .child(userId)
@@ -98,13 +99,39 @@ class TodayExerciseViewModel:ObservableObject{
     }
     
     func uploadData(_ selectedData:Date,data:[String:Any]){
-        
-        
         reference
             .child("ExerciseRecord")
             .child(userId)
             .child(convertString(content: selectedData, dateFormat: "yyyy-MM-dd"))
             .childByAutoId()
             .setValue(data)
+    }
+    
+    func updateData(_ selectedDate:Date,data:[String:Any],uuid:String){
+        reference
+            .child("ExerciseRecord")
+            .child(userId)
+            .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+            .child(uuid)
+            .updateChildValues(data)
+    }
+    
+    func removeData(_ selectedDate:Date,uuid:String){
+        reference
+            .child("ExerciseRecord")
+            .child(userId)
+            .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+            .child(uuid)
+            .removeValue()
+    }
+    
+    func getAllTime()->Int{
+        var allTime:Int = 0
+        
+        self.todayExercises.filter({$0.hydro == "Aerobic"}).forEach{
+            allTime += Int($0.time ?? "0") ?? 0
+        }
+        
+        return allTime
     }
 }

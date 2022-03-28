@@ -88,6 +88,7 @@
 		188B2AAE27E70361004B9DA9 /* ChatRoomListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */; };
 		188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAF27E70AE2004B9DA9 /* ChatView.swift */; };
 		188B2AB227E854AC004B9DA9 /* ChattingInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */; };
+		188C452427F1A76300C2180A /* TodayExerciseModifyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188C452327F1A76300C2180A /* TodayExerciseModifyView.swift */; };
 		1893940527ABAF0100B4DB8A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893940427ABAF0100B4DB8A /* LoginView.swift */; };
 		1893960927ABDE0200B4DB8A /* UserBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893960827ABDE0200B4DB8A /* UserBaseView.swift */; };
 		1893961727ABF3E700B4DB8A /* TrainerBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893961627ABF3E700B4DB8A /* TrainerBaseView.swift */; };
@@ -191,6 +192,7 @@
 		188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListView.swift; sourceTree = "<group>"; };
 		188B2AAF27E70AE2004B9DA9 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingInputViewModel.swift; sourceTree = "<group>"; };
+		188C452327F1A76300C2180A /* TodayExerciseModifyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayExerciseModifyView.swift; sourceTree = "<group>"; };
 		1893940427ABAF0100B4DB8A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1893940627ABAF0200B4DB8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1893941327ABAF8B00B4DB8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -267,6 +269,7 @@
 				18055AAB27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift */,
 				18055AAD27EEFA5200CB2AFE /* TodayExerciseRecordView.swift */,
 				18055AB127EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift */,
+				188C452327F1A76300C2180A /* TodayExerciseModifyView.swift */,
 			);
 			path = TodayExerciseView;
 			sourceTree = "<group>";
@@ -839,6 +842,7 @@
 				185687E927B272EA00753D5B /* TrainerScheduleView.swift in Sources */,
 				18EE19DE27B38C3100CCA16D /* NavigationBarColor.swift in Sources */,
 				183E745C27AD20B00075B058 /* BaseInformationPage.swift in Sources */,
+				188C452427F1A76300C2180A /* TodayExerciseModifyView.swift in Sources */,
 				1893961B27ABF9CD00B4DB8A /* Model+LoginViewModel.swift in Sources */,
 				1833091927BEC44000890212 /* VideoPlayer.swift in Sources */,
 				184F14FC27B91CD500E5AF07 /* Model + StretchingViewModel.swift in Sources */,

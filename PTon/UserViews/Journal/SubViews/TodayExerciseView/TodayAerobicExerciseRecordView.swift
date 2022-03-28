@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AlertToast
 
 struct TodayAerobicExeciseRecordView:View{
     //MARK: - PROPERTIES
@@ -16,8 +17,12 @@ struct TodayAerobicExeciseRecordView:View{
     @State var hourText:String = ""
     @State var minuteText:String = ""
     @State var selectedIndex = 0
+    @State var errorMessage:String = ""
+    @State var isShowErrorView:Bool = false
+    @State var isShowSuccessView:Bool = false
     
     //MARK: - VIEWS
+    //TODO: - ontap Gesture 추가하기(end Editing)
     var body: some View{
         VStack{
             
@@ -98,20 +103,29 @@ struct TodayAerobicExeciseRecordView:View{
                 let hour = hourText.isEmpty ? "0":hourText
                 let minute = minuteText.isEmpty ? "0":minuteText
                 
-                let data:[String:Any] = [
-                    "Exercise":exercises[selectedIndex],
-                    "Hour":hour,
-                    "Minute":minute,
-                    "Time":viewModel.convertTime(hour, minute),
-                    "Hydro":"Aerobic"
-                ]
+                UIApplication.shared.endEditing()
                 
-                viewModel.uploadData(selectedDate, data: data)
+                if hour == "0" && minute == "0"{
+                    errorMessage = "시간과 분중 적어도 하나 입력해주세요."
+                    isShowErrorView = true
+                }else{
+                    let data:[String:Any] = [
+                        "Exercise":exercises[selectedIndex],
+                        "Hour":hour,
+                        "Minute":minute,
+                        "Time":viewModel.convertTime(hour, minute),
+                        "Hydro":"Aerobic"
+                    ]
+                    
+                    viewModel.uploadData(selectedDate, data: data)
+                    self.isShowSuccessView = true
+                }
+                
             } label: {
                 HStack{
                     Spacer()
                     
-                    Text("추가하기")
+                    Text("수정하기")
                         .foregroundColor(.white)
                     
                     Spacer()
@@ -122,9 +136,16 @@ struct TodayAerobicExeciseRecordView:View{
             .padding(10)
             .background(Color.accentColor)
             .cornerRadius(10)
+            .padding(.bottom)
             
         }//:VSTACK
         .padding(.horizontal)
+        .toast(isPresenting: $isShowErrorView) {
+            AlertToast(displayMode: .banner(.pop), type: .error(.red),title: errorMessage)
+        }
+        .toast(isPresenting: $isShowSuccessView) {
+            AlertToast(displayMode: .banner(.pop), type: .complete(.accentColor),title: "저장 완료",style: .style(titleColor: .accentColor))
+        }
     }
 }
 

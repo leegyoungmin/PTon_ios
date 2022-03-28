@@ -36,6 +36,9 @@ struct TodayExerciseRecordView: View {
                     .environmentObject(self.viewModel)
             }
         }//:VSTACK
+        .onDisappear {
+            viewModel.fetchData(selectedDate)
+        }
 
     }
 }
