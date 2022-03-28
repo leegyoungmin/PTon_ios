@@ -117,15 +117,16 @@ struct TodayAerobicExeciseRecordView:View{
                         "Hydro":"Aerobic"
                     ]
                     
-                    viewModel.uploadData(selectedDate, data: data)
-                    self.isShowSuccessView = true
+                    viewModel.uploadData(selectedDate, "0", "0", "0", "0", data: data) { isSuccess in
+                        self.isShowSuccessView = true
+                    }
                 }
                 
             } label: {
                 HStack{
                     Spacer()
                     
-                    Text("수정하기")
+                    Text("저장하기")
                         .foregroundColor(.white)
                     
                     Spacer()

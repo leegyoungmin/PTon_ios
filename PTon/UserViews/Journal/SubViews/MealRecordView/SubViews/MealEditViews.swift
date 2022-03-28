@@ -86,8 +86,3 @@ struct MealEditViews:View{
     }
 }
 
-//struct MealEditView_Previews:PreviewProvider{
-//    static var previews: some View{
-//        MealEditViews(image: .constant(UIImage(named: "defaultImage")!), selectedDate: Date(), index: 0)
-//    }
-//}

@@ -93,31 +93,41 @@ struct TodayExerciseView:View{
             .padding()
             
             VStack{
-                ForEach(viewModel.todayExercises.indices,id:\.self) { index in
+                if viewModel.todayExercises.isEmpty{
+                    Spacer()
                     
-                    let currentExercisePart = viewModel.todayExercises[index].hydro
-                    
-                    if currentExercisePart == "Aerobic"{
-                        todayExerciseAerobicCellView(selectedDate:selectedDate,
-                                                     exercise: viewModel.todayExercises[index],
-                                                     isshowNavigationView: $isShowAerobicEditView,
-                                                     parentIndex: $selectedIndex,
-                                                     selfIndex: index
-                        )
-                        .environmentObject(self.viewModel)
+                    Text("아직 등록된 운동이 없습니다.")
+                    Spacer()
+                }else{
+                    ForEach(viewModel.todayExercises.indices,id:\.self) { index in
+                        
+                        let currentExercisePart = viewModel.todayExercises[index].hydro
+                        
+                        if currentExercisePart == "Aerobic"{
+                            todayExerciseAerobicCellView(selectedDate:selectedDate,
+                                                         exercise: viewModel.todayExercises[index],
+                                                         isshowNavigationView: $isShowAerobicEditView,
+                                                         parentIndex: $selectedIndex,
+                                                         selfIndex: index
+                            )
+                            .environmentObject(self.viewModel)
+                        }
+                        
+                        if currentExercisePart == "AnAerobic"{
+                            todayExerciseAnAerobicCellView(selectedDate: selectedDate,
+                                                           exercise: viewModel.todayExercises[index],
+                                                           isshowNavigationView: $isShowAnAerobicEditView,
+                                                           parentIndex: $selectedIndex, selfIndex: index)
+                            .environmentObject(self.viewModel)
+                        }
+                        
                     }
-                    
-                    if currentExercisePart == "AnAerobic"{
-                        todayExerciseAnAerobicCellView(selectedDate: selectedDate,
-                                                       exercise: viewModel.todayExercises[index],
-                                                       isshowNavigationView: $isShowAnAerobicEditView,
-                                                       parentIndex: $selectedIndex, selfIndex: index)
-                        .environmentObject(self.viewModel)
-                    }
-                    
                 }
+                
+
             }
             .padding(.horizontal)
+            .frame(minHeight:200)
             
             Divider()
             
@@ -167,8 +177,8 @@ struct TodayExerciseView:View{
         .background(.white)
         .cornerRadius(5)
         .shadow(color: .gray.opacity(0.5), radius: 3)
-        .onChange(of: selectedIndex) { newValue in
-            print("Selected Index change ::: \(newValue)")
+        .onChange(of: selectedDate) { newValue in
+            viewModel.fetchData(newValue)
         }
     }
     

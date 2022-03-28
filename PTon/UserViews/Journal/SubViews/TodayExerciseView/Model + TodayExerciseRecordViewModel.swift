@@ -44,6 +44,7 @@ struct todayExercise:Hashable{
 //MARK: - VIEWMODEL
 class TodayExerciseViewModel:ObservableObject{
     @Published var todayExercises:[todayExercise] = []
+    @Published var errorDescription:String = ""
     let userId:String
     let reference = Firebase.Database.database().reference()
     
@@ -98,13 +99,31 @@ class TodayExerciseViewModel:ObservableObject{
             }
     }
     
-    func uploadData(_ selectedData:Date,data:[String:Any]){
-        reference
-            .child("ExerciseRecord")
-            .child(userId)
-            .child(convertString(content: selectedData, dateFormat: "yyyy-MM-dd"))
-            .childByAutoId()
-            .setValue(data)
+    func uploadData(_ selectedData:Date,_ minute:String,_ sets:String,_ number:String,_ weight:String,data:[String:Any],completion:@escaping(Bool)->Void){
+        
+        if minute.isEmpty{
+            self.errorDescription = "시간을 입력해주세요."
+            completion(false)
+        }else if weight.isEmpty{
+            self.errorDescription = "무게를 입력해주세요."
+            completion(false)
+        }else if sets.isEmpty{
+            self.errorDescription = "세트수를 입력해주세요."
+            completion(false)
+        }else if number.isEmpty{
+            self.errorDescription = "횟수를 입력해주세요."
+            completion(false)
+        }else{
+            reference
+                .child("ExerciseRecord")
+                .child(userId)
+                .child(convertString(content: selectedData, dateFormat: "yyyy-MM-dd"))
+                .childByAutoId()
+                .setValue(data) { error, _ in
+                    completion(true)
+                }
+        }
+        
     }
     
     func updateData(_ selectedDate:Date,data:[String:Any],uuid:String){

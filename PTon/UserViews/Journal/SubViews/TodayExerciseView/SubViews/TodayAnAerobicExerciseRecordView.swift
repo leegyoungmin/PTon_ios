@@ -92,60 +92,14 @@ struct TodayAnAerobicExerciseRecordView:View{
                     .padding(.horizontal)
                     .frame(height:50)
                 }
-
                 
-                Group{
-                    Divider()
-                    
-                    HStack{
-                        Text("운동 시간")
-                        Spacer()
-                        
-                        VStack(alignment: .center,spacing:0){
-                            TextField("", text: $minuteText)
-                                .frame(width: 40, alignment: .center)
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(.accentColor)
-                            
-                            Text("Min")
-                                .font(.footnote)
-                                .foregroundColor(.gray)
-                        }
-                        .padding(5)
-                        .background(
-                            Circle()
-                                .foregroundColor(Color("Background"))
-                        )
-                    }
-                    .padding(.horizontal)
-                }
+                //MINUTE
+                makeElementView("운동 시간", $minuteText, "Min")
+                
+                //WEIGHT
+                makeElementView("운동 무게", $weightText, "Kg")
 
-                Group{
-                    Divider()
-                    
-                    HStack{
-                        Text("운동 무게")
-                        Spacer()
-                        
-                        VStack(alignment: .center,spacing:0){
-                            TextField("", text: $weightText)
-                                .frame(width: 40, alignment: .center)
-                                .multilineTextAlignment(.center)
-                                .foregroundColor(.accentColor)
-                            
-                            Text("Kg")
-                                .font(.footnote)
-                                .foregroundColor(.gray)
-                        }
-                        .padding(5)
-                        .background(
-                            Circle()
-                                .foregroundColor(Color("Background"))
-                        )
-                    }
-                    .padding(.horizontal)
-                }
-
+                //SET & NUMBER
                 Group{
                     Divider()
                     
@@ -204,36 +158,23 @@ struct TodayAnAerobicExerciseRecordView:View{
                 let exercisePart = AnAerobic.CodingKeys.allCases[selectedPart].stringValue
                 let exercise = selectedExercises()[selectedExercise]
                 
+                UIApplication.shared.endEditing()
+                let data:[String:Any] = [
+                    "Exercise":exercise,
+                    "Part":exercisePart,
+                    "Hydro":"AnAerobic",
+                    "Sets":setText,
+                    "Time":numText,
+                    "Weight":weightText,
+                    "Minute":minuteText
+                ]
                 
-                if isEmpty(minuteText){
-                    alertText = "시간을 입력해주세요."
-                    isShowToastView = true
-                }else if isEmpty(weightText){
-                    alertText = "무게를 입력해주세요."
-                    isShowToastView = true
-                    
-                }else if isEmpty(setText){
-                    alertText = "세트수를 입력해주세요."
-                    isShowToastView = true
-                    
-                }else if isEmpty(numText){
-                    alertText = "횟수를 입력해주세요."
-                    isShowToastView = true
-                    
-                }else{
-                    UIApplication.shared.endEditing()
-                    let data:[String:Any] = [
-                        "Exercise":exercise,
-                        "Part":exercisePart,
-                        "Hydro":"AnAerobic",
-                        "Sets":setText,
-                        "Time":numText,
-                        "Weight":weightText,
-                        "Minute":minuteText
-                    ]
-                    
-                    viewModel.uploadData(selectedDate, data: data)
-                    successToastView = true
+                viewModel.uploadData(selectedDate, minuteText, setText, numText, weightText, data: data) { isSuccess in
+                    if isSuccess{
+                        successToastView = true
+                    }else{
+                        isShowToastView =  true
+                    }
                 }
             } label: {
                 HStack{
@@ -254,29 +195,39 @@ struct TodayAnAerobicExerciseRecordView:View{
         }//:VSTACK
         .padding(.horizontal)
         .background(backgroundColor.edgesIgnoringSafeArea(.all))
-        .toast(isPresented: $isShowToastView) {
-            ToastView {
-                VStack{
-                    Text(alertText)
-                        .padding(.bottom)
-                    
-                    Button {
-                        isShowToastView = false
-                    } label: {
-                        Text("확인")
-                            .bold()
-                            .foregroundColor(.white)
-                            .padding(.horizontal,12)
-                            .padding(.vertical, 5)
-                            .background(Color.accentColor)
-                            .cornerRadius(8.0)
-                    }
-
-                }
-            }
-        }
+        .toast(isPresenting: $isShowToastView, alert: {
+            AlertToast(displayMode: .banner(.pop), type: .error(.red),title: viewModel.errorDescription)
+        })
         .toast(isPresenting: $successToastView) {
             AlertToast(displayMode: .banner(.pop), type: .complete(.accentColor),title: "저장 완료",style: .style(titleColor: .accentColor))
+        }
+    }
+    @ViewBuilder
+    func makeElementView(_ title:String,_ dataString:Binding<String>,_ unit:String) -> some View{
+        Group{
+            Divider()
+            
+            HStack{
+                Text(title)
+                Spacer()
+                
+                VStack(alignment: .center,spacing:0){
+                    TextField("", text: dataString)
+                        .frame(width: 40, alignment: .center)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.accentColor)
+                    
+                    Text(unit)
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                }
+                .padding(5)
+                .background(
+                    Circle()
+                        .foregroundColor(Color("Background"))
+                )
+            }
+            .padding(.horizontal)
         }
     }
 }

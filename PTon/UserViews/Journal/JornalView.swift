@@ -31,7 +31,7 @@ struct JornalView: View {
                     .padding(.bottom,20)
                     .tag(2)
                 
-                UserBaseInfoView(selectedDate: $selectedDate)
+                UserBaseInfoView(viewModel: UserBaseInfoViewModel(self.userId),selectedDate: $selectedDate)
                     .padding(.horizontal)
                     .padding(.bottom,20)
                     .tag(4)

@@ -14,75 +14,165 @@ struct HomeView: View {
     var body: some View {
         
         ScrollView(.vertical, showsIndicators: false){
-            VStack{
-                
-                NavigationLink {
-                    MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.trainerid, userid: viewmodel.userid, userProfile: viewmodel.imageUrl),
-                                 userName: viewmodel.username, trainerId: viewmodel.trainerid, trainerName: "트레이너")
-                } label: {
-                    Text("메모로")
-                }
-                .buttonStyle(.plain)
-
-                
-                
-                UserProfileCardView()
-                    .environmentObject(self.viewmodel)
-                    .padding()
-                    .onTapGesture {
-                        self.isPresentProfile = true
-                    }
-                
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack{
-                        ForEach(1..<4) { item in
-                            VStack{
-                                Text("Example \(item)")
-                                
-                                Text("Example Chart \(item)")
-                            }
-                            .frame(width: 150, height: 150, alignment: .center)
-                            .background(.purple)
-                            .cornerRadius(20)
-                        }
-                    }
-                }
-                .padding()
-                
-                Text("example Pie Chart")
-                    .frame(width: 350, height: 350, alignment: .center)
-                    .background(.gray)
-                    .cornerRadius(20)
+            VStack(spacing:10){
                 HStack{
-                    VStack(alignment:.leading){
-                        Text("회원권 이름")
-                            .font(.title3)
-                            .fontWeight(.heavy)
-                        Text("회원권 기간")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                        Text("회원권 횟수")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                        Text("남은 횟수")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
+                    Text("\(viewmodel.username)님")
+                        .font(.title)
+                        .fontWeight(.semibold)
+                    
+                    Spacer()
+                    
+                    Button {
+                        print(123)
+                    } label: {
+                        Image(systemName: "chevron.right.circle.fill")
+                            .font(.title)
                     }
+
+                }
+                .padding(.top,20)
+                
+                HStack{
+                    Text("트레이너와 체질 설문조사를 완료하세요.")
+                        .font(.system(size: 18))
+                        .fontWeight(.light)
                     
                     Spacer()
                 }
+                
+                //TODO: 그래프 생성
+                RoundedRectangle(cornerRadius: 20)
+                .fill(.white)
+                .frame(height:200)
                 .padding()
-                .background(.purple)
-                .cornerRadius(20)
+                .background(.white)
+                .cornerRadius(5)
+                .shadow(color: .gray.opacity(0.2), radius: 5)
+                
+                
+                VStack{
+                    HStack{
+                        Image("defaultImage")
+                            .resizable()
+                            .frame(width: 25, height: 25, alignment: .center)
+                            .padding(10)
+                            .background(pink)
+                            .cornerRadius(5)
+                        
+                        Text("몸무게")
+                            .font(.title3)
+                            .fontWeight(.light)
+                        
+                        Spacer()
+                        
+                        Text("48Kg")
+                            .foregroundColor(.accentColor)
+                    }
+                    
+                    Divider()
+                }
+                
+                //TODO: 체지방량 생성
+                VStack{
+                    HStack{
+                        Image("defaultImage")
+                            .resizable()
+                            .frame(width: 25, height: 25, alignment: .center)
+                            .padding(10)
+                            .background(sky)
+                            .cornerRadius(5)
+                        
+                        Text("몸무게")
+                            .font(.title3)
+                            .fontWeight(.light)
+                        
+                        Spacer()
+                        
+                        Text("48Kg")
+                            .foregroundColor(.accentColor)
+                    }
+                    
+                    Divider()
+                }
+                
+                //TODO: 골격근량 생성
+                VStack{
+                    HStack{
+                        Image("defaultImage")
+                            .resizable()
+                            .frame(width: 25, height: 25, alignment: .center)
+                            .padding(10)
+                            .background(yello)
+                            .cornerRadius(5)
+                        
+                        Text("몸무게")
+                            .font(.title3)
+                            .fontWeight(.light)
+                        
+                        Spacer()
+                        
+                        Text("48Kg")
+                            .foregroundColor(.accentColor)
+                    }
+                    
+                    Divider()
+                }
+                
+                //TODO: PT권 데이터 설정
+                HStack{
+                    Text("PT 5개월 10회 (D-147)")
+                        .font(.title3)
+                        .fontWeight(.light)
+                    
+                    Spacer()
+                    
+                    Button {
+                        print(123)
+                    } label: {
+                        Text("사용중")
+                            .font(.caption)
+                            .foregroundColor(.white)
+                            .padding(.horizontal,10)
+                            .padding(.vertical,5)
+                            .background(Color.accentColor)
+                            .cornerRadius(20)
+                    }
+                    .buttonStyle(.plain)
+
+                }
+                
+                //TODO: LAZYVGRID 설정
+                VStack{
+                    HStack(alignment:.center){
+                        Text("기간")
+                        Spacer()
+                        Spacer()
+                        Text("세션")
+                        Spacer()
+                        Text("계약일")
+                    }
+                    Divider()
+                    HStack{
+                        Text("2022.03.08 ~ 2022.04.08")
+                            .font(.caption)
+                        Spacer()
+                        Text("20")
+                            .font(.caption)
+                        Spacer()
+                        Text("2022.03.08")
+                            .font(.caption)
+                        
+                    }
+                }
                 .padding()
+                .background(.white)
+                .cornerRadius(5)
+                
+                
             }
+            .padding(.horizontal)
         }
-        .fullScreenCover(isPresented: $isPresentProfile,onDismiss: {
-            viewmodel.reloadImage()
-        }) {
-            UserProfileView(image: URLImageView(urlString: viewmodel.imageUrl, imageSize: 300, youtube: false))
-                .environmentObject(self.viewmodel)
-        }
+        .background(backgroundColor.edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -110,9 +200,10 @@ struct UserProfileCardView:View{
     
 }
 
-//struct HomeView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        HomeView(image: URLImageView(urlString: "asdnk", imageSize: 300))
-//    }
-//}
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView()
+            .environmentObject(UserBaseViewModel())
+    }
+}
 
