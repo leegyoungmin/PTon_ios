@@ -41,82 +41,19 @@ struct HomeView: View {
                 }
                 
                 //TODO: 그래프 생성
-                RoundedRectangle(cornerRadius: 20)
-                .fill(.white)
-                .frame(height:200)
-                .padding()
-                .background(.white)
-                .cornerRadius(5)
-                .shadow(color: .gray.opacity(0.2), radius: 5)
+                
+                ExampleView()
+                    .cornerRadius(5)
+                    .frame(height:200)
+                    .shadow(color: .gray.opacity(0.2), radius: 5)
+                
+                LazyView(
+                    UserBodyView(viewModel: HomeBodyViewModel())
+                )
+                
+
                 
                 
-                VStack{
-                    HStack{
-                        Image("defaultImage")
-                            .resizable()
-                            .frame(width: 25, height: 25, alignment: .center)
-                            .padding(10)
-                            .background(pink)
-                            .cornerRadius(5)
-                        
-                        Text("몸무게")
-                            .font(.title3)
-                            .fontWeight(.light)
-                        
-                        Spacer()
-                        
-                        Text("48Kg")
-                            .foregroundColor(.accentColor)
-                    }
-                    
-                    Divider()
-                }
-                
-                //TODO: 체지방량 생성
-                VStack{
-                    HStack{
-                        Image("defaultImage")
-                            .resizable()
-                            .frame(width: 25, height: 25, alignment: .center)
-                            .padding(10)
-                            .background(sky)
-                            .cornerRadius(5)
-                        
-                        Text("몸무게")
-                            .font(.title3)
-                            .fontWeight(.light)
-                        
-                        Spacer()
-                        
-                        Text("48Kg")
-                            .foregroundColor(.accentColor)
-                    }
-                    
-                    Divider()
-                }
-                
-                //TODO: 골격근량 생성
-                VStack{
-                    HStack{
-                        Image("defaultImage")
-                            .resizable()
-                            .frame(width: 25, height: 25, alignment: .center)
-                            .padding(10)
-                            .background(yello)
-                            .cornerRadius(5)
-                        
-                        Text("몸무게")
-                            .font(.title3)
-                            .fontWeight(.light)
-                        
-                        Spacer()
-                        
-                        Text("48Kg")
-                            .foregroundColor(.accentColor)
-                    }
-                    
-                    Divider()
-                }
                 
                 //TODO: PT권 데이터 설정
                 HStack{

@@ -10,9 +10,9 @@ import Firebase
 
 //MARK: - MODEL
 struct userBase:Codable{
-    var bodyWeight:String
-    var bodyFat:String
-    var bodyMuscle:String
+    var bodyWeight:String?
+    var bodyFat:String?
+    var bodyMuscle:String?
 }
 
 
@@ -33,6 +33,7 @@ class UserBaseInfoViewModel:ObservableObject{
     
     func readData(_ selectedData:Date){
         reference
+            .child(self.userId)
             .child(convertString(content: selectedData, dateFormat: "yyyy-MM-dd"))
             .observeSingleEvent(of: .value) { snapshot in
                 
@@ -64,6 +65,7 @@ class UserBaseInfoViewModel:ObservableObject{
         ]
         
         reference
+            .child(self.userId)
             .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
             .updateChildValues(data)
     }

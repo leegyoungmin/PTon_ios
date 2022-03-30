@@ -131,13 +131,13 @@ struct TodayExerciseView:View{
             
             Divider()
             
-            HStack{
-                infoLabel("시간", "clock.badge.checkmark",viewModel.getAllTime())
-                infoLabel("횔동량", "person.fill",0)
-                infoLabel("1회 수", "person.fill",0)
-                infoLabel("세트 수", "person.fill",0)
-            }
-            .padding(.vertical)
+//            HStack{
+//                infoLabel("시간", "clock.badge.checkmark",viewModel.getAllTime())
+//                infoLabel("횔동량", "person.fill",0)
+//                infoLabel("1회 수", "person.fill",0)
+//                infoLabel("세트 수", "person.fill",0)
+//            }
+//            .padding(.vertical)
             
             NavigationLink(isActive: $isShowAerobicEditView) {
                 LazyView(

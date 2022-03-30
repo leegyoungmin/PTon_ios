@@ -15,6 +15,7 @@ import Firebase
 
 struct DateValue:Identifiable{
     var id = UUID().uuidString
+    var dateWeek:Int?
     var day:Int
     var date:Date
 }

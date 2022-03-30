@@ -20,7 +20,7 @@ struct weekDatePickerView:View{
                 HStack(spacing:0){
                     Button {
                         withAnimation {
-                            currentMonth -= 1
+                            currentMonth -= 7
                         }
                     } label: {
                         Image(systemName: "chevron.left.square.fill")
@@ -38,7 +38,7 @@ struct weekDatePickerView:View{
                     
                     Button {
                         withAnimation {
-                            currentMonth += 1
+                            currentMonth += 7
                         }
                     } label: {
                         Image(systemName: "chevron.right.square.fill")
@@ -76,7 +76,6 @@ struct weekDatePickerView:View{
                         
                         ForEach(extractDate()) { value in
                             if value.day != -1{
-//                                Text("\(value.day)")
                                 cardView(value: value)
                                     .background(
                                         Circle()
@@ -128,10 +127,10 @@ extension Date{
         
         let startDate = calendar.date(from: Calendar.current.dateComponents([.year,.month,.day,.weekday], from: self))!
         
-        let range = calendar.range(of: .weekday, in: .month, for: startDate)!
+        let range = calendar.range(of: .weekday, in: .weekOfMonth, for: startDate)!
 
         return range.compactMap{ day -> Date in
-            return calendar.date(byAdding: .day, value: day, to: startDate)!
+            return calendar.date(byAdding: .weekday, value: day, to: startDate)!
         }
     }
 }
@@ -159,20 +158,18 @@ extension weekDatePickerView{
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM YYYY"
         let date = formatter.string(from: currentDate)
-    
+
         return date.components(separatedBy: " ")
     }
 
     func getCurrentMonth()->Date{
         let calendar = Calendar.current
-        
-        guard let currentMonth = calendar.date(byAdding: .weekOfMonth, value: self.currentMonth, to: Date()) else{return Date()}
-        
-        print("Get Current Month ::: \(currentMonth)")
-        
+
+        guard let currentMonth = calendar.date(byAdding: .weekday, value: currentMonth, to: Date()) else{return Date()}
+
         return currentMonth
     }
-    //
+
     func extractDate()->[DateValue]{
         //Getting current Month date
 
@@ -181,15 +178,22 @@ extension weekDatePickerView{
         let currentMonth = getCurrentMonth()
 
         var days =  currentMonth.getAllWeek().compactMap{ date -> DateValue in
+            let dateWeek = calendar.component(.weekday, from: date)
             let day = calendar.component(.day, from: date)
 
-            return DateValue(day: day, date: date)
+            return DateValue(dateWeek: dateWeek, day: day, date: date)
         }
 
-        let firstWeekday = calendar.component(.day, from: days.first?.date ?? Date())
+        let firstWeekday = calendar.component(.weekday, from: days.first?.date ?? Date())
+        
+        for index in (0..<firstWeekday-1).reversed(){
+            let day = calendar.component(.day, from: days.first?.date.addingTimeInterval(-86400) ?? Date())
+            days.insert(DateValue(dateWeek: index, day: day, date: days.first?.date.addingTimeInterval(-86400) ?? Date()) , at: 0)
+            days.removeLast()
+        }
 
-        days.insert(DateValue(day: firstWeekday - 1, date: days.first?.date.addingTimeInterval(-86400) ?? Date()), at: 0)
-        days.removeLast()
+        
+        print("Date in selected Date \(days)")
         return days
     }
 
