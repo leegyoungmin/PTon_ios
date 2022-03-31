@@ -23,12 +23,12 @@ struct HomeView: View {
                     Spacer()
                     
                     Button {
-                        print(123)
+                        isPresentProfile = true
                     } label: {
                         Image(systemName: "chevron.right.circle.fill")
                             .font(.title)
                     }
-
+                    
                 }
                 .padding(.top,20)
                 
@@ -42,74 +42,37 @@ struct HomeView: View {
                 
                 //TODO: 그래프 생성
                 
-                ExampleView()
+//                ExampleView()
+                RoundedRectangle(cornerRadius: 5)
+                    .fill(.white)
                     .cornerRadius(5)
-                    .frame(height:200)
+                    .frame(height:250)
                     .shadow(color: .gray.opacity(0.2), radius: 5)
                 
-                LazyView(
-                    UserBodyView(viewModel: HomeBodyViewModel())
-                )
+                UserBodyView()
                 
-
-                
-                
-                
-                //TODO: PT권 데이터 설정
-                HStack{
-                    Text("PT 5개월 10회 (D-147)")
-                        .font(.title3)
-                        .fontWeight(.light)
-                    
-                    Spacer()
-                    
-                    Button {
-                        print(123)
-                    } label: {
-                        Text("사용중")
-                            .font(.caption)
-                            .foregroundColor(.white)
-                            .padding(.horizontal,10)
-                            .padding(.vertical,5)
-                            .background(Color.accentColor)
-                            .cornerRadius(20)
-                    }
-                    .buttonStyle(.plain)
-
-                }
-                
-                //TODO: LAZYVGRID 설정
-                VStack{
-                    HStack(alignment:.center){
-                        Text("기간")
-                        Spacer()
-                        Spacer()
-                        Text("세션")
-                        Spacer()
-                        Text("계약일")
-                    }
-                    Divider()
-                    HStack{
-                        Text("2022.03.08 ~ 2022.04.08")
-                            .font(.caption)
-                        Spacer()
-                        Text("20")
-                            .font(.caption)
-                        Spacer()
-                        Text("2022.03.08")
-                            .font(.caption)
-                        
-                    }
-                }
-                .padding()
-                .background(.white)
-                .cornerRadius(5)
+                UserHomeMemberShipView()
+                    .padding(.vertical)
                 
                 
             }
             .padding(.horizontal)
         }
-        .background(backgroundColor.edgesIgnoringSafeArea(.all))
+        .background(
+            Rectangle()
+                .fill(
+                    LinearGradient(gradient: Gradient(stops: [
+                        Gradient.Stop(color: .white, location: 0.3),
+                        Gradient.Stop(color: backgroundColor, location: 0.3)
+                    ]), startPoint: .top, endPoint: .bottom)
+                )
+                .edgesIgnoringSafeArea(.all)
+            
+        )
+        .fullScreenCover(isPresented: $isPresentProfile) {
+            UserProfileView()
+                .environmentObject(self.viewmodel)
+        }
     }
 }
 
@@ -137,10 +100,13 @@ struct UserProfileCardView:View{
     
 }
 
+
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
             .environmentObject(UserBaseViewModel())
+        //        backgroundView()
+        
     }
 }
 

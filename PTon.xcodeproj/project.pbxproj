@@ -103,6 +103,8 @@
 		18B7D94027E08E4100400310 /* Model + MemoCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */; };
 		18B7D94227E09C8A00400310 /* MemoListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7D94127E09C8A00400310 /* MemoListViewModel.swift */; };
 		18B7D94827E0A07200400310 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 18B7D94727E0A07200400310 /* .gitignore */; };
+		18C1641C27F58E2A0024FAAF /* UserHomeMemberShipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C1641B27F58E2A0024FAAF /* UserHomeMemberShipView.swift */; };
+		18C1641E27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C1641D27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift */; };
 		18CFFF5A27BBF09D00BB95DA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5927BBF09D00BB95DA /* HomeView.swift */; };
 		18CFFF5C27BBF6E800BB95DA /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5B27BBF6E800BB95DA /* UserProfileView.swift */; };
 		18CFFF5F27BBF92500BB95DA /* StretchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5E27BBF92500BB95DA /* StretchingView.swift */; };
@@ -215,6 +217,8 @@
 		18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + MemoCreateViewModel.swift"; sourceTree = "<group>"; };
 		18B7D94127E09C8A00400310 /* MemoListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoListViewModel.swift; sourceTree = "<group>"; };
 		18B7D94727E0A07200400310 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		18C1641B27F58E2A0024FAAF /* UserHomeMemberShipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserHomeMemberShipView.swift; sourceTree = "<group>"; };
+		18C1641D27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + UserHomeMemberShipViewModel.swift"; sourceTree = "<group>"; };
 		18CFFF5927BBF09D00BB95DA /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		18CFFF5B27BBF6E800BB95DA /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		18CFFF5E27BBF92500BB95DA /* StretchingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchingView.swift; sourceTree = "<group>"; };
@@ -413,6 +417,7 @@
 		183308F227BE32C400890212 /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
+				18C1641A27F58E180024FAAF /* UserHomeMemberShipView */,
 				18F493A927F4ED42009898F9 /* BodyViews */,
 				18CFFF5927BBF09D00BB95DA /* HomeView.swift */,
 				1833729E27F2F3E400C8D595 /* Model + HomeViewModel.swift */,
@@ -686,6 +691,15 @@
 			path = LoginViews;
 			sourceTree = "<group>";
 		};
+		18C1641A27F58E180024FAAF /* UserHomeMemberShipView */ = {
+			isa = PBXGroup;
+			children = (
+				18C1641B27F58E2A0024FAAF /* UserHomeMemberShipView.swift */,
+				18C1641D27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift */,
+			);
+			path = UserHomeMemberShipView;
+			sourceTree = "<group>";
+		};
 		18CFFF5827BBF08E00BB95DA /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -945,6 +959,7 @@
 				1888E3B927E33C7200EC80A9 /* Model + DetailMemoViewModel.swift in Sources */,
 				182AB1AE27C8C7F400381C55 /* Model+CoachingViewModel.swift in Sources */,
 				1839D37527B94D7F00EDF216 /* Model + RecordingExerciseViewModel.swift in Sources */,
+				18C1641C27F58E2A0024FAAF /* UserHomeMemberShipView.swift in Sources */,
 				1833091727BE8ECA00890212 /* Model+RequestStretchingViewModel.swift in Sources */,
 				182DADB027B2815500D15C56 /* UserAddViewModel.swift in Sources */,
 				188C452727F2153200C2180A /* Model + UserBaseInfoViewModel.swift in Sources */,
@@ -963,6 +978,7 @@
 				185687E527B272D300753D5B /* TrainerUserListView.swift in Sources */,
 				18368C3A27C0D5AD001ACFA6 /* PhotoPickerView.swift in Sources */,
 				18CFFF5C27BBF6E800BB95DA /* UserProfileView.swift in Sources */,
+				18C1641E27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift in Sources */,
 				1833729F27F2F3E400C8D595 /* Model + HomeViewModel.swift in Sources */,
 				184F14FA27B9191700E5AF07 /* StretchingThumnailView.swift in Sources */,
 				183CE8CB27D89B0E00A8B789 /* ChattingImagePickerView.swift in Sources */,

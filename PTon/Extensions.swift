@@ -50,7 +50,7 @@ func convertdate(content:String,format:String)->Date{
     let formatter = DateFormatter()
     formatter.dateFormat = format
     formatter.locale = Locale(identifier: "ko_KR")
-    return formatter.date(from: content)!
+    return formatter.date(from: content) ?? Date()
 }
 
 //Date -> String

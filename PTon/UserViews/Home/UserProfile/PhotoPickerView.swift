@@ -12,7 +12,6 @@ struct ImagePickerView:UIViewControllerRepresentable{
     @Environment(\.dismiss) private var dismiss
     var sourceType:UIImagePickerController.SourceType = .photoLibrary
     @Binding var isChanged:Bool
-    @Binding var selectedImage:URLImageView
     @EnvironmentObject var viewmodel:UserBaseViewModel
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
@@ -22,7 +21,8 @@ struct ImagePickerView:UIViewControllerRepresentable{
         imagepicker.delegate = context.coordinator
         return imagepicker
     }
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
+    }
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -38,13 +38,23 @@ struct ImagePickerView:UIViewControllerRepresentable{
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
-                parent.selectedImage.urlImageModel.image = image
-                parent.isChanged = true
+                self.parent.isChanged = true
+                parent.viewmodel.uploadImage(image: image) { isSuccess in
+                    withAnimation {
+                        if isSuccess{
+
+                            self.parent.isChanged = false
+                        }else{
+                            self.parent.isChanged = false
+                        }
+                    }
+
+                }
+                
+                self.parent.dismiss.callAsFunction()
             }
-            parent.dismiss.callAsFunction()
+            
         }
-        
-        
     }
 }
 

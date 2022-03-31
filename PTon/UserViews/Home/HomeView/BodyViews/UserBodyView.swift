@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct UserBodyView:View{
-    @StateObject var viewModel:HomeBodyViewModel
+    @StateObject var viewModel:HomeBodyViewModel = HomeBodyViewModel()
     var body: some View{
         VStack{
             HStack{

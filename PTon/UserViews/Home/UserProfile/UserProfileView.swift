@@ -9,11 +9,11 @@ import SwiftUI
 import ToastUI
 import Firebase
 import AlertToast
+import SDWebImageSwiftUI
 
 struct UserProfileView: View {
     @EnvironmentObject var viewmodel:UserBaseViewModel
     @Environment(\.dismiss) var dismiss
-    @State var image:URLImageView
     @State var isChanged = false
     @State private var showSheet = false
     @State private var showToast = false
@@ -31,22 +31,22 @@ struct UserProfileView: View {
             }
             .padding()
             .onTapGesture {
-                if isChanged == false{
-                    viewDismiss()
-                }else{
-                    self.saveDataProcess = true
-                    if let profileImage = image.urlImageModel.image{
-                        viewmodel.uploadData(profileImage) {
-                            viewDismiss()
-                        }
-                    }else{
-                        viewDismiss()
-                    }
-                }
+                viewDismiss()
             }
+            .blur(radius: isChanged ? 2:0)
+            .disabled(isChanged)
             
             VStack(spacing:50){
-                image
+                WebImage(url: URL(string: viewmodel.imageUrl))
+                    .placeholder(
+                        Image("defaultImage")
+                    )
+                    .resizable()
+                    .frame(width: 300, height: 300, alignment: .center)
+                    .clipShape(Circle())
+                
+                
+
                 
                 HStack(spacing:100){
                     Button {
@@ -77,10 +77,19 @@ struct UserProfileView: View {
                         }
                     }
                 }
+                
+            }
+            .blur(radius: isChanged ? 2:0)
+            .disabled(isChanged)
+            
+            if isChanged{
+                ProgressView()
+                    .progressViewStyle(.circular)
+
             }
         }
         .sheet(isPresented: $showSheet) {
-            ImagePickerView(isChanged: $isChanged, selectedImage: $image)
+            ImagePickerView(isChanged: $isChanged)
                 .environmentObject(self.viewmodel)
         }
         .toast(isPresenting: $saveDataProcess, alert: {
@@ -142,7 +151,8 @@ struct KcalSettingView:View{
 
 struct UserProfileView_Previews: PreviewProvider {
     static var previews: some View {
-        UserProfileView(image: URLImageView(urlString: "asdnj", imageSize: 30, youtube: false))
+        UserProfileView(isChanged:false)
+            .environmentObject(UserBaseViewModel())
 //        KcalSettingView(showToast: .constant(true))
 //            .previewLayout(.sizeThatFits )
     }

@@ -119,6 +119,30 @@ class UserBaseViewModel:ObservableObject{
             }
     }
     
+    func uploadImage(image:UIImage,completion:@escaping(Bool)->Void){
+        guard let data = image.jpegData(compressionQuality: 0.8),
+              let userId = Firebase.Auth.auth().currentUser?.uid else{return}
+        let path = "Profile\(convertString(content: Date(), dateFormat: "yyyyMMdd_HHmmdd"))"
+        FirebaseStorage.Storage.storage().reference().child("Profile").child(path)
+            .putData(data, metadata: nil) { metadata, error in
+                if error == nil{
+                    FirebaseStorage.Storage.storage().reference().child("Profile").child(path).downloadURL { url, error in
+                        
+                        guard let url = url?.absoluteString else{return}
+                        self.userBaseModel.imageUrl = url
+                        completion(true)
+                        
+                        self.reference
+                            .child("User")
+                            .child(userId)
+                            .updateChildValues(["photoUri":url])
+                    }
+                }else{
+                    completion(false)
+                }
+            }
+    }
+    
     
     //TODO: 로그 아웃 메소드
     func logout(completion:@escaping()->Void){
