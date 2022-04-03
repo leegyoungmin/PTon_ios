@@ -49,7 +49,6 @@
 		1833C64B27BCD0C40096E3E4 /* RequestedStretchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1833C64A27BCD0C40096E3E4 /* RequestedStretchingView.swift */; };
 		1833C64D27BCECAC0096E3E4 /* AllStretchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1833C64C27BCECAC0096E3E4 /* AllStretchingView.swift */; };
 		1833C65027BD00C00096E3E4 /* UserChattingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1833C64F27BD00C00096E3E4 /* UserChattingView.swift */; };
-		1833C65227BD04DF0096E3E4 /* UserChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1833C65127BD04DF0096E3E4 /* UserChattingViewModel.swift */; };
 		1833C65427BD5B7B0096E3E4 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1833C65327BD5B7B0096E3E4 /* Notification.swift */; };
 		1833C65A27BD798E0096E3E4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1833C65927BD798E0096E3E4 /* GoogleService-Info.plist */; };
 		18368C3A27C0D5AD001ACFA6 /* PhotoPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18368C3927C0D5AD001ACFA6 /* PhotoPickerView.swift */; };
@@ -100,6 +99,9 @@
 		1893961727ABF3E700B4DB8A /* TrainerBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893961627ABF3E700B4DB8A /* TrainerBaseView.swift */; };
 		1893961827ABF94F00B4DB8A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1893940627ABAF0200B4DB8A /* Assets.xcassets */; };
 		1893961B27ABF9CD00B4DB8A /* Model+LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893961A27ABF9CD00B4DB8A /* Model+LoginViewModel.swift */; };
+		18967B5327F9C6FD00A4BE58 /* UserMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18967B5227F9C6FD00A4BE58 /* UserMemoView.swift */; };
+		18967B5627F9CEBB00A4BE58 /* TrainerJournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18967B5527F9CEBB00A4BE58 /* TrainerJournalView.swift */; };
+		18967B5827F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18967B5727F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift */; };
 		18B7D94027E08E4100400310 /* Model + MemoCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */; };
 		18B7D94227E09C8A00400310 /* MemoListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7D94127E09C8A00400310 /* MemoListViewModel.swift */; };
 		18B7D94827E0A07200400310 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 18B7D94727E0A07200400310 /* .gitignore */; };
@@ -160,7 +162,6 @@
 		1833C64A27BCD0C40096E3E4 /* RequestedStretchingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestedStretchingView.swift; sourceTree = "<group>"; };
 		1833C64C27BCECAC0096E3E4 /* AllStretchingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllStretchingView.swift; sourceTree = "<group>"; };
 		1833C64F27BD00C00096E3E4 /* UserChattingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChattingView.swift; sourceTree = "<group>"; };
-		1833C65127BD04DF0096E3E4 /* UserChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserChattingViewModel.swift; sourceTree = "<group>"; };
 		1833C65327BD5B7B0096E3E4 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		1833C65927BD798E0096E3E4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		18368C3927C0D5AD001ACFA6 /* PhotoPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPickerView.swift; sourceTree = "<group>"; };
@@ -214,6 +215,9 @@
 		1893960827ABDE0200B4DB8A /* UserBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBaseView.swift; sourceTree = "<group>"; };
 		1893961627ABF3E700B4DB8A /* TrainerBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainerBaseView.swift; sourceTree = "<group>"; };
 		1893961A27ABF9CD00B4DB8A /* Model+LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+LoginViewModel.swift"; sourceTree = "<group>"; };
+		18967B5227F9C6FD00A4BE58 /* UserMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMemoView.swift; sourceTree = "<group>"; };
+		18967B5527F9CEBB00A4BE58 /* TrainerJournalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainerJournalView.swift; sourceTree = "<group>"; };
+		18967B5727F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + TrainerJournalViewModel.swift"; sourceTree = "<group>"; };
 		18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + MemoCreateViewModel.swift"; sourceTree = "<group>"; };
 		18B7D94127E09C8A00400310 /* MemoListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoListViewModel.swift; sourceTree = "<group>"; };
 		18B7D94727E0A07200400310 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -410,6 +414,7 @@
 			children = (
 				1893960827ABDE0200B4DB8A /* UserBaseView.swift */,
 				1854529E27B2421C001F2B9F /* Model+UserBaseViewModel.swift */,
+				18967B5227F9C6FD00A4BE58 /* UserMemoView.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -480,7 +485,6 @@
 			isa = PBXGroup;
 			children = (
 				1833C64F27BD00C00096E3E4 /* UserChattingView.swift */,
-				1833C65127BD04DF0096E3E4 /* UserChattingViewModel.swift */,
 			);
 			path = UserChattingView;
 			sourceTree = "<group>";
@@ -691,6 +695,15 @@
 			path = LoginViews;
 			sourceTree = "<group>";
 		};
+		18967B5427F9CEA800A4BE58 /* TrainerJournalViews */ = {
+			isa = PBXGroup;
+			children = (
+				18967B5527F9CEBB00A4BE58 /* TrainerJournalView.swift */,
+				18967B5727F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift */,
+			);
+			path = TrainerJournalViews;
+			sourceTree = "<group>";
+		};
 		18C1641A27F58E180024FAAF /* UserHomeMemberShipView */ = {
 			isa = PBXGroup;
 			children = (
@@ -731,6 +744,7 @@
 		18EE19E527B3C1BB00CCA16D /* ProfileViews */ = {
 			isa = PBXGroup;
 			children = (
+				18967B5427F9CEA800A4BE58 /* TrainerJournalViews */,
 				181C3F8227D73B5500F7721A /* Profile */,
 				1833090427BE3BEE00890212 /* RequestExercise */,
 				186E832327BA79E400CBB25E /* MembershipSetting */,
@@ -923,6 +937,7 @@
 				1854529F27B2421C001F2B9F /* Model+UserBaseViewModel.swift in Sources */,
 				18B7D94027E08E4100400310 /* Model + MemoCreateViewModel.swift in Sources */,
 				18184FC427C3554B00BBEB5E /* KcalSettingViewModel.swift in Sources */,
+				18967B5627F9CEBB00A4BE58 /* TrainerJournalView.swift in Sources */,
 				1833C64B27BCD0C40096E3E4 /* RequestedStretchingView.swift in Sources */,
 				18EE19E727B3C1D300CCA16D /* ProfileView.swift in Sources */,
 				183E745327ACFC1F0075B058 /* Buttons.swift in Sources */,
@@ -941,7 +956,6 @@
 				186ABA1627AD5ACA00E73F86 /* BodyInfoPage.swift in Sources */,
 				1893961727ABF3E700B4DB8A /* TrainerBaseView.swift in Sources */,
 				188B2AAB27E701B8004B9DA9 /* Model + ChattingViewModel.swift in Sources */,
-				1833C65227BD04DF0096E3E4 /* UserChattingViewModel.swift in Sources */,
 				18036F2827EC632100EFAE56 /* Model + MealRecordViewModel.swift in Sources */,
 				1833091B27BEC51700890212 /* YouTubeView.swift in Sources */,
 				1833C65427BD5B7B0096E3E4 /* Notification.swift in Sources */,
@@ -985,6 +999,7 @@
 				183308EC27BE309400890212 /* Model+ExerciseStorageViewModel.swift in Sources */,
 				18055AAC27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift in Sources */,
 				186F11E727B7D821004BED0F /* MemoCreateView.swift in Sources */,
+				18967B5827F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift in Sources */,
 				181DE20827B10C10002F33B2 /* Error.swift in Sources */,
 				186E832527BA79F400CBB25E /* MemberShipView.swift in Sources */,
 				1833090927BE3C2600890212 /* Model+RequestedExerciseViewModel.swift in Sources */,
@@ -996,6 +1011,7 @@
 				1839D37127B9495200EDF216 /* ExerciseRecordView.swift in Sources */,
 				185687EB27B2732100753D5B /* ExerciseStorageView.swift in Sources */,
 				182DADA927B277BC00D15C56 /* Model+TrainerUserListViewModel.swift in Sources */,
+				18967B5327F9C6FD00A4BE58 /* UserMemoView.swift in Sources */,
 				18036F2627EC3FDE00EFAE56 /* UserBaseInfoViews.swift in Sources */,
 				1893960927ABDE0200B4DB8A /* UserBaseView.swift in Sources */,
 			);

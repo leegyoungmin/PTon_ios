@@ -63,7 +63,7 @@ struct ChatRoomListCellView:View{
                         
                         Spacer()
                         
-                        Text("\(viewModel.ChattingRoom.Messages.filter({$0.isRead == false && $0.isCurrentUser == false}).count)")
+                        Text("\(viewModel.unReadCount)")
                             .foregroundColor(.white)
                             .padding(8)
                             .background(

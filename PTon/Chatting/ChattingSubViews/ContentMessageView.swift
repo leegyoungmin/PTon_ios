@@ -16,7 +16,7 @@ struct ContentMessageView: View {
             .padding(10)
             .foregroundColor(isCurrentUser ? .white:.black)
             .background(isCurrentUser ? Color.accentColor:.gray.opacity(0.5))
-            .cornerRadius(5, corners: isCurrentUser ? [.topLeft,.bottomLeft,.bottomRight]:[.topRight,.bottomLeft,.bottomRight])
+            .cornerRadius(8)
     }
 }
 

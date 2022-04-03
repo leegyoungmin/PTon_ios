@@ -26,13 +26,13 @@ struct UserBaseView: View {
                 }
             JornalView(trainerId: UserBaseViewModel.trainerid,
                        userId: UserBaseViewModel.userid)
-                .tabItem {
-                    Label("일지", systemImage: "bookmark.fill")
-                }
-                .tag(1)
-                .onTapGesture {
-                    selectedIndex = 1
-                }
+            .tabItem {
+                Label("일지", systemImage: "bookmark.fill")
+            }
+            .tag(1)
+            .onTapGesture {
+                selectedIndex = 1
+            }
             
             StretchingView(type: $StretchingIndex, trainerid: UserBaseViewModel.trainerid, userid: UserBaseViewModel.userid )
                 .tabItem {
@@ -51,6 +51,9 @@ struct UserBaseView: View {
                 .onTapGesture {
                     selectedIndex = 3
                 }
+            
+
+
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -86,38 +89,96 @@ struct UserBaseView: View {
                 }
             }
             
-            
+            //trailing Toolbar
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack{
+                    
                     NavigationLink {
-//                        UserChattingView(viewModel: UserChattingViewModel(userid: UserBaseViewModel.userid, trainerid: UserBaseViewModel.trainerid, username: UserBaseViewModel.username, fitnessCode: UserBaseViewModel.fitnessCode))
+                        UserChattingView(viewModel: ChattingInputViewModel(UserBaseViewModel.trainerid,
+                                                                           trainerName: UserBaseViewModel.trainerName,
+                                                                           UserBaseViewModel.userid,
+                                                                           userName: UserBaseViewModel.username,
+                                                                           UserBaseViewModel.fitnessCode),
+                                         messages: $UserBaseViewModel.chattings,
+                                         userProfileImage: "")
                     } label: {
                         Image(systemName: "message.fill")
                             .foregroundColor(Color.accentColor)
+                            .overlay(
+                                Badge()
+                                    .environmentObject(self.UserBaseViewModel)
+                                ,alignment: .topLeading
+                            )
                     }
-                    .buttonStyle(.plain)
                     
-                    Button {
-                        print("Tapped Logout Button")
-                        self.UserBaseViewModel.logout {
-                            self.presentationMode.wrappedValue.dismiss()
-                        }
+                    NavigationLink {
+                        UserMemoView(viewmodel: MemoListViewModel(trainerid: self.UserBaseViewModel.trainerid,
+                                                                  userid: self.UserBaseViewModel.userid,
+                                                                  userProfile: ""),
+                                     userName: self.UserBaseViewModel.username,
+                                     trainerId: self.UserBaseViewModel.trainerid,
+                                     trainerName: self.UserBaseViewModel.trainerName)
                     } label: {
-                        Text("로그 아웃")
+                        Image(systemName: "doc.text.fill")
                             .foregroundColor(Color.accentColor)
                     }
+
+                    Menu {
+                        Button {
+                            print("Tapped Logout Button")
+                            self.UserBaseViewModel.logout {
+                                self.presentationMode.wrappedValue.dismiss()
+                            }
+                        } label: {
+                            Text("로그 아웃")
+                                .foregroundColor(Color.accentColor)
+                        }
+                    } label: {
+                        Image("more")
+                    }
+
+                    
+                    
+
                 }
             }
         }
-        .navigationViewStyle(.stack)
     }
 }
 
-struct UserBaseView_Previews: PreviewProvider {
-    static var previews: some View {
-        UserBaseView(UserBaseViewModel: UserBaseViewModel())
+struct Badge:View{
+    @EnvironmentObject var viewModel:UserBaseViewModel
+//    let index:Int
+    var body: some View{
+        ZStack(alignment: .topTrailing) {
+            Color.clear
+            
+            if viewModel.unreadCount != 0{
+                Text(String(viewModel.unreadCount))
+                    .foregroundColor(.white)
+                    .fontWeight(.semibold)
+                    .font(.system(size: 10))
+                    .padding(3)
+                    .background(Color.red)
+                    .clipShape(Circle())
+                    .offset(x: -15, y: -5)
+            }
+        }
     }
 }
+
+//struct UserBaseView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        Image(systemName: "message.fill")
+//            .foregroundColor(Color.accentColor)
+//            .overlay(
+//                Badge(index: 10)
+//            )
+//            .previewLayout(.sizeThatFits)
+//            .padding()
+//
+//    }
+//}
 
 private func ChangeTitle(_ selectedTabIndex:Int) -> String{
     switch selectedTabIndex{

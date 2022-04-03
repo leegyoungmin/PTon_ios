@@ -44,10 +44,10 @@ struct TrainerBaseView: View {
                     Image(systemName: "message.fill")
                 }
                 .tag(1)
+                .badge(trainerBaseViewModel.unreadCount)
                 .onTapGesture {
                     self.trainerSelectedIndex = 1
                 }
-            
             TrainerCalendarView(currentDate: $today)
                 .tabItem{
                     Image(systemName: "person.fill")

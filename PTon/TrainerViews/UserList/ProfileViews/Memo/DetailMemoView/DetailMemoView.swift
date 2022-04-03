@@ -12,7 +12,7 @@ struct DetailMemoView: View {
     @Environment(\.editMode) private var editMode
     @StateObject var viewmodel:DetailMemoViewModel
     @State var currentMemo:Memo
-    
+        
     //MARK: - VIEW
     var body: some View {
         VStack(spacing:0) {
@@ -28,11 +28,12 @@ struct DetailMemoView: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                EditButton()
-                    .tint(Color.accentColor)
                 
+                if viewmodel.isTrainer(){
+                    EditButton()
+                        .tint(Color.accentColor)
+                }
             }
-           
         }//:TOOLBAR
         .onChange(of: editMode?.wrappedValue.isEditing) { newValue in
             if newValue == false{

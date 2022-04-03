@@ -137,7 +137,9 @@ struct ProfileView: View {
                         }
                         
                         NavigationLink {
-                            Text("Jounal View")
+                            TrainerJournalView(viewModel: TrainerJournalViewModel(trainerId: viewmodel.traineid,
+                                                                                  userId: viewmodel.trainee.userId)
+                                               ,userName: viewmodel.trainee.userName)
                         } label: {
                             ProfileButton(icons[1])
                         }

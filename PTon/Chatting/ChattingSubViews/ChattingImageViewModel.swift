@@ -7,31 +7,25 @@
 
 import Foundation
 import Firebase
+import SDWebImageSwiftUI
 
 class ChattingImageViewModel:ObservableObject{
+    @Published var imageURL:URL?
     var path:String
     init(path:String){
         self.path = path
         
-        print(path)
+        fetchImage()
     }
     
-    func fetchImage(completion:@escaping(UIImage)->Void){
+    func fetchImage(){
         FirebaseStorage.Storage.storage().reference()
             .child("ChatsImage")
             .child(path)
-            .getData(maxSize: 512 * 1024 * 1024) { data, error in
-                if error != nil{
-                    print("error : \(error.debugDescription)")
-                    return
-                } else {
-                    if let image = UIImage(data: data!){
-                        completion(image)
-                    }else{
-                        print("error : Can't convert Image")
-                        return
-                    }
+            .downloadURL(completion: { url, error in
+                if error == nil{
+                    self.imageURL = url
                 }
-            }
+            })
     }
 }

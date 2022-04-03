@@ -27,29 +27,28 @@ struct ChatView: View {
     var body: some View {
         VStack(spacing:0){
             //MARK: - 채팅 리스트
-            ScrollView(.vertical, showsIndicators: false){
-                let messages = chattingRoomViewModel.ChattingRoom.Messages
-                ForEach(messages.indices.reversed(),id:\.self) { index in
+            ScrollView(.vertical, showsIndicators: false) {
+                ForEach(chattingRoomViewModel.messages.indices.reversed(),id:\.self){ index in
                     
-                    if index == 0 || messages[index-1].date != messages[index].date{
+                    if index == 0 || chattingRoomViewModel.messages[index-1].date != chattingRoomViewModel.messages[index].date{
                         VStack{
                             
-                            if messages[index].content.hasPrefix("ChatsImage"){
-                                ChattingImageView(viewmodel: ChattingImageViewModel(path: messages[index].content),
-                                                  currentUser: messages[index].isCurrentUser)
+                            if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
+                                ChattingImageView(viewmodel: ChattingImageViewModel(path: chattingRoomViewModel.messages[index].content),
+                                                  currentUser: chattingRoomViewModel.messages[index].isCurrentUser,userImage: userProfileImage)
                             }else{
-                                MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
+                                MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
                             }
                             
-                            chattingDateView(messages[index].date)
+                            userChattingDateView(chattingRoomViewModel.messages[index].date)
                                 .padding()
                         }
                     } else {
-                        if messages[index].content.hasPrefix("ChatsImage"){
-                            ChattingImageView(viewmodel: ChattingImageViewModel(path: messages[index].content),
-                                              currentUser: messages[index].isCurrentUser)
+                        if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
+                            ChattingImageView(viewmodel: ChattingImageViewModel(path: chattingRoomViewModel.messages[index].content),
+                                              currentUser: chattingRoomViewModel.messages[index].isCurrentUser,userImage: userProfileImage)
                         }else{
-                            MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
+                            MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
                         }
                     }
                 }
@@ -156,6 +155,9 @@ struct ChatView: View {
             }
         }
         .navigationTitle(viewModel.userName)
+        .onAppear(perform: {
+            viewModel.ChangeRead()
+        })
         .onDisappear {
             viewModel.viewDisAppear()
         }

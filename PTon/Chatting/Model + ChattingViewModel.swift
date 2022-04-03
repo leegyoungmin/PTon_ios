@@ -48,6 +48,10 @@ class ChattingViewModel:ObservableObject{
         return ChattingRoom.Messages.filter({$0.isRead == false && $0.isCurrentUser == false}).count
     }
     
+    var messages:[message]{
+        return ChattingRoom.Messages
+    }
+    
     func ObserveData(){
         if trainee.userid != nil{
             reference
@@ -81,7 +85,6 @@ class ChattingViewModel:ObservableObject{
                 .observe(.childChanged) { snapshot in
                     let key = snapshot.key
                     guard let values = snapshot.value as? [String:Any] else{return}
-                    
                     let currentMessage = self.makeDataForm(values, trainerId: self.trainerId, chatId: key)
                     
                     guard let index = self.ChattingRoom.Messages.firstIndex(where: {$0.chatId == key}) else{return}
@@ -90,7 +93,7 @@ class ChattingViewModel:ObservableObject{
         }
     }
     
-    func makeDataForm(_ values:[String:Any],trainerId:String,chatId:String)->message{
+    private func makeDataForm(_ values:[String:Any],trainerId:String,chatId:String)->message{
         
         let currentMessage = message(chatId: chatId, content: "", time: "", date: "", data: nil, isRead: false, isCurrentUser: false)
         

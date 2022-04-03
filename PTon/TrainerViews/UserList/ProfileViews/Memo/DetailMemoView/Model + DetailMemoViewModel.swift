@@ -122,7 +122,7 @@ class DetailMemoViewModel:ObservableObject{
             data["writerId"] = trainerId
             data["writerName"] = trainerName
         }else if type == .user{
-            data["witerId"] = userId
+            data["writerId"] = userId
             data["writerName"] = userName
         }
         

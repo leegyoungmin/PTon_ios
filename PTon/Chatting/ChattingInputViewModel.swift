@@ -15,6 +15,7 @@ class ChattingInputViewModel:ObservableObject{
     let userId:String
     let userName:String
     let fitnessCode:String
+    var readHandle:DatabaseHandle!
     let reference = Firebase.Database.database().reference().child("Chats")
     
     init(_ trainerId:String,trainerName:String,_ userId:String,userName:String,_ fitnessCode:String){
@@ -25,28 +26,51 @@ class ChattingInputViewModel:ObservableObject{
         self.fitnessCode = fitnessCode
     }
     
-    
-
-    
-    
     func sendText(_ message:String){
-        let values = [
-            "date":getStringDate(),
-            "message":message,
-            "read":"false",
-            "sender":self.trainerId,
-            "sendername":self.trainerName,
-            "receiver":self.userId,
-            "receivername":self.userName,
-            "time":getStringTime()
-        ]
-        reference
-            .child(fitnessCode)
-            .child(trainerId)
-            .child(userId)
-            .child("chat")
-            .childByAutoId()
-            .setValue(values)
+        guard let compareId = Firebase.Auth.auth().currentUser?.uid else{return}
+        
+        
+        setData(compareId == trainerId, message: message)
+    }
+    
+    func setData(_ isTrainer:Bool,message:String){
+        if isTrainer{
+            let values = [
+                "date":getStringDate(),
+                "message":message,
+                "read":"false",
+                "sender":self.trainerId,
+                "sendername":self.trainerName,
+                "receiver":self.userId,
+                "receivername":self.userName,
+                "time":getStringTime()
+            ]
+            reference
+                .child(fitnessCode)
+                .child(trainerId)
+                .child(userId)
+                .child("chat")
+                .childByAutoId()
+                .setValue(values)
+        }else{
+            let values = [
+                "date":getStringDate(),
+                "message":message,
+                "read":"false",
+                "sender":self.userId,
+                "sendername":self.userName,
+                "receiver":self.trainerId,
+                "receivername":self.trainerName,
+                "time":getStringTime()
+            ]
+            reference
+                .child(fitnessCode)
+                .child(trainerId)
+                .child(userId)
+                .child("chat")
+                .childByAutoId()
+                .setValue(values)
+        }
     }
     
     func uploadImage(_ image:Data){
@@ -83,26 +107,26 @@ class ChattingInputViewModel:ObservableObject{
     }
     //TODO: - chatting 읽음 처리
     func ChangeRead(){
-        reference
+        
+        guard let currentId = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
+        
+        self.readHandle = reference
             .child(fitnessCode)
             .child(trainerId)
             .child(userId)
             .child("chat")
-            .observeSingleEvent(of: .value, with: { snapshot in
-                for child in snapshot.children{
-                    let childSnapshot = child as! DataSnapshot
-                    print("All Value in snapshot :::: \(snapshot)")
-                    
-                    if childSnapshot.childSnapshot(forPath: "receiver").value as? String == self.trainerId,
-                       childSnapshot.childSnapshot(forPath: "read").value as? String == "false"{
-                        childSnapshot.ref.updateChildValues(["read":"true"])
-                    }
+            .observe(.childAdded, with: { snapshot in
+                print("All Value in snapshot :::: \(snapshot)")
+                
+                if snapshot.childSnapshot(forPath: "receiver").value as? String == currentId,
+                   snapshot.childSnapshot(forPath: "read").value as? String == "false"{
+                    snapshot.ref.updateChildValues(["read":"true"])
                 }
             })
     }
     
     func viewDisAppear(){
-        ChangeRead()
+        self.reference.child(fitnessCode).child(trainerId).child(userId).child("chat").removeObserver(withHandle: self.readHandle)
     }
 }
 

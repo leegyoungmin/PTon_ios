@@ -23,6 +23,7 @@ struct TrainerBaseModel{
 
 //MARK: VIEWMODEL
 class TrainerBaseViewModel:ObservableObject{
+    @Published var unreadCount:Int = 0
     @Published var trainerbasemodel = TrainerBaseModel(trainee: [])
     let reference = FirebaseDatabase.Database.database().reference()
     var rawValue:Int = UserDefaults.standard.integer(forKey: "LoginApi")
@@ -34,6 +35,7 @@ class TrainerBaseViewModel:ObservableObject{
         self.registerToken {
             self.fetchData {
                 self.getUserProfileImage()
+                self.ObserveChat()
             }
         }
     }
@@ -114,6 +116,29 @@ class TrainerBaseViewModel:ObservableObject{
                     guard let url = snapshot.value as? String else{return}
                     
                     self.trainerbasemodel.trainee[index].userProfile = url
+                }
+        }
+    }
+    
+    func ObserveChat(){
+        
+        trainerbasemodel.trainee.forEach{
+            
+            reference
+                .child("Chats")
+                .child(self.fitnessCode)
+                .child(self.trainerId)
+                .child($0.userId)
+                .child("chat")
+                .observe(.value) { snapshot in
+                    self.unreadCount = 0
+                    for child in snapshot.children{
+                        let childSnap = child as! DataSnapshot
+                        if childSnap.childSnapshot(forPath: "receiver").value as? String == self.trainerId,
+                           childSnap.childSnapshot(forPath: "read").value as? String == "false"{
+                            self.unreadCount += 1
+                        }
+                    }
                 }
         }
     }

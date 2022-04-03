@@ -6,78 +6,87 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct ChattingImageView: View {
     @StateObject var viewmodel:ChattingImageViewModel
     let currentUser:Bool
+    let userImage:String?
     
     var body: some View {
         
         if currentUser{
-            ImageElementView()
-                .environmentObject(self.viewmodel)
-                .onAppear {
-                    print("is current User \(currentUser)")
-                }
+            HStack{
+                ImageElementView(isCurrentUser:currentUser)
+                    .environmentObject(self.viewmodel)
+                    .onAppear {
+                        print("is current User \(currentUser)")
+                    }
+                Spacer()
+            }
 
+            
         }else{
             
-            HStack{
-                ImageElementView()
+            HStack(alignment:.bottom){
+                Spacer()
+                ImageElementView(isCurrentUser:currentUser)
                     .environmentObject(self.viewmodel)
-                
-                VStack{
-                    Spacer()
-                    
-                    Image(systemName: "person.fill")
-                        .font(.system(size: 25))
-                        .rotationEffect(Angle(degrees: -180))
-                }
-            }.onAppear {
+                URLImageView(urlString: userImage, imageSize: 30, youtube: false)
+                    .rotationEffect(Angle(degrees: -180))
+            }
+            .onAppear {
                 print("is current User \(currentUser)")
             }
-            
         }
+        
     }
 }
 
 
 struct ImageElementView:View{
     @EnvironmentObject var viewmodel:ChattingImageViewModel
+    let isCurrentUser:Bool
     @State var isOpen:Bool = false
     @State var image:UIImage = UIImage()
     @State var isHidden:Bool = false
     
+    @State var progressHeight:CGFloat = 400
+    @State var progrssWidth:CGFloat = 300
+    
     var body: some View{
         ZStack{
             
-            HStack{
-                Spacer()
-                ProgressView()
-                    .progressViewStyle(.circular)
-                    .frame(minWidth:250,minHeight:400)
-                    .background(isHidden ? .clear:.gray.opacity(0.2))
-                    .cornerRadius(5)
-
-            }
-            
-            HStack{
-                Spacer()
-                
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxHeight:400)
-                    .onAppear {
-                        viewmodel.fetchImage { image in
-                            isHidden = true
-                            self.image = image
+            WebImage(url: viewmodel.imageURL)
+                .resizable()
+                .placeholder(content: {
+                    if isCurrentUser == true{
+                        HStack{
+                            Spacer()
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .frame(maxWidth:300,maxHeight:400)
+                                .background(isHidden ? .clear:.gray.opacity(0.2))
+                                .cornerRadius(8)
+                        }
+                    }else{
+                        HStack{
+                            
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .frame(maxWidth:300,maxHeight:400)
+                                .background(isHidden ? .clear:.gray.opacity(0.2))
+                                .cornerRadius(8)
+                            Spacer()
                         }
                     }
-                    .cornerRadius(5)
-            }
+                })
+                .scaledToFit()
+                .frame(maxHeight:400)
+                .cornerRadius(8)
             
         }
+        .cornerRadius(8)
         .onTapGesture {
             isOpen = true
         }
@@ -129,7 +138,7 @@ struct ZoomImageView:View{
                 .scaleEffect(imageScale)
                 .aspectRatio(contentMode: .fit)
                 .offset(x: imageOffset.width, y: imageOffset.height)
-                //MARK: - 2. TWO TAP GESTURE
+            //MARK: - 2. TWO TAP GESTURE
                 .onTapGesture(count: 2, perform: {
                     if imageScale == 1 {
                         withAnimation(.spring()) {
@@ -139,14 +148,14 @@ struct ZoomImageView:View{
                         resetImageState()
                     }
                 })
-                //MARK: - 2. ONE TAP GESTURE
+            //MARK: - 2. ONE TAP GESTURE
                 .onTapGesture(count: 1, perform: {
                     withAnimation {
                         isShowBar.toggle()
                     }
                     
                 })
-                // MARK: - 3. DRAG GESTURE
+            // MARK: - 3. DRAG GESTURE
                 .gesture(
                     DragGesture()
                         .onChanged { value in
@@ -168,7 +177,7 @@ struct ZoomImageView:View{
                             }
                         }
                 )
-                // MARK: - 4. MAGNIFICATION
+            // MARK: - 4. MAGNIFICATION
                 .gesture(
                     MagnificationGesture()
                         .onChanged { value in
@@ -199,6 +208,8 @@ struct ZoomImageView:View{
 
 struct ChattingImageView_Previews: PreviewProvider {
     static var previews: some View {
-        ChattingImageView(viewmodel: ChattingImageViewModel(path: "ChatsImage_kakao:1967260938_03-11_14:44.jpg"), currentUser: true)
+        ChattingImageView(viewmodel: ChattingImageViewModel(path: "ChatsImage_kakao:1967260938_03-11_14:44.jpg"), currentUser: false, userImage: "")
+            .previewLayout(.sizeThatFits)
+            .rotationEffect(.degrees(-180))
     }
 }
