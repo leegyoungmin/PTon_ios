@@ -12,6 +12,7 @@ import Firebase
 struct chattingRoom:Hashable{
     var opponentId:String
     var opponentName:String
+    var chatRoomExist:Bool = false
     var favorite:Bool = false
     var Messages:[message]
 }
@@ -54,6 +55,20 @@ class ChattingViewModel:ObservableObject{
     
     func ObserveData(){
         if trainee.userid != nil{
+            
+            Database.database().reference()
+                .child("ChatList")
+                .child(fitnessCode)
+                .child(trainerId)
+                .child(self.trainee.userId)
+                .observe(.childAdded) { snapshot in
+                    print("ChatList snapshot ::: \(snapshot)")
+                    if snapshot.exists(){
+                        self.ChattingRoom.chatRoomExist = true
+                    }
+                }
+            
+            
             reference
                 .child(fitnessCode)
                 .child(trainerId)

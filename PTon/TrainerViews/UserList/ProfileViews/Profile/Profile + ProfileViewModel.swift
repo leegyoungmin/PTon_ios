@@ -13,6 +13,24 @@ struct memberShip:Codable,Hashable{
     var endMember:Date?
     var maxLisence:String?
     var useLisence:String?
+    
+    var IntMaxLisense:Int{
+        guard let maxLisence = maxLisence else {
+            return 0
+        }
+
+        return Int(maxLisence) ?? 0
+    }
+    
+    var IntuserLisence:Int{
+        guard let useLisence = useLisence else {
+            return 0
+        }
+        
+        return Int(useLisence) ?? 0
+
+    }
+    
 }
 
 class ProfileViewModel:ObservableObject{
@@ -63,7 +81,6 @@ class ProfileViewModel:ObservableObject{
                         self.MemberShip.useLisence = useLisence
                     }
                 }
-                
             }
     }
     

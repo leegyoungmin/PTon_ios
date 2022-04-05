@@ -7,6 +7,8 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
+import FirebaseStorageUI
+import SDWebImage
 
 struct ChattingImageView: View {
     @StateObject var viewmodel:ChattingImageViewModel
@@ -206,10 +208,10 @@ struct ZoomImageView:View{
     }
 }
 
-struct ChattingImageView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChattingImageView(viewmodel: ChattingImageViewModel(path: "ChatsImage_kakao:1967260938_03-11_14:44.jpg"), currentUser: false, userImage: "")
-            .previewLayout(.sizeThatFits)
-            .rotationEffect(.degrees(-180))
-    }
-}
+//struct ChattingImageView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChattingImageView(viewmodel: ChattingImageViewModel("ChatsImage_kakao:1967260938_03-11_14:44.jpg"), currentUser: false, userImage: "")
+//            .previewLayout(.sizeThatFits)
+//            .rotationEffect(.degrees(-180))
+//    }
+//}

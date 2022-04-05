@@ -29,7 +29,10 @@ struct UserChattingView: View {
                         VStack{
                             
                             if messages[index].content.hasPrefix("ChatsImage"){
-                                ChattingImageView(viewmodel: ChattingImageViewModel(path: messages[index].content),
+                                ChattingImageView(viewmodel: ChattingImageViewModel(messages[index].content,
+                                                                                    viewModel.trainerId,
+                                                                                    viewModel.userId,
+                                                                                    viewModel.fitnessCode),
                                                   currentUser: messages[index].isCurrentUser,userImage: userProfileImage)
                             }else{
                                 MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
@@ -40,14 +43,19 @@ struct UserChattingView: View {
                         }
                     } else {
                         if messages[index].content.hasPrefix("ChatsImage"){
-                            ChattingImageView(viewmodel: ChattingImageViewModel(path: messages[index].content),
+                            ChattingImageView(viewmodel: ChattingImageViewModel(messages[index].content,
+                                                                                viewModel.trainerId,
+                                                                                viewModel.userId,
+                                                                                viewModel.fitnessCode),
                                               currentUser: messages[index].isCurrentUser,userImage: userProfileImage)
                         }else{
                             MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
                         }
                     }
                 }
+                .accessibilityElement()
             }
+
             .padding(.vertical,5)
             .onTapGesture {
                 withAnimation {
@@ -78,21 +86,21 @@ struct UserChattingView: View {
                             showAdd = false
                         }
                     }
-
+                
                 
                 Button {
                     DispatchQueue.main.async {
                         viewModel.sendText(typingMessage)
                         typingMessage = ""
                     }
-
+                    
                 } label: {
                     Image(systemName: "arrow.up.circle.fill")
                         .font(.system(size: 25))
                         .foregroundColor(.accentColor)
                 }
                 .disabled(typingMessage.isEmpty)
-
+                
             }
             .padding(10)
             
@@ -104,18 +112,18 @@ struct UserChattingView: View {
                         isShowCamera = true
                     } label: {
                         AdditionalButtonView(item: ("camera","카메라"))
-
+                        
                     }
                     .buttonStyle(AdditionalButtonStyle())
-
+                    
                     Button {
                         isShowImage = true
                     } label: {
                         AdditionalButtonView(item: ("photo","앨범"))
                     }
                     .buttonStyle(AdditionalButtonStyle())
-
-
+                    
+                    
                 }
             }
             
@@ -166,7 +174,7 @@ func userChattingDateView(_ date:String)->some View{
         Spacer()
     }
     .rotationEffect(.degrees(-180))
- 
+    
 }
 
 

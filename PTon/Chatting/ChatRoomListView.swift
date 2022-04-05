@@ -24,7 +24,6 @@ struct ChatRoomListView: View {
 struct ChatRoomListCellView:View{
     @StateObject var viewModel:ChattingViewModel
     var body: some View{
-        
         NavigationLink {
             ChatView(viewModel: ChattingInputViewModel(viewModel.trainerId,
                                                        trainerName: viewModel.trainerName,
@@ -34,52 +33,55 @@ struct ChatRoomListCellView:View{
                      userProfileImage: viewModel.trainee.userProfile)
             .environmentObject(self.viewModel)
         } label: {
-            let lastMessage = viewModel.ChattingRoom.Messages.last ?? message(chatId: "", content: "", time: "", date: "", isRead: false, isCurrentUser: false)
-            HStack{
-                URLImageView(urlString: viewModel.trainee.userProfile,
-                             imageSize: 50,
-                             youtube: false)
-                
-                VStack(alignment:.leading,spacing:0){
-                    HStack{
-                        Text(viewModel.trainee.userName)
-                        
-                        Button {
-                            viewModel.changeFavorite()
-                        } label: {
-                            Image(systemName: "star.fill")
-                                .foregroundColor(viewModel.ChattingRoom.favorite ? Color.accentColor:Color.gray.opacity(0.1))
-                                .imageScale(.small)
+            if viewModel.ChattingRoom.chatRoomExist{
+                let lastMessage = viewModel.ChattingRoom.Messages.last ?? message(chatId: "", content: "", time: "", date: "", isRead: false, isCurrentUser: false)
+                HStack{
+                    URLImageView(urlString: viewModel.trainee.userProfile,
+                                 imageSize: 50,
+                                 youtube: false)
+                    
+                    VStack(alignment:.leading,spacing:0){
+                        HStack{
+                            Text(viewModel.trainee.userName)
+                            
+                            Button {
+                                viewModel.changeFavorite()
+                            } label: {
+                                Image(systemName: "star.fill")
+                                    .foregroundColor(viewModel.ChattingRoom.favorite ? Color.accentColor:Color.gray.opacity(0.1))
+                                    .imageScale(.small)
+                            }
+                            .buttonStyle(.plain)
+                            
+                            Spacer()
+                            
+                            Text(lastMessage.time)
                         }
-                        .buttonStyle(.plain)
-                        
-                        Spacer()
-                        
-                        Text(lastMessage.time)
-                    }
-                    HStack{
-                        Text(lastMessage.content.hasPrefix("ChatsImage") ? "사진":lastMessage.content)
-                            .frame(alignment:.leading)
-                        
-                        Spacer()
-                        
-                        Text("\(viewModel.unReadCount)")
-                            .foregroundColor(.white)
-                            .padding(8)
-                            .background(
-                                Circle()
-                                    .fill(Color.accentColor)
-                            )
-                            .opacity(viewModel.unReadCount == 0 ? 0:1)
-                        
+                        HStack{
+                            Text(lastMessage.content.hasPrefix("ChatsImage") ? "사진":lastMessage.content)
+                                .frame(alignment:.leading)
+                            
+                            Spacer()
+                            
+                            Text("\(viewModel.unReadCount)")
+                                .foregroundColor(.white)
+                                .padding(8)
+                                .background(
+                                    Circle()
+                                        .fill(Color.accentColor)
+                                )
+                                .opacity(viewModel.unReadCount == 0 ? 0:1)
+                            
 
+                        }
                     }
                 }
+            }else{
+                EmptyView()
             }
         }
         .buttonStyle(.plain)
         .padding()
-        
     }
 }
 

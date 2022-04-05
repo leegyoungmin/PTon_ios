@@ -7,15 +7,22 @@
 
 import SwiftUI
 import ToastUI
+import SDWebImageSwiftUI
 
 struct TrainerScheduleView: View {
     @StateObject var viewmodel:ScheduleViewModel
     @State var isshowCreateView:Bool = false
     @State var isshowEndView:Bool = false
-    @Binding var selectedDate:Date
+    @State var selectedDate = Date()
     var body: some View {
         VStack {
             //MARK: - Header View
+            
+            TrainerCalendarView(currentDate: $selectedDate)
+                .onChange(of: selectedDate) { newValue in
+                    viewmodel.fetchData(newValue)
+                }
+            
             HStack{
                 Text("일정")
                     .font(.system(size:25))
@@ -24,122 +31,80 @@ struct TrainerScheduleView: View {
                 Spacer()
                 
                 NavigationLink {
-                    TrainerScheduleUserListView()
-                        .environmentObject(self.viewmodel)
+                    TrainerScheduleUserListView(viewModel: ScheduleMakeViewModel(trainees: viewmodel.trainees))
                 } label: {
-                    HStack(alignment:.bottom){
-                        Text("일정 추가")
+                    Label {
+                        Text("일정추가")
+                    } icon: {
                         Image(systemName: "plus.circle")
                     }
-                    .foregroundColor(.accentColor)
                 }
+                .buttonStyle(.plain)
+                .foregroundColor(.accentColor)
 
             }
             .padding(.horizontal)
-            .padding(.top)
-            
-            //MARK: - ScheduleView
             
             if viewmodel.schedules.isEmpty{
-                VStack{
-                    Spacer()
-                    Text("아직 생성된 일정이 없습니다.")
-                    Spacer()
-                }
-
+                Text("아직 예약된 회원이 없습니다.")
             }else{
-                
                 ScrollView(.vertical, showsIndicators: false) {
-                    ForEach(viewmodel.schedules,id: \.self) { schedule in
-                        TrainerScheduleCellView(isshowEndView: $isshowEndView, schedule: schedule)
-                            .environmentObject(self.viewmodel)
+                    ForEach(viewmodel.schedules,id:\.self){ schedule in
+                        scheduleCellView(schedule: schedule)
                     }
                 }
-                .background(.white)
+                .background(RoundedRectangle(cornerRadius: 5).fill(.white).shadow(color: .gray.opacity(0.5), radius: 5))
                 .padding(.horizontal)
                 .padding(.bottom)
             }
-            
-
         }
-        .onChange(of: selectedDate) { newValue in
-            viewmodel.fetchData(newValue)
-        }
+        .background(backgroundColor)
         
         
     }
 }
 
-struct TrainerScheduleCellView:View{
-    @EnvironmentObject var viewmodel:ScheduleViewModel
-    @Binding var isshowEndView:Bool
-    let schedule:userSchedule
+struct scheduleCellView:View{
+    let schedule:schedule
     var body: some View{
         HStack{
-            URLImageView(urlString: schedule.profileImage, imageSize: 50, youtube: false)
-            
-            VStack(alignment:.leading,spacing: 5){
-                Text(schedule.username)
+            WebImage(url: URL(string: schedule.user.userProfile ?? ""))
+                .resizable()
+                .placeholder(Image("defaultImage"))
+                .frame(width: 50, height: 50, alignment: .center)
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(Color.accentColor)
+                )
+
+            VStack(alignment: .leading){
+                Text(schedule.user.userName)
                     .font(.title2)
-                    .fontWeight(.heavy)
+                    .fontWeight(.semibold)
                 
-                Text(convertString(content:schedule.schedule.time,dateFormat:"HH시 mm분"))
-                    .font(.body)
-                    .fontWeight(.medium)
+                Text(convertString(content:schedule.time,dateFormat:"HH:mm"))
+                    .fontWeight(.light)
+                    .foregroundColor(.gray.opacity(0.8))
             }
             
             Spacer()
             
             Button {
-                isshowEndView = true
+                print(123)
             } label: {
-                Image(systemName: "checkmark.circle")
-                    .font(.system(size: 25))
-                    .foregroundColor(Color.accentColor)
+                Image(systemName: schedule.isDone ? "checkmark.circle":"circle")
+                    .font(.title2)
+                    .foregroundColor(.accentColor)
             }
             .buttonStyle(.plain)
-            .disabled(schedule.schedule.isDone)
+
+
         }
         .padding()
-        .toast(isPresented: $isshowEndView,onDismiss: {
-            viewmodel.fetchData(schedule.schedule.date)
-        }, content: {
-            ToastView {
-                
-                VStack{
-                    Text("수업을 완료하시겠습니까?")
-                        .font(.system(size: 20))
-                    
-                    Text("완료 후 PT횟수가 자동으로 차감됩니다.")
-                        .font(.footnote)
-                    
-                    HStack{
-                        Button {
-                            isshowEndView = false
-                        } label: {
-                            Text("취소")
-                        }
-                        .buttonStyle(ToastButtonStyle(isPrimary: false))
-
-                        
-                        Button {
-                            DispatchQueue.main.async {
-//                                viewmodel.changeReservation(schedule.date, schedule.userId)
-                            }
-                            
-                            isshowEndView = false
-                        } label: {
-                            Text("확인")
-                        }
-                        .buttonStyle(ToastButtonStyle(isPrimary: true))
-                    }
-                    
-                }
-                .padding()
-            }
-        })
     }
 }
+
 
 struct ToastButtonStyle:ButtonStyle{
     var isPrimary:Bool = false
@@ -158,25 +123,10 @@ struct ToastButtonStyle:ButtonStyle{
 struct TrainerScheduleView_Previews: PreviewProvider {
     static var previews: some View {
         Group{
-//            TrainerScheduleView()
-//            TrainerScheduleCellView()
-//                .previewLayout(.sizeThatFits)
-//                .padding()
-            Button {
-                print(123)
-            } label: {
-                Text("취소")
-            }
-            .buttonStyle(ToastButtonStyle(isPrimary: false))
-            .previewLayout(.sizeThatFits)
+            scheduleCellView(schedule: schedule(date: Date(), isDone: false, time: Date(), user: trainee(username: "이경민", useremail: "cow970814@naber.vom", userid: "ansdjk", userProfile: "")))
+                .previewLayout(.sizeThatFits)
             
-            Button {
-                print(123)
-            } label: {
-                Text("확인")
-            }
-            .buttonStyle(ToastButtonStyle(isPrimary: true))
-            .previewLayout(.sizeThatFits)
+            TrainerScheduleView(viewmodel: ScheduleViewModel(trainerId: "", trainees: []))
 
         }
 

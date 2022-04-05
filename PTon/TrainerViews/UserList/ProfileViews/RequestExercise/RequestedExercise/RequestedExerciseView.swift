@@ -16,9 +16,7 @@ struct RequestedExerciseView: View {
     let exerciseType:[String] = ["Fitness","Aerobic","Back","Chest","Arm","Leg","Shoulder","Abs"]
     var body: some View {
         VStack{
-            DatePicker("날짜선택", selection: $selectedDate,displayedComponents: .date)
-                .datePickerStyle(.compact)
-                .environment(\.locale, Locale(identifier: "ko_KR"))
+            weekDatePickerView(currentDate: $selectedDate)
                 .padding(.horizontal)
                 .onChange(of: selectedDate) { newValue in
                     print("chagned date \(newValue)")
@@ -32,20 +30,17 @@ struct RequestedExerciseView: View {
                     ])
                 }
             
-            List{
+            ScrollView(.vertical, showsIndicators: false){
                 ForEach(exerciseType,id:\.self) { part in
                     RequestedSectionView(title: part, exercises: viewmodel.exercises.filter{$0.part == part})
                         .listRowSeparator(.hidden)
                         .environmentObject(self.viewmodel)
+                        .padding(5)
                 }
             }
-            .listStyle(.plain)
-            .listRowInsets(EdgeInsets())
-            .listRowSeparator(.hidden)
-            .onAppear {
-                UITableViewHeaderFooterView.appearance().backgroundColor = .clear
-                UITableView.appearance().sectionIndexBackgroundColor = .clear
-            }
+            .padding()
+            .background(backgroundColor)
+            
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("운동 요청")
@@ -130,7 +125,7 @@ struct RequestedSectionView:View{
 struct RequestedListHeaderView:View{
     let title:String
     var body: some View{
-        VStack(alignment: .leading,spacing: 0){
+        VStack(alignment: .leading,spacing: 5){
             Text(title)
                 .font(.title2)
             
@@ -190,8 +185,9 @@ struct RequestedExerciseAerobicCellView:View{
         .padding(.vertical)
         .padding(.horizontal,10)
         .background(
-            Rectangle()
-                .strokeBorder(.gray.opacity(0.1))
+            RoundedRectangle(cornerRadius: 5)
+                .fill(.white)
+                .shadow(color: .gray.opacity(0.2), radius: 5)
         )
         .onTapGesture {
             withAnimation {
@@ -278,8 +274,9 @@ struct RequestedExerciseAnAerobicCellView:View{
         .padding(.vertical)
         .padding(.horizontal,10)
         .background(
-            Rectangle()
-                .strokeBorder(.gray.opacity(0.1))
+            RoundedRectangle(cornerRadius: 5)
+                .fill(.white)
+                .shadow(color: .gray.opacity(0.2), radius: 5)
         )
         .onAppear {
             if exercise.sets != nil{
@@ -340,5 +337,6 @@ struct RequestExerciseView_Previews: PreviewProvider {
                 .previewLayout(.sizeThatFits)
                 .previewInterfaceOrientation(.portraitUpsideDown)
         }
+        .padding()
     }
 }

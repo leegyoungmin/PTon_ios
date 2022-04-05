@@ -11,7 +11,8 @@ import Firebase
 import FirebaseDatabase
 
 //MARK: MODEL
-struct trainee:Hashable{
+struct trainee:Hashable,Identifiable{
+    let id = UUID().uuidString
     var username:String?
     var useremail:String?
     var userid:String?
@@ -77,70 +78,75 @@ class TrainerUserListViewModel:ObservableObject{
     //유저 아이디 불러오기 메소드
     func fetchData(){
         guard let trainerid = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
-        self.trainees.removeAll(keepingCapacity: true)
-        reference
-            .child("Trainer")
-            .child(trainerid)
-            .child("trainee")
-            .observeSingleEvent(of: .value) { snapshot in
-                if snapshot.value as? String == "default"{
-                    self.trainees = []
-                }
-                else{
-                    for child in snapshot.children{
-                        let childValues = child as? DataSnapshot
-                        
-                        guard let userid = childValues?.key,
-                              let name = childValues?.value as? String else{return}
-                        print("Trainer User List View Model \(name)")
-                        self.reference
-                            .child("User")
-                            .child(userid)
-                            .child("photoUri")
-                            .observeSingleEvent(of: .value) { snapshot in
-                                if snapshot.exists(){
-                                    guard let url = snapshot.value as? String else{return}
-                                    self.trainees.append(trainee(username: name, useremail: "", userid: userid, userProfile: url))
-
-                                }
-                                else{
-                                    self.trainees.append(trainee(username: name,useremail: "", userid: userid))
-                                }
-                            }
-
-                    }
-                }
-            }
-    }
-    
-    //유저 지우기 메소드
-    func removeUser(index:Int){
-        let userData = trainees[index]
-        guard let trainerid = FirebaseAuth.Auth.auth().currentUser?.uid,
-              let userid = userData.userid else{return}
         
         reference
             .child("Trainer")
             .child(trainerid)
             .child("trainee")
-            .child(userid)
+            .observe(.childAdded) { snapshot in
+                if snapshot.value as? String == "default"{
+                    self.trainees = []
+                }else{
+                    print("Snapshot in fetch Data ::: \(snapshot)")
+                    let userId = snapshot.key
+                    guard let userName = snapshot.value as? String else{return}
+                    
+                    self.reference
+                        .child("User")
+                        .child(userId)
+                        .child("photoUri")
+                        .observeSingleEvent(of: .value) { snapshot in
+                            if snapshot.exists(){
+                                guard let url = snapshot.value as? String else{return}
+                                self.trainees.append(trainee(username: userName, useremail: "", userid: userId, userProfile: url))
+                            }else{
+                                self.trainees.append(trainee(username: userName, useremail: "", userid: userId, userProfile: ""))
+                            }
+                        }
+                }
+                print("self.fetch data ::: \(self.trainees)")
+            }
+        
+        
+        reference
+            .child("Trainer")
+            .child(trainerid)
+            .child("trainee")
+            .observe(.childRemoved) { snapshot in
+                let userId = snapshot.key
+                
+                self.trainees.removeAll(where: {$0.userId == userId})
+            }
+        
+       
+    }
+    
+    //유저 지우기 메소드
+    func removeUser(userId:String){
+        guard let trainerid = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
+        
+        reference
+            .child("Trainer")
+            .child(trainerid)
+            .child("trainee")
+            .child(userId)
             .removeValue { error, reference in
                 if error == nil{
                     self.reference
-                        .child("Trainer")
-                        .child(trainerid)
-                        .observeSingleEvent(of: .value) { snapshot in
-                            if !snapshot.hasChild("trainee"){
-                                snapshot.childSnapshot(forPath: "trainee").ref.setValue("default")
-                            }
-                            self.trainees.remove(at: index)
-                        }
+                        .child("User")
+                        .child(userId)
+                        .child("trainer")
+                        .setValue("default")
                 }
             }
     }
     
-    func getUserName(_ index:Int)->String{
-        guard let username = trainees[index].username else{return ""}
-        return username
+    func selectedtrainee(_ index:Int)->trainee{
+        return self.trainees[index]
+    }
+    
+    func selectedUserIndex(_ userId:String)->Int{
+        guard let index = self.trainees.firstIndex(where: {$0.userId == userId}) else{return -1}
+        return index
     }
 }

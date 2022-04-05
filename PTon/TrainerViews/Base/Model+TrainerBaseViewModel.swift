@@ -34,8 +34,9 @@ class TrainerBaseViewModel:ObservableObject{
         
         self.registerToken {
             self.fetchData {
-                self.getUserProfileImage()
-                self.ObserveChat()
+                self.ObserveTrainee() //회원 구독
+                self.getUserProfileImage() //회원 이미지
+                self.ObserveChat() //채팅 안읽은 개수 구독
             }
         }
     }
@@ -86,22 +87,34 @@ class TrainerBaseViewModel:ObservableObject{
                 self.trainerbasemodel.name = values["name"] as? String
                 self.trainerbasemodel.fitnessCode = values["fitnessCode"] as? String
                 UserDefaults.standard.set(values["fitnessCode"], forKey: "fitnessCode")
-                if values["trainee"] as? String != "default"{
-                    let snapshot = snapshot.childSnapshot(forPath: "trainee")
-                    for child in snapshot.children{
-                        let values = child as? DataSnapshot
-                        guard let userid = values?.key,
-                              let username = values?.value as? String else{return}
-                        
-                        let trainee = trainee(username: username, useremail: username, userid: userid)
-                        self.trainerbasemodel.trainee.append(trainee)
-                        
-                    }
-                }else{
-                    print("Trainee is Empty")
-                }
-                
                 completion()
+            }
+        
+        
+
+    }
+    
+    // 트레이너 회원 목록 구독 함수
+    func ObserveTrainee(){
+        reference
+            .child("Trainer")
+            .child(self.trainerId)
+            .child("trainee")
+            .observe(.childAdded) { snapshot in
+                let userId = snapshot.key
+                guard let userName = snapshot.value as? String else{return}
+                
+                let trainee = trainee(username: userName, useremail: userName, userid: userId)
+                self.trainerbasemodel.trainee.append(trainee)
+            }
+        
+        reference
+            .child("Trainer")
+            .child(self.trainerId)
+            .child("trainee")
+            .observe(.childRemoved) { snapshot in
+                let userId = snapshot.key
+                self.trainerbasemodel.trainee.removeAll(where: {$0.userId == userId})
             }
     }
     

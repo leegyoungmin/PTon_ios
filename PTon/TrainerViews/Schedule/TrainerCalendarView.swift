@@ -98,14 +98,12 @@ struct TrainerCalendarView: View {
                     
                 }
             }
-            .padding(.horizontal)
+            .padding()
             .onChange(of: currentMonth) { newValue in
                 withAnimation {
                     currentDate = getCurrentMonth()
                 }
             }
-            
-            TrainerScheduleView(viewmodel: ScheduleViewModel(), selectedDate: $currentDate)
         }
         .background(Color("Background"))
     }

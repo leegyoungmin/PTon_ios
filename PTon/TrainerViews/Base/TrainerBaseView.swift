@@ -22,6 +22,8 @@ struct TrainerBaseView: View {
         coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor:UIColor.black]
         UINavigationBar.appearance().standardAppearance = coloredNavAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
+        
+        print(Color.accentColor.cgColor)
     }
     var body: some View {
         TabView(selection: $trainerSelectedIndex) {
@@ -48,7 +50,8 @@ struct TrainerBaseView: View {
                 .onTapGesture {
                     self.trainerSelectedIndex = 1
                 }
-            TrainerCalendarView(currentDate: $today)
+            TrainerScheduleView(viewmodel: ScheduleViewModel(trainerId: trainerBaseViewModel.trainerId,
+                                                             trainees: trainerBaseViewModel.trainerbasemodel.trainee))
                 .tabItem{
                     Image(systemName: "person.fill")
                 }
@@ -66,7 +69,7 @@ struct TrainerBaseView: View {
                     self.trainerSelectedIndex = 3
                 }
         }
-        .tint(.purple)
+        .tint(Color.purple)
         .navigationBarItems(leading: ChangeTitle(trainerSelectedIndex), trailing:logOutButton)
         .navigationViewStyle(.stack)
     }

@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import AlertToast
+import SDWebImageSwiftUI
 
 struct UserAddView:View{
-    @Environment(\.presentationMode) var presentationMode
-    @StateObject var addUserViewModel = UserAddViewModel()
+    @Environment(\.dismiss) var dismiss
+    @StateObject var addUserViewModel:UserAddViewModel
     @State var phoneNumber = ""
     @State var offset = CGSize.zero
+    @State var isShowAlert:Bool = false
+    @State var showAlertMessage:String?
+    @State var isShowSuccessAlert:Bool = false
     var body: some View{
         
         let dragGesture = DragGesture()
@@ -22,7 +27,7 @@ struct UserAddView:View{
                 if $0.translation.height > -30{
                     withAnimation {
                         offset = .zero
-                        self.presentationMode.wrappedValue.dismiss()
+                        self.dismiss.callAsFunction()
                     }
                 }else{
                     offset = .zero
@@ -31,95 +36,129 @@ struct UserAddView:View{
         
         VStack(spacing:0){
             HStack{
-                Text("회원 추가")
-                    .font(.system(size: 40, weight: .black, design: .default))
+                
+                Label {
+                    Text("회원추가")
+                        .font(.title)
+                        .fontWeight(.semibold)
+                } icon: {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(.accentColor)
+                }
+
                 Spacer()
             }
-            .padding()
+            .padding(.horizontal)
             VStack{
                 HStack{
                     TextField("", text: $addUserViewModel.phoneNumber)
                         .textFieldStyle(.roundedBorder)
                         .keyboardType(.numberPad)
-
+                    
                     Button {
                         UIApplication.shared.endEditing()
                         addUserViewModel.findUser()
                     } label: {
                         Image(systemName: "magnifyingglass")
-                            .font(.system(size: 30))
                     }
-                    .foregroundColor(.purple)
-
+                    .foregroundColor(Color.accentColor)
+                    
                 }
-                .padding(.horizontal)
+                .padding(.vertical)
                 
-                VStack{
-                    if addUserViewModel.findtrainee.username == nil,
-                       addUserViewModel.findtrainee.useremail == nil{
-                        VStack{
-                            Spacer()
-                            Text("검색된 회원이 없습니다.")
-                            Spacer()
-                        }
-                        
-                    }else{
-                        VStack{
-                            Spacer()
-                            FindUserCardView(addUserViewModel: self.addUserViewModel)
-                                .padding()
-                            Spacer()
-                        }
+                Divider()
+                
+                if addUserViewModel.findtrainee.username == nil,
+                   addUserViewModel.findtrainee.useremail == nil{
+                    VStack{
+                        Spacer()
+                        Text("검색된 회원이 없습니다.")
+                        Spacer()
+                    }
+                    
+                }else{
+                    VStack{
+                        FindUserCardView(isShowAlertView: $isShowAlert,isShowSuccessView: $isShowSuccessAlert, alertMessage: $showAlertMessage)
+                            .environmentObject(self.addUserViewModel)
+                            .padding()
+                        Spacer()
                     }
                 }
             }
+            .padding(.horizontal)
         }
         .navigationBarHidden(true)
         .onTapGesture(count: 1) {
             UIApplication.shared.endEditing()
         }
+        .toast(isPresenting: $isShowAlert, alert: {
+            AlertToast(displayMode: .hud, type: .error(.red),title: showAlertMessage)
+        })
+        .toast(isPresenting: $isShowSuccessAlert,duration: 1, alert: {
+            AlertToast(displayMode: .hud, type: .complete(.blue),title: "회원을 추가했습니다.")
+        },completion: {
+            self.dismiss.callAsFunction()
+        })
         .gesture(dragGesture)
     }
 }
 
 struct FindUserCardView:View{
-    @ObservedObject var addUserViewModel:UserAddViewModel
+    @EnvironmentObject var viewModel:UserAddViewModel
+    @Binding var isShowAlertView:Bool
+    @Binding var isShowSuccessView:Bool
+    @Binding var alertMessage:String?
     var body: some View{
         VStack{
-            Image(systemName: "person.fill")
+            WebImage(url: URL(string: viewModel.findtrainee.userProfile ?? ""))
                 .resizable()
-                .frame(width: 80, height: 80)
-                .padding(.top,10)
+                .placeholder(
+                    Image("defaultImage")
+                )
+                .frame(width: 130, height: 130, alignment: .center)
+                .clipShape(Circle())
+                .shadow(color: .gray, radius: 5)
+                .padding()
             
-            Text(addUserViewModel.findtrainee.username ?? "example_name")
+            Text(viewModel.findtrainee.username ?? "")
+                .font(.title2)
+                .fontWeight(.semibold)
             
-            Text(addUserViewModel.findtrainee.useremail ?? "example_email")
+            Text(viewModel.findtrainee.useremail ?? "")
+                .font(.title3)
+
             
             Button {
-                addUserViewModel.updateUser()
-            } label: {
-                HStack{
-                    Image(systemName: "person.badge.plus")
-                        .font(.system(size: 25))
-                    Text("추가하기")
-                        .font(.system(size: 25))
+                viewModel.updateUser { error in
+                    withAnimation {
+                        if error != .notTrainer{
+                            self.alertMessage = error.errorDescription
+                            self.isShowAlertView = true
+                        }else{
+                            self.isShowSuccessView = true
+                        }
+                    }
                 }
-                .padding(.vertical,5)
-                .padding(.horizontal,20)
-                .background(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(lineWidth: 2)
-                        .foregroundColor(.purple)
-                )
-                .foregroundColor(.purple)
-                
+            } label: {
+                Label {
+                    Text("추가하기")
+                        .bold()
+                } icon: {
+                    Image(systemName: "plus.circle")
+                }
+                .foregroundColor(.white)
             }
             .buttonStyle(.plain)
-
+            .frame(width: UIScreen.main.bounds.width*0.7)
+            .padding(.vertical,5)
+            .background(Color.accentColor)
+            .cornerRadius(10)
+            
+            
         }
-        .padding()
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: 250, alignment: .center)
-        .background(Color.gray)
+        .padding(.vertical)
+        .frame(width: UIScreen.main.bounds.width*0.9)
+        .background(backgroundColor)
         .cornerRadius(20)
     }
 }
@@ -127,9 +166,9 @@ struct FindUserCardView:View{
 
 struct UserAddView_Previews:PreviewProvider{
     static var previews: some View{
-//        UserAddView()
-        FindUserCardView(addUserViewModel: UserAddViewModel())
-            .previewLayout(.sizeThatFits)
+        UserAddView(addUserViewModel: UserAddViewModel(trainerId: "3yvE0bnUEHbvDKasU1Orf7DhvjX2"))
+        //        FindUserCardView(addUserViewModel: UserAddViewModel())
+        //            .previewLayout(.sizeThatFits)
     }
 }
 

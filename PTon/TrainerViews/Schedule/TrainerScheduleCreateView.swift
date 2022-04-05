@@ -6,101 +6,92 @@
 //
 
 import SwiftUI
-//import BottomSheet
+import BottomSheet
+import AlertToast
+import SDWebImageSwiftUI
 
-struct TrainerScheduleUserListView: View {
+struct TrainerScheduleUserListView:View{
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var viewmodel: ScheduleViewModel
-    @State var isShowInput:Bool = false
-    @State var selectedIndex:Int = -1
-    @State var offset:CGSize = .zero
-    var body: some View {
-        VStack(spacing:0){
+    @StateObject var viewModel:ScheduleMakeViewModel
+    @State var isShowMakeView:Bool = false
+    var body: some View{
+        VStack{
+            HStack{
+                Text("현재회원목록")
+                    .font(.system(size: 20))
+                    .fontWeight(.light)
+                Spacer()
+            }
+            .padding(.top)
             
-            if !viewmodel.traineeList.isEmpty{
-                List{
-                    ForEach(viewmodel.traineeList.indices,id:\.self){ index in
-                        if viewmodel.traineeList[index].username != nil{
-                            NavigationLink {
-                                TrainerScheduleMakeView(userIndex: index)
-                                    .navigationBarTitleDisplayMode(.inline)
-                                    .environmentObject(self.viewmodel)
-                                    .onDisappear {
-                                        self.dismiss.callAsFunction()
-                                    }
-                            } label: {
-                                TrainerScheduleUserListCellView(trainee: viewmodel.traineeList[index])
-                            }
-                            
-                        }
-                    }
-                }
-                .listStyle(.plain)
-                .padding()
-            }
-        }
-        .background(Color("Background"))
-        .navigationBarBackButtonHidden(true)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Text("회원목록")
-                    .font(.system(size: 25))
-                    .fontWeight(.semibold)
-            }
-        }
-        .gesture(
-            DragGesture()
-                .onChanged{ value in
-                    if (value.predictedEndLocation.x - value.startLocation.x) > 30{
-                        withAnimation {
-                            self.offset = value.translation
-                        }
+            if viewModel.users.isEmpty{
+                Text("설정된 회원이 없습니다.")
+            }else{
+                ScrollView(.vertical, showsIndicators: false) {
+                    ForEach(viewModel.users,id:\.self) { user in
                         
+                        NavigationLink {
+                            TrainerScheduleMakeView(user: user.user)
+                                .environmentObject(self.viewModel)
+                        } label: {
+                            TrainerScheduleUserListCellView(user: user)
+                                .environmentObject(self.viewModel)
+                        }
+                        .disabled(viewModel.isNotPossible(max: user.memberShip.IntMaxLisense, min: user.memberShip.IntuserLisence))
+
                     }
                 }
-                .onEnded {
-                    if $0.translation.width > -30{
-                        withAnimation {
-                            self.offset = .zero
-                            dismiss.callAsFunction()
-                        }
-                    }else{
-                        withAnimation {
-                            self.offset = .zero
-                        }
-                    }
-                }
-        )
-        .offset(x:offset.width)
+            }
+        }
+        .padding(.horizontal)
+        .background(backgroundColor.edgesIgnoringSafeArea(.all))
+        .navigationTitle("일정 생성")
     }
 }
 
 struct TrainerScheduleUserListCellView:View{
-    let trainee:trainee
+    @EnvironmentObject var viewModel:ScheduleMakeViewModel
+    let user:schedulUser
     var body: some View{
         HStack{
-            Image(systemName: "person.fill")
+            WebImage(url: URL(string: user.user.userProfile ?? ""))
                 .resizable()
-                .frame(width: 50, height: 50, alignment: .leading)
-                .cornerRadius(25)
+                .placeholder(Image("defaultImage"))
+                .frame(width: 50, height: 50, alignment: .center)
+                .clipShape(Circle())
+                .overlay(Circle().stroke(Color.accentColor))
             
-            Text(trainee.username!)
+            VStack(alignment: .leading){
+                Text(user.user.userName)
+                
+                if viewModel.isNotPossible(max: user.memberShip.IntMaxLisense, min: user.memberShip.IntuserLisence){
+                    Text("회원권 횟수가 만료되었습니다.")
+                }else{
+                    Text("\(user.memberShip.IntuserLisence)회 / \(user.memberShip.IntMaxLisense)회")
+                }
+            }
             
             Spacer()
+            
+            Image(systemName: "chevron.right.circle")
+                .foregroundColor(.accentColor)
         }
+        .padding(5)
     }
 }
 
+
+
 struct TrainerScheduleMakeView:View{
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var viewmodel:ScheduleViewModel
-    let userIndex:Int
+    @EnvironmentObject var viewmodel:ScheduleMakeViewModel
+    let user:trainee
     @State var selectedDate = Date()
     @State var isShowDateSheet:Bool = false
     @State var isShowTimeSheet:Bool = false
     @State var isSelectedDateSheet:Bool = false
     @State var isSelectedTimeSheet:Bool = false
+    @State var isShowAlertView:Bool = false
     var body: some View{
         VStack{
             Spacer()
@@ -108,7 +99,7 @@ struct TrainerScheduleMakeView:View{
                 //수업 정보
                 VStack(spacing:5){
                     titleView(1, "수업정보")
-                    
+
                     HStack{
                         Text("PT운동")
                             .font(.system(size: 25))
@@ -126,19 +117,19 @@ struct TrainerScheduleMakeView:View{
                     .padding(.vertical,5)
                     .padding(.bottom,50)
                 }
-                
+
                 //수업 일자
                 VStack{
                     titleView(2, "수업일자")
-                    
+
                     HStack{
                         Text("\(convertString(content:selectedDate,dateFormat:"yyyy . MM . dd"))")
                             .font(.system(size: 25))
                             .fontWeight(.semibold)
                             .foregroundColor(isSelectedDateSheet ? .black:.gray)
-                        
+
                         Spacer()
-                        
+
                         Image(systemName: "calendar")
                             .font(.system(size: 20))
                     }
@@ -156,19 +147,19 @@ struct TrainerScheduleMakeView:View{
                     .padding(.vertical,5)
                     .padding(.bottom,50)
                 }
-                
+
                 //수업 시간
                 VStack{
                     titleView(3, "수업시간")
-                    
+
                     HStack{
                         Text("\(convertString(content:selectedDate,dateFormat:"HH:mm")) 부터")
                             .font(.system(size: 25))
                             .fontWeight(.semibold)
                             .foregroundColor(isSelectedTimeSheet ? .black:.gray)
-                        
+
                         Spacer()
-                        
+
                         Image(systemName: "timer")
                             .font(.system(size: 20))
                     }
@@ -186,14 +177,14 @@ struct TrainerScheduleMakeView:View{
                     .padding(.vertical,5)
                     .padding(.bottom,50)
                 }
-                
+
             }
-            
+
             Spacer()
-            
+
             Button {
-                self.viewmodel.updateReservation(selectedDate, userIndex)
-                self.dismiss.callAsFunction()
+                viewmodel.updateReservation(date: selectedDate, user: user)
+                self.isShowAlertView = true
             } label: {
                 Text("예약하기")
                     .fontWeight(.bold)
@@ -208,18 +199,25 @@ struct TrainerScheduleMakeView:View{
             .disabled(isSelectedDateSheet == false || isSelectedTimeSheet == false)
         }
         .padding(.horizontal)
-//        .bottomSheet(isPresented: $isShowDateSheet,detents: [.medium()],isModalInPresentation: false,onDismiss: {
-//            self.isSelectedDateSheet = true
-//        }) {
-//            DatePickerView(selectedDate: $selectedDate, type: .date)
-//        }
-//        .bottomSheet(isPresented: $isShowTimeSheet,detents: [.medium()],isModalInPresentation: false,onDismiss: {
-//            self.isSelectedTimeSheet = true
-//        }) {
-//            DatePickerView(selectedDate: $selectedDate, type: .hourAndMinute)
-//        }
+        .bottomSheet(isPresented: $isShowDateSheet,detents: [.medium()],isModalInPresentation: false,onDismiss: {
+            self.isSelectedDateSheet = true
+        }) {
+            DatePickerView(selectedDate: $selectedDate, type: .date)
+        }
+        .bottomSheet(isPresented: $isShowTimeSheet,detents: [.medium()],isModalInPresentation: false,onDismiss: {
+            self.isSelectedTimeSheet = true
+        }) {
+            DatePickerView(selectedDate: $selectedDate, type: .hourAndMinute)
+        }
+        .toast(isPresenting: $isShowAlertView, duration: 1, tapToDismiss: true, alert: {
+            AlertToast(displayMode: .banner(.pop), type: .complete(.accentColor),title: "예약이 완료되었습니다.")
+        }, onTap: {
+            isShowAlertView = false
+        }, completion: {
+            self.dismiss.callAsFunction()
+        })
     }
-    
+
     func titleView(_ number:Int,_ title:String)->some View{
         return HStack(spacing:5){
             Image(systemName: "\(number).circle.fill")
@@ -227,7 +225,7 @@ struct TrainerScheduleMakeView:View{
             Text(title)
                 .font(.system(size: 15))
                 .foregroundColor(.gray.opacity(0.8))
-            
+
             Spacer()
         }
     }
@@ -237,7 +235,7 @@ struct DatePickerView:View{
     @Binding var selectedDate:Date
     let type:DatePickerComponents
     var body: some View{
-        
+
         if type == .hourAndMinute{
             VStack{
                 HStack{
@@ -246,7 +244,9 @@ struct DatePickerView:View{
                         .fontWeight(.semibold)
                     Spacer()
                 }
-                .padding(.horizontal)
+                .padding()
+
+                Spacer()
                 
                 DatePicker("", selection: $selectedDate,displayedComponents: type)
                     .datePickerStyle(.wheel)
@@ -254,10 +254,13 @@ struct DatePickerView:View{
                     .environment(\.locale, Locale(identifier: "ko_KR"))
                     .background(.gray.opacity(0.2))
                     .cornerRadius(10)
+                
+                Spacer()
+
             }
 
         }else{
-            VStack{
+            VStack(spacing:20){
                 HStack{
                     Text("날짜 설정")
                         .font(.system(size: 20))
@@ -265,26 +268,24 @@ struct DatePickerView:View{
                     Spacer()
                 }
                 .padding(.horizontal)
-                
+
                 DatePicker("", selection: $selectedDate ,displayedComponents: type)
                     .datePickerStyle(.graphical)
                     .labelsHidden()
                     .padding(.horizontal)
             }
         }
-        
-        
+
+
     }
 }
 
 struct TrainerScheduleCreateView_Previews: PreviewProvider {
     static var previews: some View {
-        
+
         Group{
-//            TrainerScheduleMakeView()
-            DatePickerView(selectedDate: .constant(Date()), type: .hourAndMinute)
-                .previewLayout(.sizeThatFits)
-                .padding()
+            TrainerScheduleUserListView(viewModel: ScheduleMakeViewModel(trainees: []))
         }
     }
 }
+

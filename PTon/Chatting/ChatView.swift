@@ -27,42 +27,55 @@ struct ChatView: View {
     var body: some View {
         VStack(spacing:0){
             //MARK: - 채팅 리스트
-            ScrollView(.vertical, showsIndicators: false) {
-                ForEach(chattingRoomViewModel.messages.indices.reversed(),id:\.self){ index in
-                    
-                    if index == 0 || chattingRoomViewModel.messages[index-1].date != chattingRoomViewModel.messages[index].date{
-                        VStack{
-                            
+            
+            if chattingRoomViewModel.messages.isEmpty{
+                backgroundColor
+            }else{
+                ScrollView(.vertical, showsIndicators: false) {
+                    ForEach(chattingRoomViewModel.messages.indices.reversed(),id:\.self) { index in
+                        
+                        if index == 0 || chattingRoomViewModel.messages[index-1].date != chattingRoomViewModel.messages[index].date{
+                            VStack{
+                                
+                                if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
+                                    ChattingImageView(viewmodel: ChattingImageViewModel(chattingRoomViewModel.messages[index].content,
+                                                                                        viewModel.trainerId,
+                                                                                        viewModel.userId,
+                                                                                        viewModel.fitnessCode),
+                                                      currentUser: chattingRoomViewModel.messages[index].isCurrentUser,userImage: userProfileImage)
+                                }else{
+                                    MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
+                                }
+                                
+                                userChattingDateView(chattingRoomViewModel.messages[index].date)
+                                    .padding()
+                            }
+                        } else {
                             if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
-                                ChattingImageView(viewmodel: ChattingImageViewModel(path: chattingRoomViewModel.messages[index].content),
+                                ChattingImageView(viewmodel: ChattingImageViewModel(chattingRoomViewModel.messages[index].content,
+                                                                                    viewModel.trainerId,
+                                                                                    viewModel.userId,
+                                                                                    viewModel.fitnessCode),
                                                   currentUser: chattingRoomViewModel.messages[index].isCurrentUser,userImage: userProfileImage)
                             }else{
                                 MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
                             }
-                            
-                            userChattingDateView(chattingRoomViewModel.messages[index].date)
-                                .padding()
-                        }
-                    } else {
-                        if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
-                            ChattingImageView(viewmodel: ChattingImageViewModel(path: chattingRoomViewModel.messages[index].content),
-                                              currentUser: chattingRoomViewModel.messages[index].isCurrentUser,userImage: userProfileImage)
-                        }else{
-                            MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
                         }
                     }
                 }
-            }
-            .padding(.vertical,5)
-            .onTapGesture {
-                withAnimation {
-                    showAdd = false
-                    UIApplication.shared.endEditing()
+                .padding(.vertical,5)
+                .onTapGesture {
+                    withAnimation {
+                        showAdd = false
+                        UIApplication.shared.endEditing()
+                    }
                 }
+                .padding(.horizontal)
+                .background(Color("Background"))
+                .rotationEffect(.degrees(-180))
             }
-            .padding(.horizontal)
-            .background(Color("Background"))
-            .rotationEffect(.degrees(-180))
+            
+
             
             //MARK: - 채팅 입력창
             HStack{
@@ -241,9 +254,8 @@ struct AdditionalButtonView:View{
     }
 }
 
-struct chatview_Previews: PreviewProvider {
-    static var previews: some View {
-        chattingDateView("2021.10.12 월요일")
-            .previewLayout(.sizeThatFits)
-    }
-}
+//struct chatview_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChatView(viewModel: ChattingInputViewModel("", trainerName: "", "", userName: "", ""), userProfileImage: "")
+//    }
+//}

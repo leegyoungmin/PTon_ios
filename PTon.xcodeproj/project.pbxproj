@@ -19,6 +19,7 @@
 		18055AAE27EEFA5200CB2AFE /* TodayExerciseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AAD27EEFA5200CB2AFE /* TodayExerciseRecordView.swift */; };
 		18055AB027EF065400CB2AFE /* Exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = 18055AAF27EF065400CB2AFE /* Exercises.json */; };
 		18055AB227EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AB127EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift */; };
+		1807A83B27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1807A83A27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift */; };
 		18184FC427C3554B00BBEB5E /* KcalSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18184FC327C3554B00BBEB5E /* KcalSettingViewModel.swift */; };
 		181C3F8427D73B7F00F7721A /* Profile + ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */; };
 		181DE20827B10C10002F33B2 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181DE20727B10C10002F33B2 /* Error.swift */; };
@@ -43,7 +44,6 @@
 		1833729F27F2F3E400C8D595 /* Model + HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1833729E27F2F3E400C8D595 /* Model + HomeViewModel.swift */; };
 		183372A327F32FA700C8D595 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183372A227F32FA700C8D595 /* SearchService.swift */; };
 		183372A527F3307300C8D595 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183372A427F3307300C8D595 /* TestView.swift */; };
-		183372A627F33AE600C8D595 /* Pods_PTon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F9578388726DFD032C19429 /* Pods_PTon.framework */; };
 		183372AA27F36D1700C8D595 /* Example.html in Resources */ = {isa = PBXBuildFile; fileRef = 183372A927F36D1700C8D595 /* Example.html */; };
 		183372AC27F36D8600C8D595 /* ExampleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183372AB27F36D8600C8D595 /* ExampleView.swift */; };
 		1833C64B27BCD0C40096E3E4 /* RequestedStretchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1833C64A27BCD0C40096E3E4 /* RequestedStretchingView.swift */; };
@@ -76,6 +76,7 @@
 		186F11E527B7D7EC004BED0F /* MemoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186F11E427B7D7EC004BED0F /* MemoListView.swift */; };
 		186F11E727B7D821004BED0F /* MemoCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186F11E627B7D821004BED0F /* MemoCreateView.swift */; };
 		187165B427B0059400C4FC6C /* PTonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187165B327B0059400C4FC6C /* PTonApp.swift */; };
+		187595B227FCA5B600E9C982 /* Pods_PTon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F9578388726DFD032C19429 /* Pods_PTon.framework */; };
 		187D876927DB196500495576 /* ChattingImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D876827DB196500495576 /* ChattingImageViewModel.swift */; };
 		187D876B27DB422400495576 /* TrainerScheduleCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D876A27DB422400495576 /* TrainerScheduleCreateView.swift */; };
 		187D876D27DB440200495576 /* Model + ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D876C27DB440200495576 /* Model + ScheduleViewModel.swift */; };
@@ -102,6 +103,7 @@
 		18967B5327F9C6FD00A4BE58 /* UserMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18967B5227F9C6FD00A4BE58 /* UserMemoView.swift */; };
 		18967B5627F9CEBB00A4BE58 /* TrainerJournalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18967B5527F9CEBB00A4BE58 /* TrainerJournalView.swift */; };
 		18967B5827F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18967B5727F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift */; };
+		18B53D3927FB4BD000AC0E9C /* BottomSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 18B53D3827FB4BD000AC0E9C /* BottomSheet */; };
 		18B7D94027E08E4100400310 /* Model + MemoCreateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */; };
 		18B7D94227E09C8A00400310 /* MemoListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18B7D94127E09C8A00400310 /* MemoListViewModel.swift */; };
 		18B7D94827E0A07200400310 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 18B7D94727E0A07200400310 /* .gitignore */; };
@@ -133,6 +135,7 @@
 		18055AAD27EEFA5200CB2AFE /* TodayExerciseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayExerciseRecordView.swift; sourceTree = "<group>"; };
 		18055AAF27EF065400CB2AFE /* Exercises.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Exercises.json; sourceTree = "<group>"; };
 		18055AB127EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + TodayExerciseRecordViewModel.swift"; sourceTree = "<group>"; };
+		1807A83A27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + ScheduleMakeViewModel.swift"; sourceTree = "<group>"; };
 		18184FC327C3554B00BBEB5E /* KcalSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KcalSettingViewModel.swift; sourceTree = "<group>"; };
 		181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Profile + ProfileViewModel.swift"; sourceTree = "<group>"; };
 		181DE20727B10C10002F33B2 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
@@ -209,7 +212,7 @@
 		188C452327F1A76300C2180A /* TodayExerciseModifyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayExerciseModifyView.swift; sourceTree = "<group>"; };
 		188C452627F2153200C2180A /* Model + UserBaseInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + UserBaseInfoViewModel.swift"; sourceTree = "<group>"; };
 		1893940427ABAF0100B4DB8A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
-		1893940627ABAF0200B4DB8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1893940627ABAF0200B4DB8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../../../../../../Users/igyeongmin/Desktop/PTon/PTon/Assets.xcassets; sourceTree = SDKROOT; };
 		1893941327ABAF8B00B4DB8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1893941527ABBC5F00B4DB8A /* PTon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PTon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1893960827ABDE0200B4DB8A /* UserBaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBaseView.swift; sourceTree = "<group>"; };
@@ -244,7 +247,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				183372A627F33AE600C8D595 /* Pods_PTon.framework in Frameworks */,
+				18B53D3927FB4BD000AC0E9C /* BottomSheet in Frameworks */,
+				187595B227FCA5B600E9C982 /* Pods_PTon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,6 +376,7 @@
 				187D876A27DB422400495576 /* TrainerScheduleCreateView.swift */,
 				187D876C27DB440200495576 /* Model + ScheduleViewModel.swift */,
 				18236D3A27DB6BA300B0D619 /* TrainerCalendarView.swift */,
+				1807A83A27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -792,6 +797,9 @@
 			dependencies = (
 			);
 			name = PTon;
+			packageProductDependencies = (
+				18B53D3827FB4BD000AC0E9C /* BottomSheet */,
+			);
 			productName = PTon;
 			productReference = 1893941527ABBC5F00B4DB8A /* PTon.app */;
 			productType = "com.apple.product-type.application";
@@ -821,6 +829,9 @@
 				"ko-KR",
 			);
 			mainGroup = 189393F627ABAF0100B4DB8A;
+			packageReferences = (
+				18B53D3727FB4BD000AC0E9C /* XCRemoteSwiftPackageReference "BottomSheet" */,
+			);
 			productRefGroup = 189393F627ABAF0100B4DB8A;
 			projectDirPath = "";
 			projectRoot = "";
@@ -976,6 +987,7 @@
 				18C1641C27F58E2A0024FAAF /* UserHomeMemberShipView.swift in Sources */,
 				1833091727BE8ECA00890212 /* Model+RequestStretchingViewModel.swift in Sources */,
 				182DADB027B2815500D15C56 /* UserAddViewModel.swift in Sources */,
+				1807A83B27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift in Sources */,
 				188C452727F2153200C2180A /* Model + UserBaseInfoViewModel.swift in Sources */,
 				18036F2F27ECAA8F00EFAE56 /* MealEditViews.swift in Sources */,
 				187D876B27DB422400495576 /* TrainerScheduleCreateView.swift in Sources */,
@@ -1024,6 +1036,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1056,6 +1070,8 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
+				ENABLE_ONLY_ACTIVE_RESOURCES = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				EXCLUDED_ARCHS = x86_64;
@@ -1088,6 +1104,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -1120,7 +1138,9 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_ONLY_ACTIVE_RESOURCES = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				EXCLUDED_ARCHS = x86_64;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1152,7 +1172,7 @@
 				CODE_SIGN_ENTITLEMENTS = PTon/PTon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_ASSET_PATHS = PTon/Assets.xcassets;
 				DEVELOPMENT_TEAM = TZ33KAU3T9;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -1190,7 +1210,7 @@
 				CODE_SIGN_ENTITLEMENTS = PTon/PTon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_ASSET_PATHS = PTon/Assets.xcassets;
 				DEVELOPMENT_TEAM = TZ33KAU3T9;
 				ENABLE_PREVIEWS = YES;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -1241,6 +1261,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		18B53D3727FB4BD000AC0E9C /* XCRemoteSwiftPackageReference "BottomSheet" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/adamfootdev/BottomSheet.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		18B53D3827FB4BD000AC0E9C /* BottomSheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18B53D3727FB4BD000AC0E9C /* XCRemoteSwiftPackageReference "BottomSheet" */;
+			productName = BottomSheet;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 189393F727ABAF0100B4DB8A /* Project object */;
 }

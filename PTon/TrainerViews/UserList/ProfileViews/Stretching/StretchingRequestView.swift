@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
+import AlertToast
 
 struct StretchingRequestView: View {
     //MARK: - PROPERTIES
@@ -13,39 +15,30 @@ struct StretchingRequestView: View {
     let Stretchings:[Stretching] = Bundle.main.decode("Stretching.json")
     @StateObject var stretchingViewModel:StretchingViewModel
     @State var selectedDay = Date()
+    @State var isShowAlert:Bool = false
+    let AlertMessage:String = "저장완료"
     
     //MARK: - VIEW
     var body: some View {
         VStack{
-            HStack{
-                DatePicker("", selection: $stretchingViewModel.selectedDay,displayedComponents: .date)
-                    .environment(\.locale, Locale(identifier: "ko_KR"))
-                    .labelsHidden()
-                    .onChange(of: stretchingViewModel.selectedDay) { newValue in
-                        stretchingViewModel.fetchData()
-                    }
-                
-                Spacer()
-                
-                Button {
-                    stretchingViewModel.setTrainerStretching {
-                        stretchingViewModel.setUserStretching {
-                            dismiss.callAsFunction()
-                        }
-                    }
-                } label: {
-                    Text("저장하기")
-                        .underline()
-                        .foregroundColor(.accentColor)
+            weekDatePickerView(currentDate: $selectedDay)
+                .padding()
+                .background(.white)
+                .onChange(of: selectedDay) { newvalue in
+                    stretchingViewModel.fetchData(date: newvalue)
+                    print(stretchingViewModel.trainerList.count)
                 }
-                
-            }
             
             ScrollView(.vertical, showsIndicators: false){
                 ForEach(stretchingViewModel.trainerList.indices,id:\.self) { index in
                     
                     HStack{
-                        URLImageView(urlString:"https://img.youtube.com/vi/\(Stretchings[index].videoID)/maxresdefault.jpg", imageSize: 100, youtube: true)
+                        
+                        WebImage(url: URL(string: "https://img.youtube.com/vi/\(Stretchings[index].videoID)/maxresdefault.jpg"))
+                            .placeholder(Image("defaultImage"))
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 50, alignment: .center)
                         
                         VStack(alignment:.leading,spacing:5){
                             HStack{
@@ -75,14 +68,20 @@ struct StretchingRequestView: View {
                 }
             }
             .background(.white)
-            .padding(.bottom)
+            .padding(.horizontal)
+            .padding(.bottom,5)
             
         }
-        .padding(.horizontal)
+        .disabled(isShowAlert)
         .background(backgroundColor.edgesIgnoringSafeArea(.all))
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
+        .toast(isPresenting: $isShowAlert,duration: 1, alert: {
+            AlertToast(displayMode: .banner(.pop), type: .complete(.accentColor),title: AlertMessage)
+        },completion: {
+            self.dismiss.callAsFunction()
+        })
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 HStack{
@@ -98,6 +97,21 @@ struct StretchingRequestView: View {
                         .fontWeight(.semibold)
                 }
 
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    stretchingViewModel.setTrainerStretching {
+                        stretchingViewModel.setUserStretching {
+                            withAnimation {
+                                self.isShowAlert = true
+                            }
+                        }
+                    }
+                } label: {
+                    Text((stretchingViewModel.trainerList.filter({$0.Checked == true}).count > 0) ? "수정하기":"저장하기")
+                        .underline()
+                        .foregroundColor(.accentColor)
+                }
             }
         }
     }
@@ -151,3 +165,4 @@ struct StretchingRequestView_Previews: PreviewProvider {
         
     }
 }
+

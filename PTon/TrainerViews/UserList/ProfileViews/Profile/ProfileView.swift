@@ -42,6 +42,7 @@ struct ProfileView: View {
                         offset = .zero
                         self.isChatting = false
                         self.ispresent = false
+                        dismiss.callAsFunction()
                     }
                 }else{
                     offset = .zero
@@ -57,6 +58,7 @@ struct ProfileView: View {
                         Button {
                             self.isChatting = false
                             self.ispresent = false
+                            dismiss.callAsFunction()
                         } label: {
                             Image(systemName: "xmark")
                                 .font(.system(size: 23))
@@ -81,7 +83,7 @@ struct ProfileView: View {
                             .fontWeight(.light)
                         
                         HStack{
-                            if viewmodel.MemberShip.startMember == nil || viewmodel.MemberShip.endMember == nil{
+                            if viewmodel.MemberShip.startMember == nil || viewmodel.MemberShip.endMember == nil || (convertInteval(firstDate:viewmodel.MemberShip.endMember!,second:viewmodel.MemberShip.startMember!) == 0){
                                 Button {
                                     self.memberShipType = .date
                                     self.isPresentBottomSheet = true
@@ -99,10 +101,10 @@ struct ProfileView: View {
                                         .bold()
                                 }
                                 .buttonStyle(MemberShipButtonStyle(isText: true))
-
+                                
                             }
                             
-                            if viewmodel.MemberShip.maxLisence == nil || viewmodel.MemberShip.useLisence == nil{
+                            if viewmodel.MemberShip.maxLisence == nil || viewmodel.MemberShip.useLisence == nil || (viewmodel.MemberShip.IntMaxLisense - viewmodel.MemberShip.IntuserLisence) <= 0{
                                 Button {
                                     self.memberShipType = .lisence
                                     self.isPresentBottomSheet = true
@@ -113,7 +115,8 @@ struct ProfileView: View {
                                 }
                                 .buttonStyle(MemberShipButtonStyle(isText: false))
                                 
-                            }else{
+                            }
+                            else{
                                 Button {
                                 } label: {
                                     Text("\(viewmodel.MemberShip.useLisence!)회 / \(viewmodel.MemberShip.maxLisence!)회")
@@ -159,8 +162,8 @@ struct ProfileView: View {
                                          userName: viewmodel.trainee.userName,
                                          trainerId: viewmodel.traineid,
                                          trainerName: self.trainerName)
-                                .navigationTitle("")
-                                .navigationBarTitleDisplayMode(.inline)
+                            .navigationTitle("")
+                            .navigationBarTitleDisplayMode(.inline)
                         } label: {
                             ProfileButton(icons[4])
                         }
@@ -189,14 +192,14 @@ struct ProfileView: View {
             .navigationTitle("")
             .navigationBarHidden(true)
             .navigationBarBackButtonHidden(true)
-//            .bottomSheet(isPresented: $isPresentBottomSheet,detents: [.medium()],isModalInPresentation: true) {
-//                if self.memberShipType != nil{
-//
-//                    MemberShipSettingView(isPresented: $isPresentBottomSheet,
-//                                          type: self.memberShipType!)
-//                        .environmentObject(self.viewmodel)
-//                }
-//            }
+            //            .bottomSheet(isPresented: $isPresentBottomSheet,detents: [.medium()],isModalInPresentation: true) {
+            //                if self.memberShipType != nil{
+            //
+            //                    MemberShipSettingView(isPresented: $isPresentBottomSheet,
+            //                                          type: self.memberShipType!)
+            //                        .environmentObject(self.viewmodel)
+            //                }
+            //            }
         }
         //TODO: - chatting room navigation
         
@@ -318,7 +321,7 @@ struct DateSettingView:View{
             Spacer()
             
             DatePicker("시작 날짜", selection: $startDate,displayedComponents: .date)
-                
+            
             DatePicker("종료 날짜", selection: $endDate, in: startDate...,displayedComponents: .date)
             
             Spacer()
@@ -332,7 +335,7 @@ struct DateSettingView:View{
                 withAnimation {
                     self.dismiss.callAsFunction()
                 }
-
+                
             } label: {
                 Text("저장하기")
                     .foregroundColor(.white)
@@ -341,7 +344,7 @@ struct DateSettingView:View{
             .padding(.top,20)
             
             Spacer()
-
+            
         }
         .datePickerStyle(.compact)
         .environment(\.locale, Locale(identifier: "ko_KR"))
@@ -370,38 +373,38 @@ struct MemberShipButtonStyle:ButtonStyle{
     }
 }
 
-struct ProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        //        ProfileView(viewmodel: ProfileViewModel(userid: "asd", trainerid: "asd", fitnessCode: "asd", userName: "Asd", userUrl: "asd"), ispresent: .constant(true), isChatting: .constant(false))
-//        Group{
-//            Button {
-//                print("Action 회원권 버튼")
-//            } label: {
-//                Text("회원권")
-//                    .foregroundColor(Color.accentColor)
-//                    .bold()
-//            }
-//            .buttonStyle(MemberShipButtonStyle(isText: true))
-//
-//
-//
-//            Text("123123")
-//                .padding(.horizontal,5)
-//                .padding()
-//                .frame(minWidth:80)
-//                .background(.purple)
-//
-//        }
-//        .previewLayout(.sizeThatFits)
-//        .padding()
-        
-        Group{
-            MemberShipSettingView(isPresented: .constant(true), type: .date)
-        }
-        .previewLayout(.fixed(width: UIScreen.main.bounds.width, height: 300))
-        .padding()
-    }
-    
-
-}
+//struct ProfileView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ProfileView(viewmodel: ProfileViewModel("", "", trainee()), ispresent: .constant(true), isChatting: .constant(false), index: .constant(1), trainerName: "이경민")
+//        //        Group{
+//        //            Button {
+//        //                print("Action 회원권 버튼")
+//        //            } label: {
+//        //                Text("회원권")
+//        //                    .foregroundColor(Color.accentColor)
+//        //                    .bold()
+//        //            }
+//        //            .buttonStyle(MemberShipButtonStyle(isText: true))
+//        //
+//        //
+//        //
+//        //            Text("123123")
+//        //                .padding(.horizontal,5)
+//        //                .padding()
+//        //                .frame(minWidth:80)
+//        //                .background(.purple)
+//        //
+//        //        }
+//        //        .previewLayout(.sizeThatFits)
+//        //        .padding()
+//        //
+//        //        Group{
+//        //            MemberShipSettingView(isPresented: .constant(true), type: .date)
+//        //        }
+//        //        .previewLayout(.fixed(width: UIScreen.main.bounds.width, height: 300))
+//        //        .padding()
+//    }
+//    
+//    
+//}
 

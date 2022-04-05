@@ -10,6 +10,9 @@ import Firebase
 import KakaoSDKAuth
 import KakaoSDKCommon
 import NaverThirdPartyLogin
+import SDWebImageSwiftUI
+import FirebaseStorageUI
+import Photos
 
 
 @main
@@ -23,7 +26,6 @@ struct PTONApp: App {
         appearance.backgroundColor = .white
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
-        
     }
     
     var body: some Scene {

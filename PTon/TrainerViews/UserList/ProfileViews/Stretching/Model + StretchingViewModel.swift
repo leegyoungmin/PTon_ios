@@ -29,7 +29,7 @@ class StretchingViewModel:ObservableObject{
         self.trainerid = trainerid
         self.userid = userid
         resetData()
-        fetchData()
+        fetchData(date: Date())
     }
     
     func setTrainerStretching(completion:@escaping()->Void){
@@ -67,13 +67,13 @@ class StretchingViewModel:ObservableObject{
             }
         }
     }
-    func fetchData(){
+    func fetchData(date:Date){
         reference
             .child("Stretch")
             .child(self.trainerid)
             .child(self.userid)
-            .child(convertDateToString(date: selectedDay))
-            .observe(.value) { snapshot in
+            .child(convertDateToString(date: date))
+            .observeSingleEvent(of: .value, with: { snapshot in
                 if snapshot.exists(){
                     for child in snapshot.children{
                         let childsnap = child as! DataSnapshot
@@ -87,7 +87,7 @@ class StretchingViewModel:ObservableObject{
                     self.trainerList.removeAll(keepingCapacity: true)
                     self.resetData()
                 }
-            }
+            })
     }
     
     func resetData(){

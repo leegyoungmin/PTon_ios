@@ -13,8 +13,9 @@ struct TrainerUserListView: View {
     @State var isShowSheet:Bool = false
     @State var isChatClicked:Bool = false
     @State var isPresentChat:Bool = false
-    @State var userindex:Int = 0
+    @State var selectedTrainee:trainee?
     @State var searchText:String = ""
+    @State var userindex:Int = 0
     @Binding var baseIndex:Int
     var body: some View {
         
@@ -39,7 +40,7 @@ struct TrainerUserListView: View {
                         .fontWeight(.light)
                     Spacer()
                     NavigationLink {
-                        UserAddView()
+                        UserAddView(addUserViewModel: UserAddViewModel(trainerId: baseViewmodel.trainerId))
                     } label: {
                         HStack{
                             Text("회원추가")
@@ -52,35 +53,43 @@ struct TrainerUserListView: View {
                 }
                 .padding(.top,20)
                 
-                List(trainerUserListViewModel.trainees.indices,id:\.self){ index in
-                    userListRowView(item: trainerUserListViewModel.trainees[index])
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button {
-                                self.trainerUserListViewModel.removeUser(index: index)
-                            } label: {
-                                Image(systemName: "trash")
-                            }
-                            .tint(.red)
+                if trainerUserListViewModel.trainees.isEmpty{
+                    Spacer()
+                    Text("아직 추가된 회원이 없습니다.")
+                    Spacer()
+                }else{
+                    List{
+                        
+                        ForEach(searchResult,id:\.self) { user in
+                            userListRowView(item: user)
+                                .swipeActions {
+                                    Button {
+                                        self.trainerUserListViewModel.removeUser(userId: user.userId)
+                                    } label: {
+                                        Image(systemName: "trash")
+                                    }
+                                    .tint(.red)
+
+                                }
+                                .onTapGesture {
+                                    self.selectedTrainee = user
+                                    self.userindex = trainerUserListViewModel.selectedUserIndex(user.userId)
+                                    self.isShowSheet = true
+                                }.fullScreenCover(item: $selectedTrainee) { trainee in
+                                    ProfileView(
+                                        viewmodel: ProfileViewModel(baseViewmodel.trainerId,
+                                                                    trainerUserListViewModel.fitnessCode,
+                                                                    trainee),
+                                        ispresent: $isShowSheet,
+                                        isChatting: $isPresentChat,
+                                        index: $baseIndex,
+                                        trainerName: baseViewmodel.trainername)
+                                }
                         }
-                        .onTapGesture {
-                            print(trainerUserListViewModel.trainees)
-                            self.userindex = index
-                            self.isShowSheet = true
-                        }
-                        .fullScreenCover(isPresented: $isShowSheet, onDismiss: DidDissMiss) {
-                            ProfileView(
-                                viewmodel: ProfileViewModel(baseViewmodel.trainerId,
-                                                            trainerUserListViewModel.fitnessCode,
-                                                            baseViewmodel.trainerbasemodel.trainee[userindex]
-                                                           ),
-                                ispresent: $isShowSheet,
-                                isChatting: $isPresentChat,
-                                index: $baseIndex,
-                                trainerName: baseViewmodel.trainername)
-                        }
+                    }
+                    .listStyle(.plain)
+                    .searchable(text: $searchText)
                 }
-                .listStyle(.plain)
-                .searchable(text: $searchText)
                 
                 NavigationLink(isActive: $isPresentChat) {
                     LazyView(
@@ -118,13 +127,13 @@ struct TrainerUserListView: View {
             return trainerUserListViewModel.trainees
         }else{
             return trainerUserListViewModel.trainees.filter{
-                $0.username!.contains(searchText)
+                $0.userName.contains(searchText)
             }
         }
     }
     
     func DidDissMiss(){
-        if self.isChatClicked == true{
+        if self.isChatClicked == true,self.userindex > 0{
             isPresentChat = true
         }
     }

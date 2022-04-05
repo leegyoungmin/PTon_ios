@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+import FirebaseStorageUI
 
 
 class ChattingInputViewModel:ObservableObject{
@@ -29,7 +30,17 @@ class ChattingInputViewModel:ObservableObject{
     func sendText(_ message:String){
         guard let compareId = Firebase.Auth.auth().currentUser?.uid else{return}
         
-        
+        Database.database().reference()
+            .child("ChatList")
+            .child(fitnessCode)
+            .child(trainerId)
+            .child(userId)
+            .observeSingleEvent(of: .value) { snapshot in
+                if !snapshot.exists(){
+                    snapshot.ref.updateChildValues([self.userId:["uid":self.userId,"favorite":false]])
+                }
+            }
+
         setData(compareId == trainerId, message: message)
     }
     
@@ -74,11 +85,9 @@ class ChattingInputViewModel:ObservableObject{
     }
     
     func uploadImage(_ image:Data){
-        let storage = FirebaseStorage.Storage.storage().reference()
-        let path = "ChatsImage_\(userId)_\(trainerId)_\(convertString(content: Date(), dateFormat: "yyyy_MM_dd_HH_mm_ss")).jpg"
-        
-        storage.child("ChatsImage").child(path)
-            .putData(image, metadata: nil){ _, error in
+        let path = "ChatsImage_\(convertString(content: Date(), dateFormat: "yyyy_MM_dd_HH_mm_ss")).jpg"
+        let storage = FirebaseStorage.Storage.storage().reference().child("ChatsImage").child(fitnessCode).child(trainerId).child(userId)
+        storage.child(path).putData(image, metadata: nil){ _, error in
                 if error == nil{
                     self.sendText(path)
                 }
