@@ -22,38 +22,45 @@ struct UserChattingView: View {
     var body: some View {
         VStack(spacing:0){
             //MARK: - 채팅 리스트
+            
+
             ScrollView(.vertical, showsIndicators: false){
-                ForEach(messages.indices.reversed(),id:\.self) { index in
-                    
-                    if index == 0 || messages[index-1].date != messages[index].date{
-                        VStack{
-                            
+                LazyVStack{
+                    ForEach(messages.indices.reversed(),id:\.self) { index in
+                        
+                        if index == 0 || messages[index-1].date != messages[index].date{
+                            VStack{
+                                
+                                if messages[index].content.hasPrefix("ChatsImage"){
+                                    ChattingImageView(currentUser: messages[index].isCurrentUser,
+                                                      userImage: userProfileImage,
+                                                      urlPath: messages[index].content,
+                                                      trainerId: viewModel.trainerId,
+                                                      userId: viewModel.userId,
+                                                      fitnessCode: viewModel.fitnessCode)
+                                }else{
+                                    MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
+                                }
+                                
+                                userChattingDateView(messages[index].date)
+                                    .padding()
+                            }
+                        } else {
                             if messages[index].content.hasPrefix("ChatsImage"){
-                                ChattingImageView(viewmodel: ChattingImageViewModel(messages[index].content,
-                                                                                    viewModel.trainerId,
-                                                                                    viewModel.userId,
-                                                                                    viewModel.fitnessCode),
-                                                  currentUser: messages[index].isCurrentUser,userImage: userProfileImage)
+                                ChattingImageView(currentUser: messages[index].isCurrentUser,
+                                                  userImage: userProfileImage,
+                                                  urlPath: messages[index].content,
+                                                  trainerId: viewModel.trainerId,
+                                                  userId: viewModel.userId,
+                                                  fitnessCode: viewModel.fitnessCode)
                             }else{
                                 MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
                             }
-                            
-                            userChattingDateView(messages[index].date)
-                                .padding()
-                        }
-                    } else {
-                        if messages[index].content.hasPrefix("ChatsImage"){
-                            ChattingImageView(viewmodel: ChattingImageViewModel(messages[index].content,
-                                                                                viewModel.trainerId,
-                                                                                viewModel.userId,
-                                                                                viewModel.fitnessCode),
-                                              currentUser: messages[index].isCurrentUser,userImage: userProfileImage)
-                        }else{
-                            MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
                         }
                     }
+                    .accessibilityElement()
                 }
-                .accessibilityElement()
+
             }
 
             .padding(.vertical,5)
@@ -130,13 +137,13 @@ struct UserChattingView: View {
         }
         .sheet(isPresented: $isShowImage) {
             //MARK: - Chatting Image Picker View
-            ChattingImagePickerView(isPresented: $isShowImage)
+            ChattingImagePickerView(isSend: .constant(false), isPresented: $isShowImage)
                 .edgesIgnoringSafeArea(.bottom)
                 .environmentObject(self.viewModel)
         }
         .fullScreenCover(isPresented: $isShowCamera) {
             //MARK: - Chatting Camera View
-            ChattingCameraView()
+            ChattingCameraView(isSend: .constant(false))
                 .edgesIgnoringSafeArea(.all)
                 .environmentObject(self.viewModel)
         }

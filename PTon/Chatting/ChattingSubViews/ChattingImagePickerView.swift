@@ -13,6 +13,7 @@ import PhotosUI
 //MARK: - Chatting Image Picker View
 struct ChattingImagePickerView:UIViewControllerRepresentable{
     @EnvironmentObject var viewmodel:ChattingInputViewModel
+    @Binding var isSend:Bool
     @Binding var isPresented:Bool
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
@@ -38,23 +39,27 @@ struct ChattingImagePickerView:UIViewControllerRepresentable{
             self.parent = parent
         }
         
+        
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            
-            
             let itemProvider = results.first?.itemProvider
             
             if let itemProvider = itemProvider,
                itemProvider.canLoadObject(ofClass: UIImage.self){
                 itemProvider.loadObject(ofClass: UIImage.self) { (image,error) in
+                    self.parent.isSend = true
                     guard let image = image as? UIImage,
-                          let data = image.jpegData(compressionQuality: 0.8) else{return}
+                          let data = image.jpegData(compressionQuality: 0.5) else{return}
                     
-                    self.parent.viewmodel.uploadImage(data)
+                    self.parent.viewmodel.uploadImage(data) {
+                        self.parent.isSend = false
+                        print("Success Upload")
+                    }
                     
                 }
             }
+            self.parent.isPresented = false
             
-            parent.isPresented = false
+            
         }
     }
 }
@@ -62,6 +67,7 @@ struct ChattingImagePickerView:UIViewControllerRepresentable{
 //MARK: - Chatting Camera View
 struct ChattingCameraView:UIViewControllerRepresentable{
     @Environment(\.dismiss) var dismiss
+    @Binding var isSend:Bool
     @EnvironmentObject var viewmodel:ChattingInputViewModel
     let sourceType : UIImagePickerController.SourceType = .camera
     
@@ -89,11 +95,19 @@ struct ChattingCameraView:UIViewControllerRepresentable{
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
-               let data = image.jpegData(compressionQuality: 0.8){
+               let data = image.jpegData(compressionQuality: 0.5){
                 
-                self.parent.viewmodel.uploadImage(data)
+                self.parent.isSend = true
+                
+                self.parent.viewmodel.uploadImage(data) {
+                    self.parent.isSend = false
+                }
             }
-            parent.dismiss.callAsFunction()
+            self.parent.dismiss.callAsFunction()
+        }
+        
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            self.parent.dismiss.callAsFunction()
         }
     }
 }

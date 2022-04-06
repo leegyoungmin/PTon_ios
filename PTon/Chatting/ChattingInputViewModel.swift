@@ -84,14 +84,34 @@ class ChattingInputViewModel:ObservableObject{
         }
     }
     
-    func uploadImage(_ image:Data){
-        let path = "ChatsImage_\(convertString(content: Date(), dateFormat: "yyyy_MM_dd_HH_mm_ss")).jpg"
-        let storage = FirebaseStorage.Storage.storage().reference().child("ChatsImage").child(fitnessCode).child(trainerId).child(userId)
-        storage.child(path).putData(image, metadata: nil){ _, error in
-                if error == nil{
-                    self.sendText(path)
-                }
+    func uploadImage(_ image:Data,completion:@escaping()->Void){
+        guard let compareId = Firebase.Auth.auth().currentUser?.uid else{return}
+        
+        if compareId == trainerId{
+            let storage = FirebaseStorage.Storage.storage().reference().child("ChatsImage").child(fitnessCode).child(trainerId).child(userId)
+            uploadImageData(storage: storage,image: image) {
+                completion()
             }
+        }else{
+            let storage = FirebaseStorage.Storage.storage().reference().child("ChatsImage").child(fitnessCode).child(userId).child(trainerId)
+            uploadImageData(storage: storage,image: image) {
+                completion()
+            }
+        }
+
+    }
+    
+    func uploadImageData(storage:StorageReference,image:Data,completion:@escaping()->Void){
+        let path = "ChatsImage_\(convertString(content: Date(), dateFormat: "yyyy_MM_dd_HH_mm_ss")).jpg"
+        let meta = StorageMetadata()
+        meta.contentType = "jpg"
+        
+        storage.child(path).putData(image, metadata: meta) { meta, error in
+            if error == nil{
+                self.sendText(path)
+                completion()
+            }
+        }
     }
     
     func sendReservation(_ date:Date){
@@ -135,6 +155,7 @@ class ChattingInputViewModel:ObservableObject{
     }
     
     func viewDisAppear(){
+        SDImageCache.shared.clear(with: .all)
         self.reference.child(fitnessCode).child(trainerId).child(userId).child("chat").removeObserver(withHandle: self.readHandle)
     }
 }

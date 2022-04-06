@@ -16,6 +16,7 @@ struct ChatView: View {
     @State var isShowCamera:Bool = false
     @State var isShowCalendar:Bool = false
     @State var typingMessage = ""
+    @State var isSend:Bool = false
     let userProfileImage:String?
     
     init(viewModel:ChattingInputViewModel,userProfileImage:String?){
@@ -32,36 +33,42 @@ struct ChatView: View {
                 backgroundColor
             }else{
                 ScrollView(.vertical, showsIndicators: false) {
-                    ForEach(chattingRoomViewModel.messages.indices.reversed(),id:\.self) { index in
-                        
-                        if index == 0 || chattingRoomViewModel.messages[index-1].date != chattingRoomViewModel.messages[index].date{
-                            VStack{
-                                
+                    LazyVStack{
+                        ForEach(chattingRoomViewModel.messages.indices.reversed(),id:\.self) { index in
+                            
+                            if index == 0 || chattingRoomViewModel.messages[index-1].date != chattingRoomViewModel.messages[index].date{
+                                VStack{
+                                    
+                                    if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
+                                        ChattingImageView(currentUser: chattingRoomViewModel.messages[index].isCurrentUser,
+                                                          userImage: userProfileImage,
+                                                          urlPath: chattingRoomViewModel.messages[index].content,
+                                                          trainerId: viewModel.trainerId,
+                                                          userId: viewModel.userId,
+                                                          fitnessCode: viewModel.fitnessCode)
+                                    }else{
+                                        MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
+                                    }
+                                    
+                                    userChattingDateView(chattingRoomViewModel.messages[index].date)
+                                        .padding()
+                                }
+                            } else {
                                 if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
-                                    ChattingImageView(viewmodel: ChattingImageViewModel(chattingRoomViewModel.messages[index].content,
-                                                                                        viewModel.trainerId,
-                                                                                        viewModel.userId,
-                                                                                        viewModel.fitnessCode),
-                                                      currentUser: chattingRoomViewModel.messages[index].isCurrentUser,userImage: userProfileImage)
+                                    
+                                    ChattingImageView(currentUser: chattingRoomViewModel.messages[index].isCurrentUser,
+                                                      userImage: userProfileImage,
+                                                      urlPath: chattingRoomViewModel.messages[index].content,
+                                                      trainerId: viewModel.trainerId,
+                                                      userId: viewModel.userId,
+                                                      fitnessCode: viewModel.fitnessCode)
                                 }else{
                                     MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
                                 }
-                                
-                                userChattingDateView(chattingRoomViewModel.messages[index].date)
-                                    .padding()
-                            }
-                        } else {
-                            if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
-                                ChattingImageView(viewmodel: ChattingImageViewModel(chattingRoomViewModel.messages[index].content,
-                                                                                    viewModel.trainerId,
-                                                                                    viewModel.userId,
-                                                                                    viewModel.fitnessCode),
-                                                  currentUser: chattingRoomViewModel.messages[index].isCurrentUser,userImage: userProfileImage)
-                            }else{
-                                MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
                             }
                         }
                     }
+
                 }
                 .padding(.vertical,5)
                 .onTapGesture {
@@ -147,13 +154,13 @@ struct ChatView: View {
         }
         .sheet(isPresented: $isShowImage) {
             //MARK: - Chatting Image Picker View
-            ChattingImagePickerView(isPresented: $isShowImage)
+            ChattingImagePickerView(isSend:$isSend, isPresented: $isShowImage)
                 .edgesIgnoringSafeArea(.bottom)
                 .environmentObject(self.viewModel)
         }
         .fullScreenCover(isPresented: $isShowCamera) {
             //MARK: - Chatting Camera View
-            ChattingCameraView()
+            ChattingCameraView(isSend: $isSend)
                 .edgesIgnoringSafeArea(.all)
                 .environmentObject(self.viewModel)
         }
@@ -167,6 +174,13 @@ struct ChatView: View {
                 self.isShowCalendar = false
             }
         }
+        .overlay(content: {
+            if isSend{
+                ProgressView()
+                    .progressViewStyle(.circular)
+            }
+        })
+        .disabled(isSend)
         .navigationTitle(viewModel.userName)
         .onAppear(perform: {
             viewModel.ChangeRead()

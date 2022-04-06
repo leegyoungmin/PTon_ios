@@ -107,7 +107,6 @@ class ChattingViewModel:ObservableObject{
                 }
         }
     }
-    
     private func makeDataForm(_ values:[String:Any],trainerId:String,chatId:String)->message{
         
         let currentMessage = message(chatId: chatId, content: "", time: "", date: "", data: nil, isRead: false, isCurrentUser: false)

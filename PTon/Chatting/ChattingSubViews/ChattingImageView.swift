@@ -9,31 +9,32 @@ import SwiftUI
 import SDWebImageSwiftUI
 import FirebaseStorageUI
 import SDWebImage
+import Firebase
 
 struct ChattingImageView: View {
-    @StateObject var viewmodel:ChattingImageViewModel
     let currentUser:Bool
     let userImage:String?
+    let urlPath:String
+    let trainerId:String
+    let userId:String
+    let fitnessCode:String
     
     var body: some View {
         
         if currentUser{
             HStack{
-                ImageElementView(isCurrentUser:currentUser)
-                    .environmentObject(self.viewmodel)
-                    .onAppear {
-                        print("is current User \(currentUser)")
-                    }
+                
+                ImageElementView(urlPath: urlPath, fitnessCode: fitnessCode, trainerId: trainerId, userId: userId, isCurrentUser: currentUser)
+                
                 Spacer()
             }
-
+            
             
         }else{
             
             HStack(alignment:.bottom){
                 Spacer()
-                ImageElementView(isCurrentUser:currentUser)
-                    .environmentObject(self.viewmodel)
+                ImageElementView(urlPath: urlPath, fitnessCode: fitnessCode, trainerId: trainerId, userId: userId, isCurrentUser: currentUser)
                 URLImageView(urlString: userImage, imageSize: 30, youtube: false)
                     .rotationEffect(Angle(degrees: -180))
             }
@@ -47,7 +48,10 @@ struct ChattingImageView: View {
 
 
 struct ImageElementView:View{
-    @EnvironmentObject var viewmodel:ChattingImageViewModel
+    let urlPath:String
+    let fitnessCode:String
+    let trainerId:String
+    let userId:String
     let isCurrentUser:Bool
     @State var isOpen:Bool = false
     @State var image:UIImage = UIImage()
@@ -56,36 +60,42 @@ struct ImageElementView:View{
     @State var progressHeight:CGFloat = 400
     @State var progrssWidth:CGFloat = 300
     
+    private func ImageUrl()->URL?{
+        guard let compareId = Firebase.Auth.auth().currentUser?.uid else{return URL(string: "")}
+        
+        var sub = ""
+        if compareId == trainerId{
+            if isCurrentUser{
+                sub = "ChatsImage%2F\(fitnessCode)%2F\(trainerId)%2F\(userId)%2F"
+            }else{
+                sub = "ChatsImage%2F\(fitnessCode)%2F\(userId)%2F\(trainerId)%2F"
+            }
+        }else {
+            if isCurrentUser{
+                sub = "ChatsImage%2F\(fitnessCode)%2F\(userId)%2F\(trainerId)%2F"
+            }else{
+                sub = "ChatsImage%2F\(fitnessCode)%2F\(trainerId)%2F\(userId)%2F"
+            }
+        }
+        let baseUrl = "https://firebasestorage.googleapis.com/v0/b/pton-1ffc0.appspot.com/o/"
+        let query = "?alt=media"
+        let path = urlPath.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
+        let url = URL(string: baseUrl + sub + path + query)
+        
+        return url
+    }
     var body: some View{
         ZStack{
             
-            WebImage(url: viewmodel.imageURL)
+            WebImage(url: ImageUrl())
                 .resizable()
-                .placeholder(content: {
-                    if isCurrentUser == true{
-                        HStack{
-                            Spacer()
-                            ProgressView()
-                                .progressViewStyle(.circular)
-                                .frame(maxWidth:300,maxHeight:400)
-                                .background(isHidden ? .clear:.gray.opacity(0.2))
-                                .cornerRadius(8)
-                        }
-                    }else{
-                        HStack{
-                            
-                            ProgressView()
-                                .progressViewStyle(.circular)
-                                .frame(maxWidth:300,maxHeight:400)
-                                .background(isHidden ? .clear:.gray.opacity(0.2))
-                                .cornerRadius(8)
-                            Spacer()
-                        }
-                    }
-                })
+                .indicator(.progress(style: .default))
                 .scaledToFit()
                 .frame(maxHeight:400)
-                .cornerRadius(8)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(.white)
+                )
             
         }
         .cornerRadius(8)
@@ -96,7 +106,6 @@ struct ImageElementView:View{
             ZoomImageView(image: image, isOpen: $isOpen)
         }
         .rotationEffect(.degrees(-180))
-        
     }
 }
 
