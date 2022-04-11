@@ -10,9 +10,8 @@ import Firebase
 import KakaoSDKAuth
 import KakaoSDKCommon
 import NaverThirdPartyLogin
-import SDWebImageSwiftUI
-import FirebaseStorageUI
 import Photos
+import Kingfisher
 
 
 @main
@@ -26,6 +25,10 @@ struct PTONApp: App {
         appearance.backgroundColor = .white
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
+        
+        let cache = ImageCache.default
+        cache.memoryStorage.config.totalCostLimit = 1
+        cache.diskStorage.config.sizeLimit = 1000 * 1024 * 1024
     }
     
     var body: some Scene {

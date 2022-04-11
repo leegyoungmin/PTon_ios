@@ -8,9 +8,11 @@
 import Foundation
 import Firebase
 import FirebaseStorageUI
+import Kingfisher
 
 
 class ChattingInputViewModel:ObservableObject{
+    @Published var userMemberShip = memberShip()
     let trainerId:String
     let trainerName:String
     let userId:String
@@ -154,8 +156,39 @@ class ChattingInputViewModel:ObservableObject{
             })
     }
     
+    func UserLicense(completions: @escaping (Bool,Bool)->Void){
+        guard let compareId = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
+        
+        Database.database().reference()
+            .child("Membership")
+            .child(self.userId)
+            .observeSingleEvent(of: .value) { snapshot in
+                guard let values = snapshot.value as? [String:Any] else{return}
+                
+                if let ptUsed = values["ptUsed"] as? String{
+                    self.userMemberShip.useLisence = ptUsed
+                }
+                
+                if let ptTimes = values["ptTimes"] as? String{
+                    self.userMemberShip.maxLisence = ptTimes
+                }
+                
+                if let start = values["StartDate"] as? String{
+                    self.userMemberShip.startMember = convertdate(content: start, format: "yyyy-MM-dd")
+                }
+                
+                if let end = values["EndDate"] as? String{
+                    self.userMemberShip.endMember = convertdate(content: end, format: "yyyy-MM-dd")
+                }
+                
+                completions((self.userMemberShip.IntMaxLisense - self.userMemberShip.IntuserLisence) != 0, (convertInteval(firstDate:self.userMemberShip.endMember!,second:self.userMemberShip.startMember!) != 0))
+            }
+    }
+    
     func viewDisAppear(){
-        SDImageCache.shared.clear(with: .all)
+//        SDImageCache.shared.clear(with: .all)
+        ImageCache.default.clearMemoryCache()
+        
         self.reference.child(fitnessCode).child(trainerId).child(userId).child("chat").removeObserver(withHandle: self.readHandle)
     }
 }

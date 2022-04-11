@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Kingfisher
 
 
 enum RequestingExerciseType:String,CaseIterable{
@@ -100,7 +101,8 @@ struct RequestingExerciseView:View{
         let exercise:RequestingExercise
         var body: some View{
             HStack{
-                URLImageView(urlString: exercise.url, imageSize: 50, youtube: false)
+                
+                CircleImage(url: exercise.url, size: CGSize(width: 50, height: 50))
                 
                 Text(exercise.name)
                     .lineLimit(1)
@@ -164,8 +166,7 @@ struct RequestingExerciseView:View{
         @State var setText:String = ""
         var body: some View{
             HStack{
-                
-                URLImageView(urlString: exercise.url, imageSize: 50, youtube: false)
+                CircleImage(url: exercise.url, size: CGSize(width: 50, height: 50))
                 
                 Text(exercise.name)
                     .lineLimit(2)

@@ -35,6 +35,7 @@ struct memberShip:Codable,Hashable{
 
 class ProfileViewModel:ObservableObject{
     let TAG = "FETCH PROFILEVIEWMODEL - "
+    @Published var result = surveyResult(allKcal: "", carboKcal: "", carboGram: "", fatKcal: "", fatGram: "", proteinKcal: "", proteinGram: "")
     @Published var MemberShip = memberShip()
     
     let traineid:String
@@ -49,6 +50,7 @@ class ProfileViewModel:ObservableObject{
         self.trainee = trainee
         
         fetchMemberShip()
+        observeSurvey()
     }
     
     
@@ -82,6 +84,38 @@ class ProfileViewModel:ObservableObject{
                     }
                 }
             }
+    }
+    
+    func observeSurvey(){
+        Database.database().reference()
+            .child("Ingredient")
+            .child(self.trainee.userId)
+            .observe(.value, with: { snapshot in
+                if snapshot.exists(){
+                    guard let values = snapshot.value as? [String:[String:Any]] else{return}
+                    
+                    if let all = values["AllKcal"]{
+                        let allkcal = all["Kcal"] as? String
+                        self.result.allKcal = allkcal ?? ""
+                    }
+                    
+                    if let carbo = values["Carbohydrate"]{
+                        self.result.carboGram = carbo["gram"] as? String ?? ""
+                        self.result.carboKcal = carbo["Kcal"] as? String ?? ""
+                    }
+                    
+                    if let protein = values["Protein"]{
+                        self.result.proteinKcal = protein["Kcal"] as? String ?? ""
+                        self.result.proteinGram = protein["gram"] as? String ?? ""
+                    }
+                    
+                    if let fat = values["Fat"]{
+                        self.result.fatKcal = fat["Kcal"] as? String ?? ""
+                        self.result.fatGram = fat["gram"] as? String ?? ""
+                    }
+                }
+            })
+                
     }
     
     func setDateData(_ data:[String:String]){

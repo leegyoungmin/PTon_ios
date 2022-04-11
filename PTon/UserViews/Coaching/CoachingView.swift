@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct CoachingView: View {
     @StateObject var viewModel:CoachViewModel
@@ -119,7 +120,9 @@ struct CoachingAerobicCellView:View{
     @State var exercise:coachExercise
     var body: some View{
         HStack(spacing:10){
-            URLImageView(urlString: exercise.imageUrl, imageSize: 50, youtube: false)
+            
+            CircleImage(url: exercise.imageUrl, size: CGSize(width: 50, height: 50))
+            
             
             VStack(alignment: .leading, spacing: 5){
                 Text(exercise.exerciseName)
@@ -163,7 +166,8 @@ struct CoachingAnAerobicCellView:View{
     @State var exercise:coachExercise
     var body: some View{
         HStack(spacing:10){
-            URLImageView(urlString: exercise.imageUrl, imageSize: 50, youtube: false)
+            
+            CircleImage(url: exercise.imageUrl, size: CGSize(width: 50, height: 50))
             
             VStack(alignment: .leading, spacing: 5){
                 Text(exercise.exerciseName)

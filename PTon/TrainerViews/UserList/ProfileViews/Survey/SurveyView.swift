@@ -10,9 +10,12 @@ import ToastUI
 
 struct SurveyView: View {
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var profileViewModel:ProfileViewModel
     @StateObject var surveyViewModel:SurveyViewModel
     @State var userScore = 0
     @State var isShowAlertView:Bool = false
+    @State var isPresentView:Bool = false
+    @State var isGoMain:Bool = false
     
     @State var UserType:String = ""
     @State var UserMessage:String = ""
@@ -23,17 +26,16 @@ struct SurveyView: View {
                 QuestionCell(index: index, question: questions[index], userScore: $userScore)
             }
             
-            NavigationLink {
-                SurveyResultView()
-                    .navigationViewStyle(.stack)
-            } label: {
-                Text("저장하고 결과보기")
-                    .padding(10)
-                    .foregroundColor(.white)
-                    .background(Color.accentColor)
-                    .cornerRadius(30)
-            }
-
+            Text("저장하고 결과보기")
+                .padding(10)
+                .foregroundColor(.white)
+                .background(Color.accentColor)
+                .cornerRadius(30)
+                .onTapGesture {
+                    isPresentView = true
+                }
+            
+            
         }
         .background(Color("Background").edgesIgnoringSafeArea(.all))
         .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
@@ -41,32 +43,18 @@ struct SurveyView: View {
         .navigationTitle("설문조사")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            surveyViewModel.getUserSurveyData { isExist in
-                if isExist{
-                    self.surveyViewModel.OutputResult(result: userScore) { userType, Carbo, Protin, Fat in
-                        self.UserType = changeUserType(userType)
-                        self.UserMessage = self.surveyViewModel.DataToString(Carbo, Type: "Carbo") + self.surveyViewModel.DataToString(Protin, Type: "Protein") + self.surveyViewModel.DataToString(Fat, Type: "Fat") + "적정 총 섭취량은 \(String(format:"%.2f",Carbo["Kcal"]!+Protin["Kcal"]!+Fat["Kcal"]!)) Kcal 입니다."
-                        self.isShowAlertView = true
-                    }
-                }else{
-                    self.isShowAlertView = false
-                }
+            if profileViewModel.result.allKcal != ""{
+                self.isPresentView = true
             }
         }
-        
-    }
-    
-    func changeUserType(_ type:UserEatType)->String{
-        var convertUserType:String
-        switch type {
-        case .carbo:
-            convertUserType = "탄수화물형"
-        case .hybrid:
-            convertUserType = "하이브리드형"
-        case .protin:
-            convertUserType = "단백질형"
+        .fullScreenCover(isPresented: $isPresentView) {
+            if isGoMain == true{
+                self.presentationMode.wrappedValue.dismiss()
+            }
+        } content: {
+            SurveyResultView(viewModel: self.surveyViewModel,isGoneMain:$isGoMain, userScore: $userScore)
         }
-        return convertUserType
+        
     }
     
 }
@@ -168,7 +156,7 @@ struct QuestionCellView:View{
     var body: some View{
         GeometryReader{proxy in
             VStack{
-               
+                
                 Text(question.question)
                     .font(.system(size: 18))
                     .padding()
@@ -233,7 +221,7 @@ struct QuestionCellView:View{
             }
             .position(x: proxy.size.width/2, y: proxy.size.height/2)
         }
-
+        
     }
 }
 
@@ -241,6 +229,6 @@ struct SurveyView_Previews: PreviewProvider {
     static let questions:[Question] = Bundle.main.decode("SurvayData.json")
     static var previews: some View {
         SurveyView(surveyViewModel: SurveyViewModel("example", "example"))
-//        QuestionCell(index: 12, question: questions[2], userScore: .constant(0))
+        //        QuestionCell(index: 12, question: questions[2], userScore: .constant(0))
     }
 }

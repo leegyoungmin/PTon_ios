@@ -31,11 +31,13 @@ class TrainerBaseViewModel:ObservableObject{
     
     init(){
         self.loginApi = LoginType(rawValue: rawValue) ?? .none
-        
+        print("Init tranerBase ViewModel")
         self.registerToken {
             self.fetchData {
-                self.ObserveTrainee() //회원 구독
-                self.getUserProfileImage() //회원 이미지
+                self.ObserveTrainee {
+                    self.getUserProfileImage() //회원 이미지
+                } //회원 구독
+
                 self.ObserveChat() //채팅 안읽은 개수 구독
             }
         }
@@ -95,7 +97,7 @@ class TrainerBaseViewModel:ObservableObject{
     }
     
     // 트레이너 회원 목록 구독 함수
-    func ObserveTrainee(){
+    func ObserveTrainee(completions:@escaping()->Void){
         reference
             .child("Trainer")
             .child(self.trainerId)
@@ -106,6 +108,8 @@ class TrainerBaseViewModel:ObservableObject{
                 
                 let trainee = trainee(username: userName, useremail: userName, userid: userId)
                 self.trainerbasemodel.trainee.append(trainee)
+                
+                completions()
             }
         
         reference
@@ -126,9 +130,13 @@ class TrainerBaseViewModel:ObservableObject{
                 .child("photoUri")
                 .observeSingleEvent(of: .value) { snapshot in
                     
-                    guard let url = snapshot.value as? String else{return}
+                    if snapshot.exists(){
+                        guard let url = snapshot.value as? String else{return}
+                        
+                        self.trainerbasemodel.trainee[index].userProfile = url
+                    }
+
                     
-                    self.trainerbasemodel.trainee[index].userProfile = url
                 }
         }
     }

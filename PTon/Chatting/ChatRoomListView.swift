@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ChatRoomListView: View {
     let trainees:[trainee]
@@ -36,9 +37,11 @@ struct ChatRoomListCellView:View{
             if viewModel.ChattingRoom.chatRoomExist{
                 let lastMessage = viewModel.ChattingRoom.Messages.last ?? message(chatId: "", content: "", time: "", date: "", isRead: false, isCurrentUser: false)
                 HStack{
-                    URLImageView(urlString: viewModel.trainee.userProfile,
-                                 imageSize: 50,
-                                 youtube: false)
+                    
+                    CircleImage(url: viewModel.trainee.userProfile ?? "", size: CGSize(width: 50, height: 50))
+                        .onAppear {
+                            print("User Profile URL ::: \(viewModel.trainee.userProfile)")
+                        }
                     
                     VStack(alignment:.leading,spacing:0){
                         HStack{

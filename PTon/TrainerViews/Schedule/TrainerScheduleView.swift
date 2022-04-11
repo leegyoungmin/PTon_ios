@@ -46,11 +46,14 @@ struct TrainerScheduleView: View {
             .padding(.horizontal)
             
             if viewmodel.schedules.isEmpty{
+                Spacer()
                 Text("아직 예약된 회원이 없습니다.")
+                Spacer()
             }else{
                 ScrollView(.vertical, showsIndicators: false) {
                     ForEach(viewmodel.schedules,id:\.self){ schedule in
                         scheduleCellView(schedule: schedule)
+                            .environmentObject(self.viewmodel)
                     }
                 }
                 .background(RoundedRectangle(cornerRadius: 5).fill(.white).shadow(color: .gray.opacity(0.5), radius: 5))
@@ -65,18 +68,13 @@ struct TrainerScheduleView: View {
 }
 
 struct scheduleCellView:View{
-    let schedule:schedule
+    @State var schedule:schedule
+    @EnvironmentObject var viewmodel:ScheduleViewModel
     var body: some View{
         HStack{
-            WebImage(url: URL(string: schedule.user.userProfile ?? ""))
-                .resizable()
-                .placeholder(Image("defaultImage"))
-                .frame(width: 50, height: 50, alignment: .center)
-                .clipShape(Circle())
-                .overlay(
-                    Circle()
-                        .stroke(Color.accentColor)
-                )
+            
+            CircleImage(url: schedule.user.userProfile ?? "", size: CGSize(width: 50, height: 50))
+            
 
             VStack(alignment: .leading){
                 Text(schedule.user.userName)
@@ -91,13 +89,15 @@ struct scheduleCellView:View{
             Spacer()
             
             Button {
-                print(123)
+                self.schedule.isDone = true
+                viewmodel.updateDone(schedule.date, schedule.user.userId)
             } label: {
                 Image(systemName: schedule.isDone ? "checkmark.circle":"circle")
                     .font(.title2)
                     .foregroundColor(.accentColor)
             }
             .buttonStyle(.plain)
+            .disabled(self.schedule.isDone)
 
 
         }

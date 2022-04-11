@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Kingfisher
 
 struct ReadModeMemoView:View{
     //MARK: 1.PROPERTIES
@@ -158,7 +159,9 @@ struct MemoCommentCellView:View{
                     )
             }
             else{
-                URLImageView(urlString: viewModel.userProfile, imageSize: 50, youtube: false)
+                
+                CircleImage(url: viewModel.userProfile, size: CGSize(width: 50, height: 50))
+                
             }
             
             VStack(alignment:.leading,spacing:5){

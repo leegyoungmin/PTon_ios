@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct TrainerUserListView: View {
     @EnvironmentObject var baseViewmodel:TrainerBaseViewModel
@@ -144,7 +145,8 @@ struct userListRowView:View{
     @State var item:trainee
     var body: some View{
         HStack{
-            URLImageView(urlString: item.userProfile,imageSize: 50, youtube: false)
+            CircleImage(url: item.userProfile ?? "", size: CGSize(width: 50, height: 50))
+            
             
             VStack(alignment:.leading,spacing:5){
                 Text(item.username!)

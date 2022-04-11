@@ -6,7 +6,8 @@
 //
 
 import SwiftUI
-//import BottomSheet
+import Kingfisher
+import BottomSheet
 
 struct ProfileView: View {
     @Environment(\.dismiss) var dismiss
@@ -76,7 +77,9 @@ struct ProfileView: View {
                     
                     
                     VStack(spacing:20){
-                        URLImageView(urlString: viewmodel.trainee.userProfile, imageSize: 200, youtube: false)
+                        
+                        CircleImage(url: viewmodel.trainee.userProfile ?? "", size: CGSize(width: 300, height: 300))
+                        
                         
                         Text(viewmodel.trainee.userName).font(.system(size: 25)).fontWeight(.semibold)+Text(" 회원님")
                             .font(.system(size: 25))
@@ -154,6 +157,7 @@ struct ProfileView: View {
                         }
                         NavigationLink {
                             SurveyView(surveyViewModel: SurveyViewModel(viewmodel.traineid, viewmodel.trainee.userId))
+                                .environmentObject(self.viewmodel)
                         } label: {
                             ProfileButton(icons[3])
                         }
@@ -192,14 +196,14 @@ struct ProfileView: View {
             .navigationTitle("")
             .navigationBarHidden(true)
             .navigationBarBackButtonHidden(true)
-            //            .bottomSheet(isPresented: $isPresentBottomSheet,detents: [.medium()],isModalInPresentation: true) {
-            //                if self.memberShipType != nil{
-            //
-            //                    MemberShipSettingView(isPresented: $isPresentBottomSheet,
-            //                                          type: self.memberShipType!)
-            //                        .environmentObject(self.viewmodel)
-            //                }
-            //            }
+            .bottomSheet(isPresented: $isPresentBottomSheet,detents: [.medium()],isModalInPresentation: true) {
+                if self.memberShipType != nil{
+                    
+                    MemberShipSettingView(isPresented: $isPresentBottomSheet,
+                                          type: self.memberShipType!)
+                    .environmentObject(self.viewmodel)
+                }
+            }
         }
         //TODO: - chatting room navigation
         

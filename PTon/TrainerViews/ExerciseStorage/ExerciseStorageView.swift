@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseAuth
+import Kingfisher
 
 struct ExerciseStorageView: View {
     @State var selection = 0
@@ -151,7 +152,9 @@ struct SelectionCell: View{
     let uid: String = Auth.auth().currentUser?.uid ?? "default"
     var body: some View{
         HStack{
-            URLImageView(urlString: item.exerciseURL, imageSize: 50, youtube: false)
+            
+            CircleImage(url: item.exerciseURL, size: CGSize(width: 100, height: 60))
+            
             
             VStack(alignment:.leading,spacing: 5){
                 Text(String(item.exerciseName))

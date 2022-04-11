@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import SDWebImageSwiftUI
 import FirebaseStorageUI
-import SDWebImage
+import Kingfisher
 import Firebase
 
 struct ChattingImageView: View {
@@ -35,8 +34,10 @@ struct ChattingImageView: View {
             HStack(alignment:.bottom){
                 Spacer()
                 ImageElementView(urlPath: urlPath, fitnessCode: fitnessCode, trainerId: trainerId, userId: userId, isCurrentUser: currentUser)
-                URLImageView(urlString: userImage, imageSize: 30, youtube: false)
+                
+                CircleImage(url: userImage ?? "", size: CGSize(width: 40, height: 40))
                     .rotationEffect(Angle(degrees: -180))
+                
             }
             .onAppear {
                 print("is current User \(currentUser)")
@@ -87,15 +88,27 @@ struct ImageElementView:View{
     var body: some View{
         ZStack{
             
-            WebImage(url: ImageUrl())
+            KFImage(ImageUrl())
                 .resizable()
-                .indicator(.progress(style: .default))
+                .placeholder({ progress in
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                })
                 .scaledToFit()
-                .frame(maxHeight:400)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.white)
-                )
+                .frame(maxWidth:UIScreen.main.bounds.width*0.6)
+                .cornerRadius(5)
+                .background(RoundedRectangle(cornerRadius: 5).fill(.white))
+            
+//            MARK - 2. SDWEBIMAGE LIBRARY
+//            WebImage(url: ImageUrl())
+//                .resizable()
+//                .indicator(.progress(style: .default))
+//                .scaledToFit()
+//                .frame(maxHeight:400)
+//                .background(
+//                    RoundedRectangle(cornerRadius: 8)
+//                        .fill(.white)
+//                )
             
         }
         .cornerRadius(8)

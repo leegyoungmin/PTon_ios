@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct MessageView: View {
     var currentMessage:message
@@ -16,7 +17,8 @@ struct MessageView: View {
             if !currentMessage.isCurrentUser{
                 
                 HStack(alignment:.center){
-                    URLImageView(urlString: userProfileUrl, imageSize: 30, youtube: false)
+                    
+                    CircleImage(url: userProfileUrl ?? "", size: CGSize(width: 40, height: 40))
                     HStack(alignment:.bottom){
                         ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: currentMessage.isCurrentUser)
                         Text(currentMessage.time)

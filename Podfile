@@ -34,4 +34,5 @@ target 'PTon' do
   pod 'FirebaseFirestoreSwift', '8.1.0-beta'
   pod 'SDWebImageSwiftUI'
   pod 'FirebaseUI'
+  pod 'Kingfisher', '~> 7.0'
 end

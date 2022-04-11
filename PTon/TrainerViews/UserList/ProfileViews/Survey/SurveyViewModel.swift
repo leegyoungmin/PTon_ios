@@ -9,9 +9,19 @@ import Foundation
 import FirebaseAuth
 import FirebaseDatabase
 
+struct surveyResult{
+    var allKcal:String
+    var carboKcal:String
+    var carboGram:String
+    var fatKcal:String
+    var fatGram:String
+    var proteinKcal:String
+    var proteinGram:String
+}
 
 class SurveyViewModel:ObservableObject{
     @Published var userScore = 0
+    var isExist = false
     var trainerid:String
     var userid:String
     var age:String?
@@ -26,8 +36,8 @@ class SurveyViewModel:ObservableObject{
         self.userid = userid
         getBaseData()
     }
-    
     func getBaseData(){
+        
         
         reference
             .child("User")
@@ -50,28 +60,11 @@ class SurveyViewModel:ObservableObject{
                 self.weight = snapWeight
                 self.height = snapHeight
             }
+        
+        
     }
     
-    func getUserSurveyData(_ completion:@escaping(Bool)->Void){
-        reference
-            .child("Ingredient")
-            .child(self.userid)
-            .observeSingleEvent(of: .value){ snapshot in
-                completion(snapshot.exists())
-            }
-    }
-    
-    func SaveDataBase(_ childReference:String, secondReference:String , value:String){
-        Database.database().reference()
-            .child("Ingredient")
-            .child(self.userid)
-            .child(childReference)
-            .child(secondReference)
-            .setValue(value)
-    }
-    
-    
-    func getResult(result:Int,Completion:@escaping ()->Void){
+    func SaveDataBase(_ result:Int){
         let userType = getUserType(result: result)
         let constitutionJudgeCarbo = ConstitutionJudge(UserType: userType, GetType: .Carbo)
         let constitutionJudgeFat = ConstitutionJudge(UserType: userType, GetType: .Fat)
@@ -89,24 +82,43 @@ class SurveyViewModel:ObservableObject{
         let Fat = constitution_Fat(TDEE: UserTDEEKcal, Fat: constitutionJudgeFat)
         
         let AllKcal = Carbo["Kcal"]! + Protein["Kcal"]! + Fat["Kcal"]!
-        SaveDataBase("AllKcal", secondReference: "Kcal", value: "\(AllKcal)")
+        
+        reference
+            .child("Ingredient")
+            .child(self.userid)
+            .child("AllKcal")
+            .updateChildValues(["Kcal":"\(AllKcal)"])
         
         for (key,value) in Carbo{
-            SaveDataBase("Carbohydrate", secondReference: key, value: "\(value)")
+            
+            reference
+                .child("Ingredient")
+                .child(self.userid)
+                .child("Carbohydrate")
+                .updateChildValues([key:"\(value)"])
         }
         
         for (key,value) in Protein{
-            SaveDataBase("Protein", secondReference: key, value: "\(value)")
+            reference
+                .child("Ingredient")
+                .child(self.userid)
+                .child("Protein")
+                .updateChildValues([key:"\(value)"])
         }
         
         for (key,value) in Fat{
-            SaveDataBase("Fat", secondReference: key, value: "\(value)")
+            
+            reference
+                .child("Ingredient")
+                .child(self.userid)
+                .child("Fat")
+                .updateChildValues([key:"\(value)"])
         }
-        
-        Completion()
     }
     
-    func OutputResult(result:Int,completion:@escaping (_ userType:UserEatType,_ Carbo:[String:Double],_ Protin:[String:Double],_ Fat:[String:Double]) -> Void){
+    
+    func getResult(type:String,result:Int)->String{
+        var resultString = ""
         let userType = getUserType(result: result)
         let constitutionJudgeCarbo = ConstitutionJudge(UserType: userType, GetType: .Carbo)
         let constitutionJudgeFat = ConstitutionJudge(UserType: userType, GetType: .Fat)
@@ -114,7 +126,7 @@ class SurveyViewModel:ObservableObject{
         guard let sex = StringToInt(self.gender!),
               let age = StringToInt(self.age!),
               let Weight = StringToDouble(self.weight!),
-              let Height = StringToDouble(self.height!) else{return}
+              let Height = StringToDouble(self.height!) else{return resultString}
         
         
         let UserTDEEKcal = getTDEE(sex: sex, age: age, Weight: Weight, Height: Height)
@@ -123,14 +135,31 @@ class SurveyViewModel:ObservableObject{
         let Protein = constitution_Protin(Weight: Weight)
         let Fat = constitution_Fat(TDEE: UserTDEEKcal, Fat: constitutionJudgeFat)
         
-        completion(userType, Carbo, Protein, Fat)
+        let AllKcal = Carbo["Kcal"]! + Protein["Kcal"]! + Fat["Kcal"]!
+        
+        if type == "All"{
+            resultString = String(format: "%.2f", AllKcal)
+        }
+        
+        if type == "Carbo"{
+            resultString = DataToString(Carbo, Type: "Carbo")
+        }
+        
+        if type == "Protein"{
+            resultString = DataToString(Protein, Type: "Protein")
+        }
+        
+        if type == "Fat"{
+            resultString = DataToString(Fat, Type: "Fat")
+        }
+        return resultString
     }
     
     func DataToString(_ inputDictionart:[String:Double], Type:String)->String{
         guard let kcal = inputDictionart["Kcal"],
               let gram = inputDictionart["gram"] else{
-                  return ""
-              }
+            return ""
+        }
         switch Type{
         case "Carbo":
             return "적정 탄수화물 섭취량은 \(String(format: "%.2f", kcal))Kcal 이며, \(String(format: "%.2f", gram))g을 섭취해야 합니다.\n"
@@ -144,6 +173,7 @@ class SurveyViewModel:ObservableObject{
     }
     
     func getUserType(result:Int)->UserEatType{
+        print("User result ::: \(result)")
         if result<0{
             return .carbo
         }
@@ -238,10 +268,10 @@ class SurveyViewModel:ObservableObject{
 }
 
 
-enum UserEatType{
-    case carbo
-    case hybrid
-    case protin
+enum UserEatType:String{
+    case carbo = "탄수화물형"
+    case hybrid = "하이브리드형"
+    case protin = "단백질형"
 }
 enum GetType{
     case Carbo

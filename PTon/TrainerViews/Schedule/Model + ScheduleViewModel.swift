@@ -57,4 +57,24 @@ class ScheduleViewModel:ObservableObject{
         }
 
     }
+    
+    func updateDone(_ date:Date,_ userId:String){
+        reference
+            .child("Reservation")
+            .child(trainerId)
+            .child(convertString(content: date, dateFormat: "yyyy-MM-dd"))
+            .child(userId)
+            .updateChildValues(["Checked":true])
+        
+        reference
+            .child("Membership")
+            .child(userId)
+            .child("ptUsed")
+            .observeSingleEvent(of: .value) { snapshot in
+                guard let value = snapshot.value as? String else{return}
+                
+                let data = Int(value) ?? 0
+                snapshot.ref.setValue("\(data+1)")
+            }
+    }
 }

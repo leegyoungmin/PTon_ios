@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct RequestedStretchingView: View {
     @StateObject var viewmodel:RequestStretchingViewModel
@@ -85,7 +86,14 @@ struct RequestStretchingCellView:View{
     let stretching:memberStretching
     var body: some View{
         HStack{
-            URLImageView(urlString: "https://img.youtube.com/vi/\(stretching.video.videoID)/maxresdefault.jpg", imageSize: 50, youtube: true)
+            
+            
+            KFImage(URL(string: "https://img.youtube.com/vi/\(stretching.video.videoID)/maxresdefault.jpg"))
+                .placeholder({
+                    logoImage
+                })
+                .resizable()
+                .frame(width: 100, height: 60, alignment: .center)
             
             Divider()
             

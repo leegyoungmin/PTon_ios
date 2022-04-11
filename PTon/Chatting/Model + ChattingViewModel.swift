@@ -61,8 +61,9 @@ class ChattingViewModel:ObservableObject{
                 .child(fitnessCode)
                 .child(trainerId)
                 .child(self.trainee.userId)
-                .observe(.childAdded) { snapshot in
+                .observe(.childAdded) { [weak self] snapshot in
                     print("ChatList snapshot ::: \(snapshot)")
+                    guard let self = self else{return}
                     if snapshot.exists(){
                         self.ChattingRoom.chatRoomExist = true
                     }
@@ -74,7 +75,8 @@ class ChattingViewModel:ObservableObject{
                 .child(trainerId)
                 .child(trainee.userId)
                 .child("chat")
-                .observe(.childAdded) { snapshot in
+                .observe(.childAdded) { [weak self] snapshot in
+                    guard let self = self else{return}
                     let key = snapshot.key
                     guard let values = snapshot.value as? [String:Any] else{return}
                     
@@ -87,7 +89,9 @@ class ChattingViewModel:ObservableObject{
                 .child(trainerId)
                 .child(trainee.userId)
                 .child("favorite")
-                .observe(.value) { snapshot in
+                .observe(.value) { [weak self] snapshot in
+                    
+                    guard let self = self else {return}
                     guard let isFavorite = snapshot.value as? Bool else{return}
                     self.ChattingRoom.favorite = isFavorite
                 }
@@ -97,7 +101,8 @@ class ChattingViewModel:ObservableObject{
                 .child(trainerId)
                 .child(trainee.userId)
                 .child("chat")
-                .observe(.childChanged) { snapshot in
+                .observe(.childChanged) { [weak self] snapshot in
+                    guard let self = self else{return}
                     let key = snapshot.key
                     guard let values = snapshot.value as? [String:Any] else{return}
                     let currentMessage = self.makeDataForm(values, trainerId: self.trainerId, chatId: key)

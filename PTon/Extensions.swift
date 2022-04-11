@@ -9,6 +9,32 @@ import Foundation
 import SwiftUI
 import Combine
 import Firebase
+import Kingfisher
+
+//Images
+let logoImage = Image("defaultImage")
+
+struct CircleImage:View{
+    let url:String
+    let size:CGSize
+    
+    var body: some View{
+        KFImage(URL(string: url))
+            .placeholder({
+                logoImage
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: size.width, height: size.height, alignment: .center)
+            })
+            .resizable()
+            .frame(width: size.width, height: size.height, alignment: .center)
+            .clipShape(Circle())
+            .overlay(
+                Circle()
+                    .strokeBorder(Color.accentColor,lineWidth: 1.5)
+            )
+    }
+}
 
 //Colors
 let backgroundColor = Color("Background")
@@ -91,228 +117,6 @@ struct Question:Codable,Hashable{
     let answer1:String
     let answer2:String
 }
-
-struct FirebaseHomeImage:View{
-    let imageUrl:String
-    var body: some View{
-        AsyncImage(url: URL(string: imageUrl)) { phase in
-            switch phase{
-            case .empty:
-                VStack{
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                }
-                .frame(width: 50, height: 50, alignment: .center)
-            case .success(let image):
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50, alignment: .center)
-                    .cornerRadius(25)
-            case .failure(_):
-                Image(systemName: "xmark")
-                    .scaledToFit()
-                    .frame(width: 50, height: 50, alignment: .center)
-            @unknown default:
-                VStack{
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                }
-                .frame(width: 50, height: 50, alignment: .center)
-            }
-        }
-    }
-}
-
-struct ChattingUrlView:View{
-    @ObservedObject var urlImageModel:UrlImageModel
-    static let defaultImage = ProgressView()
-    
-    init(urlString:String?){
-        urlImageModel = UrlImageModel(urlString: urlString)
-    }
-    
-    var body: some View{
-        if urlImageModel.image != nil{
-            Image(uiImage: urlImageModel.image!)
-                .resizable()
-                .scaledToFit()
-        }
-        else{
-            URLImageView.defaultImage
-                .progressViewStyle(.circular)
-                .scaledToFit()
-                .frame(minWidth:200)
-        }
-
-    }
-    
-}
-
-struct FirebaseProfileImage:View{
-    let imageUrl:String
-    var body: some View{
-        AsyncImage(url: URL(string: imageUrl)) { phase in
-            switch phase{
-            case .empty:
-                VStack{
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                }
-                .frame(width: 300, height: 300, alignment: .center)
-            case .success(let image):
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 300, height: 300, alignment: .center)
-                    .cornerRadius(150)
-            case .failure(_):
-                Image(systemName: "xmark")
-                    .scaledToFit()
-                    .frame(width: 300, height: 300, alignment: .center)
-            @unknown default:
-                VStack{
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                }
-                .frame(width: 300, height: 300, alignment: .center)
-            }
-        }
-    }
-}
-
-
-struct URLImageView:View{
-    @ObservedObject var urlImageModel:UrlImageModel
-    let imageSize:CGFloat
-    let youtube:Bool
-    static let defaultImage = Image("defaultImage")
-    init(urlString:String?,imageSize:CGFloat,youtube:Bool){
-        urlImageModel = UrlImageModel(urlString: urlString)
-        self.imageSize = imageSize
-        self.youtube = youtube
-    }
-    
-    var body: some View{
-        if urlImageModel.image != nil{
-            if youtube{
-                Image(uiImage: urlImageModel.image!)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 60, alignment: .center)
-            }else{
-                Image(uiImage: urlImageModel.image!)
-                    .resizable()
-                    .frame(width: imageSize, height: imageSize, alignment: .center)
-                    .clipShape(
-                        Circle()
-                    )
-                    .background(
-                        Circle()
-                            .stroke(.gray)
-                    )
-            }
-        }
-        else{
-            URLImageView.defaultImage
-                .resizable()
-                .scaledToFit()
-                .frame(width: imageSize, height: imageSize, alignment: .center)
-                .clipShape(Circle())
-                .background(
-                    Circle()
-                        .stroke(.gray)
-                )
-        }
-
-    }
-    
-
-}
-
-class UrlImageModel:ObservableObject{
-    @Published var image:UIImage?
-    var imageCache = ImageChache.getImageCache()
-    
-    var urlString:String?
-    
-    init(urlString:String?){
-        self.urlString = urlString
-        loadImage()
-    }
-    
-    func loadImage(){
-        
-        if loadImageFromCache(){
-            return
-        }
-        
-        loadImageFromUrl()
-    }
-    
-    func loadImageFromUrl(){
-        guard let urlString = urlString else {
-            return
-        }
-        
-        if urlString != ""{
-            let url = URL(string: urlString)!
-            let task = URLSession.shared.dataTask(with: url, completionHandler: getImageFromResponse(data:response:error:))
-            task.resume()
-        }
-    }
-    
-    func loadImageFromCache()->Bool{
-        guard let urlString = urlString else {
-            return false
-        }
-        
-        guard let cacheImage = imageCache.get(forkey: urlString) else{
-            return false
-        }
-        
-        image = cacheImage
-        return true
-
-    }
-    
-    func getImageFromResponse(data:Data?,response:URLResponse?,error:Error?){
-        guard error == nil else{return}
-        
-        guard let data = data else{
-            return
-        }
-        
-        DispatchQueue.main.async {
-            guard let loadedImage = UIImage(data: data) else{return}
-            
-            self.imageCache.set(forkey: self.urlString!, image: loadedImage)
-            self.image = loadedImage
-        }
-    }
-    
-}
-
-class ImageChache{
-    var cache = NSCache<NSString,UIImage>()
-    
-    func get(forkey:String) -> UIImage?{
-        return cache.object(forKey: NSString(string: forkey))
-    }
-    
-    func set(forkey:String,image:UIImage){
-        cache.setObject(image, forKey: NSString(string: forkey))
-    }
-}
-
-extension ImageChache{
-    private static var imageCache = ImageChache()
-    
-    static func getImageCache()->ImageChache{
-        return imageCache
-    }
-}
-
 extension String{
     var bool:Bool{
         if self.lowercased() == "false"{
@@ -324,6 +128,7 @@ extension String{
         }
     }
 }
+
 
 extension View{
     func placeholder<Content:View>(
@@ -342,3 +147,10 @@ extension View{
 //func loadLocalImage(fileName:String)->UIImage?{
 //
 //}
+
+struct Extensions_previews:PreviewProvider{
+    static var previews: some View{
+        CircleImage(url: "https://flif.info/example-images/fish.png", size: CGSize(width: 100, height: 100))
+            .previewLayout(.sizeThatFits)
+    }
+}

@@ -29,7 +29,13 @@ struct TrainerBaseView: View {
         TabView(selection: $trainerSelectedIndex) {
             TrainerUserListView(baseIndex: $trainerSelectedIndex)
                 .tabItem {
-                    Image(systemName: "person")
+                    Label {
+                        Text("회원목록")
+                    } icon: {
+                        Image(systemName: "person")
+                    }
+
+
                 }
                 .tag(0)
                 .onTapGesture {
@@ -43,7 +49,13 @@ struct TrainerBaseView: View {
                          fitnessCode: trainerBaseViewModel.fitnessCode
             )
                 .tabItem {
-                    Image(systemName: "message.fill")
+                    Label {
+                        Text("채팅목록")
+                    } icon: {
+                        Image(systemName: "message.fill")
+                    }
+
+
                 }
                 .tag(1)
                 .badge(trainerBaseViewModel.unreadCount)
@@ -53,7 +65,11 @@ struct TrainerBaseView: View {
             TrainerScheduleView(viewmodel: ScheduleViewModel(trainerId: trainerBaseViewModel.trainerId,
                                                              trainees: trainerBaseViewModel.trainerbasemodel.trainee))
                 .tabItem{
-                    Image(systemName: "person.fill")
+                    Label {
+                        Text("일정관리")
+                    } icon: {
+                        Image(systemName: "person.fill")
+                    }
                 }
                 .tag(2)
                 .onTapGesture {
@@ -62,7 +78,12 @@ struct TrainerBaseView: View {
             
             ExerciseStorageView()
                 .tabItem {
-                    Image(systemName: "figure.walk")
+                    Label {
+                        Text("운동창고")
+                    } icon: {
+                        Image(systemName: "figure.walk")
+                    }
+
                 }
                 .tag(3)
                 .onTapGesture {

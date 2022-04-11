@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ToastUI
+import AlertToast
 
 struct ChatView: View {
     @StateObject var viewModel:ChattingInputViewModel
@@ -17,6 +18,7 @@ struct ChatView: View {
     @State var isShowCalendar:Bool = false
     @State var typingMessage = ""
     @State var isSend:Bool = false
+    @State var error:Bool = false
     let userProfileImage:String?
     
     init(viewModel:ChattingInputViewModel,userProfileImage:String?){
@@ -33,29 +35,12 @@ struct ChatView: View {
                 backgroundColor
             }else{
                 ScrollView(.vertical, showsIndicators: false) {
-                    LazyVStack{
-                        ForEach(chattingRoomViewModel.messages.indices.reversed(),id:\.self) { index in
-                            
-                            if index == 0 || chattingRoomViewModel.messages[index-1].date != chattingRoomViewModel.messages[index].date{
-                                VStack{
-                                    
-                                    if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
-                                        ChattingImageView(currentUser: chattingRoomViewModel.messages[index].isCurrentUser,
-                                                          userImage: userProfileImage,
-                                                          urlPath: chattingRoomViewModel.messages[index].content,
-                                                          trainerId: viewModel.trainerId,
-                                                          userId: viewModel.userId,
-                                                          fitnessCode: viewModel.fitnessCode)
-                                    }else{
-                                        MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
-                                    }
-                                    
-                                    userChattingDateView(chattingRoomViewModel.messages[index].date)
-                                        .padding()
-                                }
-                            } else {
+                    ForEach(chattingRoomViewModel.messages.indices.reversed(),id:\.self) { index in
+                        
+                        if index == 0 || chattingRoomViewModel.messages[index-1].date != chattingRoomViewModel.messages[index].date{
+                            VStack{
+                                
                                 if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
-                                    
                                     ChattingImageView(currentUser: chattingRoomViewModel.messages[index].isCurrentUser,
                                                       userImage: userProfileImage,
                                                       urlPath: chattingRoomViewModel.messages[index].content,
@@ -65,6 +50,21 @@ struct ChatView: View {
                                 }else{
                                     MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
                                 }
+                                
+                                userChattingDateView(chattingRoomViewModel.messages[index].date)
+                                    .padding()
+                            }
+                        } else {
+                            if chattingRoomViewModel.messages[index].content.hasPrefix("ChatsImage"){
+                                
+                                ChattingImageView(currentUser: chattingRoomViewModel.messages[index].isCurrentUser,
+                                                  userImage: userProfileImage,
+                                                  urlPath: chattingRoomViewModel.messages[index].content,
+                                                  trainerId: viewModel.trainerId,
+                                                  userId: viewModel.userId,
+                                                  fitnessCode: viewModel.fitnessCode)
+                            }else{
+                                MessageView(currentMessage: chattingRoomViewModel.messages[index],userProfileUrl:userProfileImage)
                             }
                         }
                     }
@@ -106,17 +106,20 @@ struct ChatView: View {
 
                 
                 Button {
-                    DispatchQueue.main.async {
-                        viewModel.sendText(typingMessage)
-                        typingMessage = ""
+                    
+                    if !typingMessage.trimmingCharacters(in: .whitespaces).isEmpty{
+                        DispatchQueue.main.async {
+                            viewModel.sendText(typingMessage)
+                            typingMessage = ""
+                        }
                     }
-
+                    
                 } label: {
                     Image(systemName: "arrow.up.circle.fill")
                         .font(.system(size: 25))
                         .foregroundColor(.accentColor)
                 }
-                .disabled(typingMessage.isEmpty)
+                .disabled(typingMessage.trimmingCharacters(in: .whitespaces).isEmpty)
 
             }
             .padding(10)
@@ -125,7 +128,20 @@ struct ChatView: View {
             if showAdd{
                 HStack{
                     Button {
-                        isShowCalendar = true
+                        
+                        viewModel.UserLicense { isEndTimes, isEndMembership in
+                            print("is End Times ::: \(isEndTimes)")
+                            print("Is end membership ::: \(isEndMembership)")
+                            
+                            if isEndTimes && isEndMembership{
+                                isShowCalendar = true
+                            }else{
+                                error = true
+                            }
+                            
+                        }
+                        
+
                     } label: {
                         AdditionalButtonView(item: ("calendar","스케줄"))
                     }
@@ -166,14 +182,20 @@ struct ChatView: View {
         }
         .toast(isPresented: $isShowCalendar) {
             //MARK: - Chatting Calendar View
-            ToastView{
+            ToastView("") {
                 CalendarAlertView(isshow: $isShowCalendar)
                     .environmentObject(self.viewModel)
+            } background: {
+                backgroundColor.opacity(0.5)
             }
             .onTapGesture {
                 self.isShowCalendar = false
             }
+
         }
+        .toast(isPresenting: $error, alert: {
+            AlertToast(displayMode: .banner(.pop), type: .error(.red),title: "회원권이 만료되었습니다.")
+        })
         .overlay(content: {
             if isSend{
                 ProgressView()
@@ -216,13 +238,9 @@ struct CalendarAlertView:View{
     @State var date = Date()
     var body: some View{
         VStack{
-            HStack{
-                Spacer()
-                Text("일정 예약")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                Spacer()
-            }
+            Text("일정 예약")
+                .font(.title2)
+                .fontWeight(.semibold)
             DatePicker("예약 날짜", selection: $date,displayedComponents: .date)
 
             DatePicker("예약 시간", selection: $date,displayedComponents: .hourAndMinute)
@@ -237,6 +255,7 @@ struct CalendarAlertView:View{
             .padding(.top)
 
         }
+        .frame(width:UIScreen.main.bounds.width*0.7)
         .environment(\.locale, Locale(identifier: "ko_KR"))
     }
 }

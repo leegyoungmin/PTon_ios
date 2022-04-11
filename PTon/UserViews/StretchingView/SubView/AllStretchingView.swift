@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct AllStretchingView: View {
     let stretchings:[Stretching] = Bundle.main.decode("Stretching.json")
@@ -43,7 +44,14 @@ struct StretchingCellView:View{
     let stretching:Stretching
     var body: some View{
         HStack{
-            URLImageView(urlString: "https://img.youtube.com/vi/\(stretching.videoID)/maxresdefault.jpg", imageSize: 50, youtube: true)
+            
+            KFImage(URL(string: "https://img.youtube.com/vi/\(stretching.videoID)/maxresdefault.jpg"))
+                .resizable()
+                .placeholder({
+                    logoImage
+                })
+                .frame(width: 50, height: 50, alignment: .center)
+            
             
             Divider()
             

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Firebase
+import Kingfisher
 
 struct HomeView: View {
     @EnvironmentObject var viewmodel:UserBaseViewModel
@@ -81,7 +82,8 @@ struct UserProfileCardView:View{
     var body: some View{
         HStack(spacing:6){
             
-            URLImageView(urlString: viewmodel.userBaseModel.imageUrl, imageSize: 60, youtube: false)
+            CircleImage(url: viewmodel.userBaseModel.imageUrl ?? "", size: CGSize(width: 60, height: 60))
+            
             
             VStack(alignment:.leading){
                 Text(viewmodel.username)
