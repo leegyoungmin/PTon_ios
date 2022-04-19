@@ -35,4 +35,5 @@ target 'PTon' do
   pod 'SDWebImageSwiftUI'
   pod 'FirebaseUI'
   pod 'Kingfisher', '~> 7.0'
+  pod 'ExytePopupView'
 end

@@ -7,44 +7,55 @@
 
 import Foundation
 import Firebase
+import SwiftUI
+import Accelerate
 
 //MARK: - MODEL
 // In UserBaseInfoViewModel - userBase 모델 사용
+enum bodyDataType:String,CaseIterable{
+    case weight
+    case muscle
+    case fat
+}
+struct elementData{
+    var dataType:bodyDataType
+    var number:[Double]
+}
 
 //MARK: - VIEWMODEL
 class HomeBodyViewModel:ObservableObject{
     //MARK: - PROPERTIES
     @Published var userModel:userBase = userBase()
+    @Published var bodyDatas:[bodyDataType:[(String,Double)]] = [bodyDataType.weight:[],
+                                                     bodyDataType.fat:[],
+                                                     bodyDataType.muscle:[]]
     let reference = Firebase.Database.database().reference().child("bodydata")
     
     //MARK: - INITIALIZE
     init(){
-        Observe()
+        self.Observe()
     }
     
     func Observe(){
         
         guard let userId = Firebase.Auth.auth().currentUser?.uid else{return}
         
+        
         reference
             .child(userId)
-            .child(convertString(content: Date(), dateFormat: "yyyy-MM-dd"))
-            .observe(.value) { snapshot in
-                if snapshot.exists(){
-                    if snapshot.childSnapshot(forPath: "fat").exists(){
-                        self.userModel.bodyFat = snapshot.childSnapshot(forPath: "fat").value as? String
-                    }
+            .observe(.childAdded) { snapshot in
+                print(snapshot)
+                let date = snapshot.key
+                guard let values = snapshot.value as? [String:Any] else{return}
+                bodyDataType.allCases.forEach{
+                    guard let value = values[$0.rawValue] as? String else{return}
                     
-                    if snapshot.childSnapshot(forPath: "muscle").exists(){
-                        self.userModel.bodyMuscle = snapshot.childSnapshot(forPath: "muscle").value as? String
-                    }
+                    self.bodyDatas[$0]?.append((date,Double(value) ?? 0.0))
                     
-                    if snapshot.childSnapshot(forPath: "weight").exists(){
-                        self.userModel.bodyMuscle = snapshot.childSnapshot(forPath: "weight").value as? String
-                    }
-                }else {
-                    print("Not Exist Home Body View Model")
+                    
+                    print(self.bodyDatas)
                 }
             }
+        
     }
 }

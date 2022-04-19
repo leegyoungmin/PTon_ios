@@ -45,12 +45,13 @@ struct StretchingCellView:View{
     var body: some View{
         HStack{
             
+            
             KFImage(URL(string: "https://img.youtube.com/vi/\(stretching.videoID)/maxresdefault.jpg"))
                 .resizable()
                 .placeholder({
                     logoImage
                 })
-                .frame(width: 50, height: 50, alignment: .center)
+                .frame(width: 100, height: 60, alignment: .center)
             
             
             Divider()

@@ -28,6 +28,9 @@ struct ExampleView:UIViewRepresentable{
         print("request in Example View ::: \(request)")
         webView.load(request)
         
+        webView.evaluateJavaScript("setting()") { result, error in
+            print(error)
+        }
         
         return webView
     }
@@ -38,7 +41,7 @@ struct ExampleView:UIViewRepresentable{
         Coordinator(self)
     }
     
-    class Coordinator : NSObject,WKNavigationDelegate{
+    class Coordinator : WKScriptMessage, WKNavigationDelegate{
         var parent:ExampleView
         
         init(_ uiWebView:ExampleView){

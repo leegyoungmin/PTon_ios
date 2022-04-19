@@ -19,8 +19,10 @@
 <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
 
 <!-- Chart code -->
+
 <script>
-    am5.ready(function() {
+    
+    am5.ready(function setting(userData) {
 
 // Create root element
 // https://www.amcharts.com/docs/v5/getting-started/#Root_element
@@ -70,15 +72,8 @@
 
 // Set data
 // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
-        series.data.setAll([
-            { value: 10, category: "One" },
-            { value: 9, category: "Two" },
-            { value: 6, category: "Three" },
-            { value: 5, category: "Four" },
-            { value: 4, category: "Five" },
-            { value: 3, category: "Six" },
-            { value: 1, category: "Seven" }
-        ]);
+        series.data.setAll([{value:userData,category:"One"}])
+        
 
         series.appear(1000, 100);
     }); // end am5.ready()

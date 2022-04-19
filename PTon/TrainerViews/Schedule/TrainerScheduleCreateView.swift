@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import BottomSheet
+//import BottomSheet
 import AlertToast
 import SDWebImageSwiftUI
 
@@ -199,16 +199,16 @@ struct TrainerScheduleMakeView:View{
             .disabled(isSelectedDateSheet == false || isSelectedTimeSheet == false)
         }
         .padding(.horizontal)
-        .bottomSheet(isPresented: $isShowDateSheet,detents: [.medium()],isModalInPresentation: false,onDismiss: {
-            self.isSelectedDateSheet = true
-        }) {
-            DatePickerView(selectedDate: $selectedDate, type: .date)
-        }
-        .bottomSheet(isPresented: $isShowTimeSheet,detents: [.medium()],isModalInPresentation: false,onDismiss: {
-            self.isSelectedTimeSheet = true
-        }) {
-            DatePickerView(selectedDate: $selectedDate, type: .hourAndMinute)
-        }
+//        .bottomSheet(isPresented: $isShowDateSheet,detents: [.medium()],isModalInPresentation: false,onDismiss: {
+//            self.isSelectedDateSheet = true
+//        }) {
+//            DatePickerView(selectedDate: $selectedDate, type: .date)
+//        }
+//        .bottomSheet(isPresented: $isShowTimeSheet,detents: [.medium()],isModalInPresentation: false,onDismiss: {
+//            self.isSelectedTimeSheet = true
+//        }) {
+//            DatePickerView(selectedDate: $selectedDate, type: .hourAndMinute)
+//        }
         .toast(isPresenting: $isShowAlertView, duration: 1, tapToDismiss: true, alert: {
             AlertToast(displayMode: .banner(.pop), type: .complete(.accentColor),title: "예약이 완료되었습니다.")
         }, onTap: {

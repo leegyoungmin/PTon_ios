@@ -356,6 +356,7 @@ PODS:
     - Charts/Core (= 4.0.2)
   - Charts/Core (4.0.2):
     - SwiftAlgorithms (~> 1.0)
+  - ExytePopupView (1.1.0)
   - FBAEMKit (12.3.2):
     - FBSDKCoreKit_Basics (= 12.3.2)
   - FBSDKCoreKit (12.3.2):
@@ -668,6 +669,7 @@ DEPENDENCIES:
   - Alamofire
   - AlertToast
   - Charts
+  - ExytePopupView
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Database
@@ -696,6 +698,7 @@ SPEC REPOS:
     - AppAuth
     - BoringSSL-GRPC
     - Charts
+    - ExytePopupView
     - FBAEMKit
     - FBSDKCoreKit
     - FBSDKCoreKit_Basics
@@ -761,6 +764,7 @@ SPEC CHECKSUMS:
   AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   Charts: cfa4e911e6dc289582c2fe011a0e87c03d96727f
+  ExytePopupView: bc5c3d9154a6fd8c07c6fb6e9d29d6245e327fc6
   FBAEMKit: 955ca52eba8219c20f90774e8c6ff8bc7b3192a3
   FBSDKCoreKit: 678f64eda3f0ff25c189c2ebbfe87b1d96a85a6d
   FBSDKCoreKit_Basics: 6bee7c1f0932432901781203fa5e587ec5099148
@@ -819,6 +823,6 @@ SPEC CHECKSUMS:
   SwiftAlgorithms: 38dda4731d19027fdeee1125f973111bf3386b53
   ToastUI: 391eb9a1cc15e7ef4b79ee112e4a0b969259154f
 
-PODFILE CHECKSUM: c3c4f3b3d2a0f9625f28c3b81a3a42b0b7150a02
+PODFILE CHECKSUM: fb148cee1aa7d105f190c4cae45967f2659a86cf
 
 COCOAPODS: 1.11.3

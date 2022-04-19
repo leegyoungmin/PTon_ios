@@ -7,70 +7,13 @@
 
 import Foundation
 import SwiftUI
-
-struct UserBodyView:View{
-    @StateObject var viewModel:HomeBodyViewModel = HomeBodyViewModel()
-    var body: some View{
-        VStack{
-            HStack{
-                UserBodyCellView(title: "몸무게",
-                                 imageName: "defaultImage",
-                                 data: viewModel.userModel.bodyWeight ?? "",
-                                 unit: "Kg",
-                                 color: pink)
-                
-                Button {
-                    print(123)
-                } label: {
-                    Image(systemName: "chevron.down")
-                }
-            }
-
-            
-            Divider()
-            
-            //TODO: 체지방량 생성
-            HStack{
-                UserBodyCellView(title: "체지방량",
-                                 imageName: "defaultImage",
-                                 data: viewModel.userModel.bodyFat ?? "",
-                                 unit: "%",
-                                 color: sky)
-                
-                Button {
-                    print(123)
-                } label: {
-                    Image(systemName: "chevron.down")
-                }
-            }
-
-            
-            Divider()
-            
-            //TODO: 골격근량 생성
-            HStack{
-                UserBodyCellView(title: "근골격근량",
-                                 imageName: "defaultImage",
-                                 data: viewModel.userModel.bodyMuscle ?? "",
-                                 unit: "Kg",
-                                 color: yello)
-                
-                Button {
-                    print(123)
-                } label: {
-                    Image(systemName: "chevron.down")
-                }
-            }
-            
-            Divider()
-        }
-    }
-}
+import SwiftUICharts
+import ExytePopupView
 
 struct UserBodyCellView:View{
     let title:String
     let imageName:String
-    let data:String
+    let data:Double
     let unit:String
     let color:Color
     var body: some View{
@@ -95,10 +38,43 @@ struct UserBodyCellView:View{
     }
 }
 
-struct UserBodyView_previews:PreviewProvider{
-    static var previews: some View{
-        UserBodyView(viewModel: HomeBodyViewModel())
-            .previewLayout(.sizeThatFits)
-            .padding()
+struct chartView:View{
+    let dataType:bodyDataType
+    var data:[(String,Double)]
+    
+    init(_ dataType:bodyDataType,data:[(String,Double)]){
+        self.dataType = dataType
+        self.data = data
+    }
+    
+    private func convertTitle()->String{
+        var title:String = ""
+        if self.dataType == .weight{
+            title = "체중변화"
+        }else if self.dataType == .fat{
+            title = "체지방량변화"
+        }else if self.dataType == .muscle{
+            title = "근골격근량변화"
+        }
+        return title
+    }
+    
+    private func convertUnit()->String{
+        var unit:String = ""
+        if self.dataType == .weight || self.dataType == .muscle{
+            unit = "Kg"
+        }else{
+            unit = "%"
+        }
+        return unit
+    }
+    
+    var body: some View{
+        let chartStyle = ChartStyle(backgroundColor: .white, accentColor: .white, gradientColor: .init(start: .blue.opacity(0.3), end: .purple.opacity(0.3)), textColor: .black, legendTextColor: .black, dropShadowColor: .white)
+        
+        BarChartView(data: ChartData(values: data), title: convertTitle(), legend: convertUnit(), style: chartStyle, form: ChartForm.extraLarge, dropShadow: false, cornerImage: nil, valueSpecifier: "%.0f", animatedToBack: true)
+        
     }
 }
+
+

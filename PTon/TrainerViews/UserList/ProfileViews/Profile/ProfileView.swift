@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Kingfisher
-import BottomSheet
+//import BottomSheet
 
 struct ProfileView: View {
     @Environment(\.dismiss) var dismiss
@@ -196,14 +196,14 @@ struct ProfileView: View {
             .navigationTitle("")
             .navigationBarHidden(true)
             .navigationBarBackButtonHidden(true)
-            .bottomSheet(isPresented: $isPresentBottomSheet,detents: [.medium()],isModalInPresentation: true) {
-                if self.memberShipType != nil{
-                    
-                    MemberShipSettingView(isPresented: $isPresentBottomSheet,
-                                          type: self.memberShipType!)
-                    .environmentObject(self.viewmodel)
-                }
-            }
+//            .bottomSheet(isPresented: $isPresentBottomSheet,detents: [.medium()],isModalInPresentation: true) {
+//                if self.memberShipType != nil{
+//
+//                    MemberShipSettingView(isPresented: $isPresentBottomSheet,
+//                                          type: self.memberShipType!)
+//                    .environmentObject(self.viewmodel)
+//                }
+//            }
         }
         //TODO: - chatting room navigation
         

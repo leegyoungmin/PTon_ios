@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import SDWebImageSwiftUI
+import Kingfisher
 
 //TODO: - 데이터 로컬 저장 및 로컬에서 불러오기
 struct MealViews:View{
@@ -164,15 +165,8 @@ struct userMealCellView:View{
         
         Button {} label: {
             VStack(alignment:.center){
-                WebImage(url: URL(string: meal.url))
-                    .onSuccess(perform: { image, data, cacheType in
-                        guard let data = data else{return}
-                        self.data = data
-                    })
-                    .resizable()
-                    .indicator(.activity)
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 80, height: 80, alignment: .center)
+                
+                CircleImage(url: meal.url, size: CGSize(width: 80, height: 80))
                     .transition(.fade(duration: 0.5))
                     .clipShape(Circle())
                     .background(
@@ -195,9 +189,10 @@ struct userMealCellView:View{
                         ,alignment: .topLeading
                     )
                     .padding(.bottom,isLongPressed ? 5:0)
-                    
+                
                 
                 Text(meal.name)
+                    .lineLimit(1)
                     .font(.footnote)
                     .foregroundColor(.gray.opacity(0.5))
                 
