@@ -157,6 +157,7 @@ struct MemoListView_Previews:PreviewProvider{
             content: "Example",
             time: convertString(content: Date(), dateFormat: "yyyy.MM.dd HH:mm"),
             isPrivate: false,
+            isRead: false,
             firstMeal: ["식사1"],
             secondMeal: ["식사2"],
             thirdMeal: [], snack: [])

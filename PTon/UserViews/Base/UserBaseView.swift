@@ -112,12 +112,13 @@ struct UserBaseView: View {
                     }
                     
                     NavigationLink {
-                        UserMemoView(viewmodel: MemoListViewModel(trainerid: self.UserBaseViewModel.trainerid,
-                                                                  userid: self.UserBaseViewModel.userid,
-                                                                  userProfile: ""),
+                        UserMemoView(viewmodel:UserMemoViewModel(UserBaseViewModel.userid,
+                                                                 UserBaseViewModel.trainerid,
+                                                                 ""),
                                      userName: self.UserBaseViewModel.username,
                                      trainerId: self.UserBaseViewModel.trainerid,
                                      trainerName: self.UserBaseViewModel.trainerName)
+                        
                     } label: {
                         Image(systemName: "doc.text.fill")
                             .foregroundColor(Color.accentColor)

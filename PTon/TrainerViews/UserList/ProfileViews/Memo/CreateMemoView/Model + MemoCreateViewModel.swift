@@ -53,7 +53,8 @@ class MemoCreateViewModel:ObservableObject{
             "title":data.title,
             "isPrivate":data.isprivate,
             "content":data.content,
-            "time":convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm")
+            "time":convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
+            "isRead":false
         ]
         
         data.meal.forEach{

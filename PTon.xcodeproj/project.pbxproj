@@ -24,6 +24,7 @@
 		181C3F8427D73B7F00F7721A /* Profile + ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */; };
 		181DE20827B10C10002F33B2 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181DE20727B10C10002F33B2 /* Error.swift */; };
 		18236D3B27DB6BA300B0D619 /* TrainerCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18236D3A27DB6BA300B0D619 /* TrainerCalendarView.swift */; };
+		1824DE17282E4907005B05C7 /* UserMemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1824DE16282E4907005B05C7 /* UserMemoViewModel.swift */; };
 		182AB1AA27C8C7C200381C55 /* CoachingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AB1A927C8C7C200381C55 /* CoachingView.swift */; };
 		182AB1AE27C8C7F400381C55 /* Model+CoachingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AB1AD27C8C7F400381C55 /* Model+CoachingViewModel.swift */; };
 		182DADA927B277BC00D15C56 /* Model+TrainerUserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182DADA827B277BC00D15C56 /* Model+TrainerUserListViewModel.swift */; };
@@ -141,6 +142,7 @@
 		181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Profile + ProfileViewModel.swift"; sourceTree = "<group>"; };
 		181DE20727B10C10002F33B2 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		18236D3A27DB6BA300B0D619 /* TrainerCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainerCalendarView.swift; sourceTree = "<group>"; };
+		1824DE16282E4907005B05C7 /* UserMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMemoViewModel.swift; sourceTree = "<group>"; };
 		182AB1A927C8C7C200381C55 /* CoachingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoachingView.swift; sourceTree = "<group>"; };
 		182AB1AD27C8C7F400381C55 /* Model+CoachingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+CoachingViewModel.swift"; sourceTree = "<group>"; };
 		182DADA827B277BC00D15C56 /* Model+TrainerUserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model+TrainerUserListViewModel.swift"; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 				1893960827ABDE0200B4DB8A /* UserBaseView.swift */,
 				1854529E27B2421C001F2B9F /* Model+UserBaseViewModel.swift */,
 				18967B5227F9C6FD00A4BE58 /* UserMemoView.swift */,
+				1824DE16282E4907005B05C7 /* UserMemoViewModel.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -944,6 +947,7 @@
 				1893961B27ABF9CD00B4DB8A /* Model+LoginViewModel.swift in Sources */,
 				1833091927BEC44000890212 /* VideoPlayer.swift in Sources */,
 				184F14FC27B91CD500E5AF07 /* Model + StretchingViewModel.swift in Sources */,
+				1824DE17282E4907005B05C7 /* UserMemoViewModel.swift in Sources */,
 				1833090B27BE3C4D00890212 /* MonthYearPickerView.swift in Sources */,
 				186437A627AE45500045615E /* Model+BaseViewModel.swift in Sources */,
 				18CFFF5F27BBF92500BB95DA /* StretchingView.swift in Sources */,

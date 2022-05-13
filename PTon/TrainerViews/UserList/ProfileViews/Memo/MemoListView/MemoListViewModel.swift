@@ -16,6 +16,7 @@ struct Memo:Codable,Hashable{
     var content:String
     let time:String
     let isPrivate:Bool
+    var isRead:Bool
     var firstMeal:[String]
     var secondMeal:[String]
     var thirdMeal:[String]
@@ -27,6 +28,7 @@ struct Memo:Codable,Hashable{
         case content
         case time
         case isPrivate
+        case isRead
         case firstMeal = "아침"
         case secondMeal = "점심"
         case snack = "간식"
@@ -76,11 +78,9 @@ class MemoListViewModel:ObservableObject{
                     self.memos.append(memo)
                 case .modified:
                     guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
-                    
                     self.memos[index] = memo
                 case .removed:
                     guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
-                    
                     self.memos.remove(at: index)
                 }
             }else{

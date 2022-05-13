@@ -49,12 +49,11 @@ struct HomeView: View {
                     
                     //TODO: 그래프 생성
                     
-                    ExampleView()
-                    //                RoundedRectangle(cornerRadius: 5)
-                    //                    .fill(.white)
-                    //                    .cornerRadius(5)
-                    //                    .frame(height:250)
-                    //                    .shadow(color: .gray.opacity(0.2), radius: 5)
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(.white)
+                        .cornerRadius(5)
+                        .frame(height:250)
+                        .shadow(color: .gray.opacity(0.2), radius: 5)
                     
                     VStack{
                         HStack{

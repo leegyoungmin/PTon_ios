@@ -9,35 +9,55 @@ import Foundation
 import SwiftUI
 
 struct UserMemoView:View{
-    @StateObject var viewmodel:MemoListViewModel
+    @StateObject var viewmodel:UserMemoViewModel
     let userName:String
     let trainerId:String
     let trainerName:String
     var body: some View{
-        List{
-            ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
-                ZStack{
-                    NavigationLink {
-                        DetailMemoView(viewmodel: DetailMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid, userProfile: viewmodel.userProfile), currentMemo:memo)
-                    } label: {
-                        EmptyView()
-                    }
-                    .buttonStyle(.plain)
-                    .opacity(0.0)
-                    
-                    MemoListCellView(memo: memo)
+        VStack{
+            List{
+                ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
+                    ZStack(alignment: .topLeading){
+                        NavigationLink {
+                            DetailMemoView(viewmodel: DetailMemoViewModel(userId: self.viewmodel.userId,
+                                                                          userName: userName,
+                                                                          trainerId: trainerId,
+                                                                          trainerName: trainerName,
+                                                                          memoId: memo.uuid,
+                                                                          userProfile: viewmodel.userProfile),
+                                           currentMemo:memo)
+                        } label: {
+                            EmptyView()
+                        }
+                        .buttonStyle(.plain)
+                        .opacity(0.0)
+                        
+                        MemoListCellView(memo: memo)
+                        
+                        if !memo.isRead{
+                            Circle()
+                                .fill(Color.accentColor)
+                                .frame(width: 10, height: 10, alignment: .topLeading)
+                                .offset(x:-10)
+                        }
 
+                    }
+                    .listStyle(.plain)
+                    .listRowSeparator(.hidden)
                 }
             }
-            .onDelete { indexset in
-                guard let index = indexset.first else{return}
-                viewmodel.deleteData(data: viewmodel.memos.filter{$0.isPrivate == false}[index])
-            }
-            
+            .padding()
+            .listStyle(.plain)
+            .listRowSeparator(.hidden)
         }
-        .listStyle(.plain)
-        .listRowSeparator(.hidden)
+        .background(backgroundColor)
         .navigationTitle("공유된 메모")
         .navigationBarTitleDisplayMode(.large)
     }
 }
+
+//struct UserMemoView_Previews:PreviewProvider{
+//    static var previews: some View{
+//        MemoListCellView(memo: Memo(uuid: UUID().uuidString, title: "asdnjk", content: "asdnk", time: "asdnjk", isPrivate: false, firstMeal: [""], secondMeal: [""], thirdMeal: [""], snack: [""]))
+//    }
+//}
