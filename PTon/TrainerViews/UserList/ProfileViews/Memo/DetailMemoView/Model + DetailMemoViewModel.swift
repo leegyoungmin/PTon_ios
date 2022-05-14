@@ -17,6 +17,7 @@ struct comment:Hashable,Codable{
     var content:String
     var time:String
     var isLike:Bool
+    var isRead:Bool
 }
 
 //MARK: - ViewModel
@@ -115,7 +116,8 @@ class DetailMemoViewModel:ObservableObject{
             "uid" : UUID().uuidString,
             "content" : content,
             "time" : convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
-            "isLike" : false
+            "isLike" : false,
+            "isRead":false
         ]
         
         if type == .trainer{

@@ -45,7 +45,7 @@ struct MemoListView:View{
                                     .buttonStyle(.plain)
                                     .opacity(0.0)
                                     
-                                    MemoListCellView(memo: memo)
+                                    MemoListCellView(memo: memo, userId: viewmodel.userid, trainerId: viewmodel.trainerid)
 
                                 }
                             }
@@ -78,7 +78,8 @@ struct MemoListView:View{
                                     .buttonStyle(.plain)
                                     .opacity(0.0)
                                     
-                                    MemoListCellView(memo: memo)
+                                    MemoListCellView(memo: memo, userId: viewmodel.userid
+                                                     , trainerId: viewmodel.trainerid)
 
                                 }
                             }
@@ -117,6 +118,17 @@ struct MemoListView:View{
 
 struct MemoListCellView:View{
     let memo:Memo
+    let userId:String
+    let trainerId:String
+    
+    @StateObject var viewModel:UserDetailMemoViewModel
+    init(memo:Memo,userId:String,trainerId:String){
+        self.memo = memo
+        self.userId = userId
+        self.trainerId = trainerId
+        
+        _viewModel = StateObject.init(wrappedValue: UserDetailMemoViewModel.init(userId, trainerId, memo.uuid))
+    }
     var body: some View{
         VStack(alignment:.leading,spacing:5){
             HStack{
@@ -135,37 +147,54 @@ struct MemoListCellView:View{
                     .font(.body)
                     .foregroundColor(.gray.opacity(0.5))
                 Spacer()
+                
+                
             }
             
-            Text(memo.content)
-                .font(.body)
-                .foregroundColor(.gray.opacity(0.5))
-                .padding(.top,10)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
+            HStack{
+                Text(memo.content)
+                    .font(.body)
+                    .foregroundColor(.gray.opacity(0.5))
+                    .padding(.top,10)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                
+                Spacer()
+                
+                Text("\(viewModel.unReadCount)")
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(10)
+                    .background(
+                        Circle()
+                            .fill(Color.accentColor)
+                    )
+            }
+            
+
         }
         .padding(5)
     }
 }
-
-struct MemoListView_Previews:PreviewProvider{
-    static var previews: some View{
-//        MemoListView(viewmodel: MemoListViewModel(userid: "kakao:1967260938"))
-        MemoListCellView(memo: Memo(
-            uuid: UUID().uuidString,
-            title: "Example_1",
-            content: "Example",
-            time: convertString(content: Date(), dateFormat: "yyyy.MM.dd HH:mm"),
-            isPrivate: false,
-            isRead: false,
-            firstMeal: ["식사1"],
-            secondMeal: ["식사2"],
-            thirdMeal: [], snack: [])
-        )
-        .previewLayout(.sizeThatFits)
-    }
-}
-
+//
+//struct MemoListView_Previews:PreviewProvider{
+//    static var previews: some View{
+////        MemoListView(viewmodel: MemoListViewModel(userid: "kakao:1967260938"))
+//        MemoListCellView(memo: Memo(
+//            uuid: UUID().uuidString,
+//            title: "Example_1",
+//            content: "Example",
+//            time: convertString(content: Date(), dateFormat: "yyyy.MM.dd HH:mm"),
+//            isPrivate: false,
+//            isRead: false,
+//            firstMeal: ["식사1"],
+//            secondMeal: ["식사2"],
+//            thirdMeal: [], snack: [])
+//        )
+//        .previewLayout(.sizeThatFits)
+//    }
+//}
+//
 
 private struct MemoTabs<Label:View>:View{
     

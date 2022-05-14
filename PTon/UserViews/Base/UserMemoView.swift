@@ -19,20 +19,14 @@ struct UserMemoView:View{
                 ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
                     ZStack(alignment: .topLeading){
                         NavigationLink {
-                            DetailMemoView(viewmodel: DetailMemoViewModel(userId: self.viewmodel.userId,
-                                                                          userName: userName,
-                                                                          trainerId: trainerId,
-                                                                          trainerName: trainerName,
-                                                                          memoId: memo.uuid,
-                                                                          userProfile: viewmodel.userProfile),
-                                           currentMemo:memo)
+                            UserDetailMemoView(currentMemo: memo, viewModel: UserDetailMemoViewModel(viewmodel.userId, viewmodel.trainerId, memo.uuid))
                         } label: {
                             EmptyView()
                         }
                         .buttonStyle(.plain)
                         .opacity(0.0)
                         
-                        MemoListCellView(memo: memo)
+                        MemoListCellView(memo: memo, userId: viewmodel.userId, trainerId: viewmodel.trainerId)
                         
                         if !memo.isRead{
                             Circle()
