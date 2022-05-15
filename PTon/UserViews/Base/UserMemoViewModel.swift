@@ -51,7 +51,7 @@ class UserMemoViewModel:ObservableObject{
                     guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
                     
                     if diff.type == .modified{
-                        modifyMemo(index, memo: memo)
+//                        modifyMemo(index, memo: memo)
                     }else if diff.type == .removed{
                         removeMemo(index)
                     }
@@ -67,5 +67,21 @@ class UserMemoViewModel:ObservableObject{
     }
     func removeMemo(_ index:Int){
         self.memos.remove(at: index)
+    }
+    
+    func changeUnread(_ memoId:String){
+        Firestore.firestore()
+            .collection("Memo")
+            .document(trainerId)
+            .collection(userId)
+            .document(memoId)
+            .updateData(["isRead":true]) { error in
+                print(error?.localizedDescription)
+            }
+    }
+    
+    func viewDisappear(){
+        let listener = db.collection("Memo").document(trainerId).collection(userId).addSnapshotListener { snapshot, error in}
+        listener.remove()
     }
 }

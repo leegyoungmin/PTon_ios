@@ -20,6 +20,9 @@ struct UserMemoView:View{
                     ZStack(alignment: .topLeading){
                         NavigationLink {
                             UserDetailMemoView(currentMemo: memo, viewModel: UserDetailMemoViewModel(viewmodel.userId, viewmodel.trainerId, memo.uuid))
+                                .onAppear {
+                                    viewmodel.changeUnread(memo.uuid)
+                                }
                         } label: {
                             EmptyView()
                         }
@@ -47,6 +50,12 @@ struct UserMemoView:View{
         .background(backgroundColor)
         .navigationTitle("공유된 메모")
         .navigationBarTitleDisplayMode(.large)
+        .onDisappear {
+            viewmodel.viewDisappear()
+        }
+        .onAppear {
+            viewmodel.fetchData()
+        }
     }
 }
 

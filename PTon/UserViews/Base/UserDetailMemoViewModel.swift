@@ -68,4 +68,6 @@ class UserDetailMemoViewModel:ObservableObject{
     var unReadCount:Int{
         return self.comments.filter{$0.isRead == false}.count
     }
+    
+
 }

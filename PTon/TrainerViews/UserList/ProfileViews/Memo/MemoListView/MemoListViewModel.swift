@@ -101,5 +101,4 @@ class MemoListViewModel:ObservableObject{
         let listener = db.collection("Memo").document(trainerid).collection(userid).addSnapshotListener { snapshot, error in}
         listener.remove()
     }
-    
 }

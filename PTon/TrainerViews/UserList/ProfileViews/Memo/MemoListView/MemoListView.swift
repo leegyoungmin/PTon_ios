@@ -45,8 +45,8 @@ struct MemoListView:View{
                                     .buttonStyle(.plain)
                                     .opacity(0.0)
                                     
+                                    
                                     MemoListCellView(memo: memo, userId: viewmodel.userid, trainerId: viewmodel.trainerid)
-
                                 }
                             }
                             .onDelete { indexset in
