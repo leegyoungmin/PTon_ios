@@ -19,7 +19,11 @@ struct UserMemoView:View{
                 ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
                     ZStack(alignment: .topLeading){
                         NavigationLink {
-                            UserDetailMemoView(currentMemo: memo, viewModel: UserDetailMemoViewModel(viewmodel.userId, viewmodel.trainerId, memo.uuid))
+                            UserDetailMemoView(currentMemo: memo, viewModel: UserDetailMemoViewModel(
+                                viewmodel.userId,
+                                self.userName,
+                                self.trainerId,
+                                memo.uuid))
                                 .onAppear {
                                     viewmodel.changeUnread(memo.uuid)
                                 }
@@ -29,14 +33,19 @@ struct UserMemoView:View{
                         .buttonStyle(.plain)
                         .opacity(0.0)
                         
-                        MemoListCellView(memo: memo, userId: viewmodel.userId, trainerId: viewmodel.trainerId)
+                        MemoListCellView(memo: memo, userId: viewmodel.userId, userName: self.userName, trainerId: viewmodel.trainerId)
+                            .onTapGesture {
+                                DispatchQueue.main.async {
+                                    viewmodel.changeUnread(memo.uuid)
+                                    viewmodel.memoChangeRead(memo.uuid)
+                                }
+                            }
                         
-                        if !memo.isRead{
-                            Circle()
-                                .fill(Color.accentColor)
-                                .frame(width: 10, height: 10, alignment: .topLeading)
-                                .offset(x:-10)
-                        }
+                        Circle()
+                            .fill(Color.accentColor)
+                            .frame(width: 10, height: 10, alignment: .topLeading)
+                            .offset(x:-10)
+                            .opacity(memo.isRead ? 0:1)
 
                     }
                     .listStyle(.plain)

@@ -21,11 +21,10 @@ class UserMemoViewModel:ObservableObject{
         self.userId = userId
         self.trainerId = trainerId
         self.userProfile = userProfile
-        
-        fetchData()
     }
     
     func fetchData(){
+        self.memos.removeAll()
         db.collection("Memo").document(trainerId).collection(userId).order(by: "time",descending: true)
             .addSnapshotListener { querySnapshot, error in
                 guard let snapshot = querySnapshot else{return}
@@ -63,7 +62,7 @@ class UserMemoViewModel:ObservableObject{
     }
     
     func modifyMemo(_ index:Int,memo:Memo){
-        self.memos[index] = memo
+        self.memos[index].isRead.toggle()
     }
     func removeMemo(_ index:Int){
         self.memos.remove(at: index)
@@ -78,6 +77,11 @@ class UserMemoViewModel:ObservableObject{
             .updateData(["isRead":true]) { error in
                 print(error?.localizedDescription)
             }
+    }
+    
+    func memoChangeRead(_ memoId:String){
+        guard let index = self.memos.firstIndex(where: {$0.uuid == memoId}) else{return}
+        self.memos[index].isRead = true
     }
     
     func viewDisappear(){

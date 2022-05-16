@@ -46,7 +46,7 @@ struct MemoListView:View{
                                     .opacity(0.0)
                                     
                                     
-                                    MemoListCellView(memo: memo, userId: viewmodel.userid, trainerId: viewmodel.trainerid)
+                                    MemoListCellView(memo: memo, userId: viewmodel.userid, userName: self.userName, trainerId: viewmodel.trainerid)
                                 }
                             }
                             .onDelete { indexset in
@@ -78,7 +78,7 @@ struct MemoListView:View{
                                     .buttonStyle(.plain)
                                     .opacity(0.0)
                                     
-                                    MemoListCellView(memo: memo, userId: viewmodel.userid
+                                    MemoListCellView(memo: memo, userId: viewmodel.userid, userName: self.userName
                                                      , trainerId: viewmodel.trainerid)
 
                                 }
@@ -119,15 +119,17 @@ struct MemoListView:View{
 struct MemoListCellView:View{
     let memo:Memo
     let userId:String
+    let userName:String
     let trainerId:String
     
     @StateObject var viewModel:UserDetailMemoViewModel
-    init(memo:Memo,userId:String,trainerId:String){
+    init(memo:Memo,userId:String,userName:String,trainerId:String){
         self.memo = memo
         self.userId = userId
+        self.userName = userName
         self.trainerId = trainerId
         
-        _viewModel = StateObject.init(wrappedValue: UserDetailMemoViewModel.init(userId, trainerId, memo.uuid))
+        _viewModel = StateObject.init(wrappedValue: UserDetailMemoViewModel.init(userId, userName, trainerId, memo.uuid))
     }
     var body: some View{
         VStack(alignment:.leading,spacing:5){
@@ -169,6 +171,7 @@ struct MemoListCellView:View{
                         Circle()
                             .fill(Color.accentColor)
                     )
+                    .opacity(viewModel.unReadCount == 0 ? 0:1)
             }
             
 

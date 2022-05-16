@@ -14,16 +14,20 @@ import Firebase
 class UserDetailMemoViewModel:ObservableObject{
     @Published var comments:[comment] = []
     let userId:String
+    let userName:String
     let trainerId:String
     let memoId:String
     let reference:CollectionReference
     
-    init(_ userId:String,_ trainerId:String, _ memoId:String){
+    init(_ userId:String,_ userName:String,_ trainerId:String, _ memoId:String){
         self.userId = userId
+        self.userName = userName
         self.trainerId = trainerId
         self.memoId = memoId
         
-        self.reference = Firestore.firestore().collection("Memo").document(trainerId).collection(userId).document(memoId).collection("Comment")
+        print(self.userId)
+        
+        self.reference = Firestore.firestore().collection("Memo").document(self.trainerId).collection(self.userId).document(self.memoId).collection("Comment")
         
         ObserveData()
     }
@@ -69,5 +73,51 @@ class UserDetailMemoViewModel:ObservableObject{
         return self.comments.filter{$0.isRead == false}.count
     }
     
+    func changeUnread(_ index:Int){
+        let commentId = self.comments[index].uid
+        self.reference.document(commentId).updateData(["isRead":true])
+    }
+    
+    
+    //MARK: - 데이터 업로드 함수
+    func uploadComment(data:[String:Any]){
+        guard let uuid = data["uid"] as? String else{return}
+        print(uuid)
+        Firestore.firestore().collection("Memo")
+            .document(self.trainerId)
+            .collection(self.userId)
+            .document(self.memoId)
+            .collection("Comment")
+            .document(uuid)
+            .setData(data)
+    }
+    
+    func makeInputData(type:userType = .user,content:String)->[String:Any]{
+        let data:[String:Any] = [
+            "uid":UUID().uuidString,
+            "content":content,
+            "time":convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
+            "isLike":false,
+            "isRead":false,
+            "writerId":userId,
+            "writerName":userName
+        ]
+        
+        return data
+    }
+    
+    //MARK: - 좋아요 업데이트 함수
+    func toggleLike(comment:comment){
+        reference
+            .document(comment.uid)
+            .updateData(["isLike":!comment.isLike])
+    }
+    
+    //MARK: - 댓글 삭제 함수
+    func deleteComment(comment:comment){
+        reference
+            .document(comment.uid)
+            .delete()
+    }
 
 }

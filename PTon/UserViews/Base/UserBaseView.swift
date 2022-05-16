@@ -122,6 +122,11 @@ struct UserBaseView: View {
                     } label: {
                         Image(systemName: "doc.text.fill")
                             .foregroundColor(Color.accentColor)
+                            .overlay(
+                                MemoBadge()
+                                    .environmentObject(self.UserBaseViewModel)
+                                ,alignment: .topLeading
+                            )
                     }
 
                     Menu {
@@ -137,10 +142,6 @@ struct UserBaseView: View {
                     } label: {
                         Image("more")
                     }
-
-                    
-                    
-
                 }
             }
         }
@@ -163,6 +164,22 @@ struct Badge:View{
                     .background(Color.red)
                     .clipShape(Circle())
                     .offset(x: -15, y: -5)
+            }
+        }
+    }
+}
+
+struct MemoBadge:View{
+    @EnvironmentObject var viewModel:UserBaseViewModel
+    var body: some View{
+        ZStack(alignment: .topLeading) {
+            Color.clear
+            
+            if viewModel.isShowBadge{
+                Circle()
+                    .fill(.red)
+                    .frame(width: 5, height: 5, alignment: .topLeading)
+                    .offset(x: -5, y: -5)
             }
         }
     }

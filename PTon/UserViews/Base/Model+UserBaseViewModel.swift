@@ -11,6 +11,8 @@ import GoogleSignIn
 import SwiftUI
 import KakaoSDKUser
 import NaverThirdPartyLogin
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 //MARK: MODEL
 struct UserBaseModel{
@@ -29,6 +31,7 @@ struct UserBaseModel{
 class UserBaseViewModel:ObservableObject{
     @Published var chattings:[message] = []
     @Published var userBaseModel = UserBaseModel()
+    @Published var isShowBadge:Bool = false
     @Environment(\.presentationMode) var presentaionMode
     let reference = FirebaseDatabase.Database.database().reference()
     var rawValue:Int = UserDefaults.standard.integer(forKey: "LoginApi")
@@ -41,6 +44,7 @@ class UserBaseViewModel:ObservableObject{
             self.fetchData {
                 self.settingtrainerName()
                 self.ObserveChatting()
+                self.ObserveMemo()
             }
         }
         
@@ -158,6 +162,24 @@ class UserBaseViewModel:ObservableObject{
                 let currentMessage = self.makeDataForm(values, trainerId: self.trainerid, chatId: key)
                 guard let index = self.chattings.firstIndex(where: {$0.chatId == key}) else{return}
                 self.chattings[index] = currentMessage
+            }
+    }
+    
+    func ObserveMemo(){
+        guard let userId = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
+        
+        Firestore.firestore().collection("Memo")
+            .document(self.trainerid)
+            .collection(userId)
+            .whereField("isRead", isEqualTo: false)
+            .addSnapshotListener { querySnapshot, error in
+                guard let documents = querySnapshot?.documents else{return}
+                print(documents)
+                if !documents.isEmpty{
+                    self.isShowBadge = true
+                }else{
+                    self.isShowBadge = false
+                }
             }
     }
     
