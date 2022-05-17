@@ -27,69 +27,24 @@ struct MemoListView:View{
             
             
             VStack{
-                
-                if selectedIndex == 0{
-                    if viewmodel.memos.filter{$0.isPrivate == false}.isEmpty{
-                        Spacer()
-                        Text("저장된 메모가 없습니다.")
-                        Spacer()
-                    }else{
-                        List{
-                            ForEach(viewmodel.memos.filter{$0.isPrivate == false},id:\.self) { memo in
-                                ZStack{
-                                    NavigationLink {
-                                        DetailMemoView(viewmodel: DetailMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid, userProfile: viewmodel.userProfile), currentMemo:memo)
-                                    } label: {
-                                        EmptyView()
-                                    }
-                                    .buttonStyle(.plain)
-                                    .opacity(0.0)
-                                    
-                                    
-                                    MemoListCellView(memo: memo, userId: viewmodel.userid, userName: self.userName, trainerId: viewmodel.trainerid)
-                                }
-                            }
-                            .onDelete { indexset in
-                                guard let index = indexset.first else{return}
-                                viewmodel.deleteData(data: viewmodel.memos.filter{$0.isPrivate == false}[index])
-                            }
-                            
-                        }
-                        .listStyle(.plain)
-                        .listRowSeparator(.hidden)
-                        .padding()
-                    }
-                    
+                if viewmodel.memoDatas(Bool.init(selectedIndex)).isEmpty{
+                    emptyMemoView()
                 }else{
-                    
-                    if viewmodel.memos.filter{$0.isPrivate == true}.isEmpty{
-                        Spacer()
-                        Text("저장된 메모가 없습니다.")
-                        Spacer()
-                    }else{
-                        List{
-                            ForEach(viewmodel.memos.filter{$0.isPrivate == true},id:\.self) { memo in
-                                ZStack{
-                                    NavigationLink {
-                                        DetailMemoView(viewmodel: DetailMemoViewModel(userId: viewmodel.userid, userName: userName, trainerId: trainerId, trainerName: trainerName, memoId: memo.uuid, userProfile: viewmodel.userProfile), currentMemo:memo)
-                                    } label: {
-                                        EmptyView()
-                                    }
-                                    .buttonStyle(.plain)
-                                    .opacity(0.0)
-                                    
-                                    MemoListCellView(memo: memo, userId: viewmodel.userid, userName: self.userName
-                                                     , trainerId: viewmodel.trainerid)
-
-                                }
-                            }
+                    List{
+                        ForEach(viewmodel.memoDatas(Bool.init(selectedIndex)),id:\.self){ memo in
+                            MemoListNavigationView(currentMemo: memo,
+                                                   userName: self.userName,
+                                                   trainerName: self.trainerName)
+                            .environmentObject(self.viewmodel)
                         }
-                        .listStyle(.plain)
-                        .listRowSeparator(.hidden)
-                        .padding()
+                        .onDelete { indexset in
+                            guard let index = indexset.first else{return}
+                            viewmodel.deleteData(data: viewmodel.memoDatas(Bool.init(selectedIndex))[index])
+                        }
                     }
-                    
-
+                    .listStyle(.plain)
+                    .listRowSeparator(.hidden)
+                    .padding()
                 }
                 
                 HStack{
@@ -149,8 +104,6 @@ struct MemoListCellView:View{
                     .font(.body)
                     .foregroundColor(.gray.opacity(0.5))
                 Spacer()
-                
-                
             }
             
             HStack{
@@ -173,8 +126,6 @@ struct MemoListCellView:View{
                     )
                     .opacity(viewModel.unReadCount == 0 ? 0:1)
             }
-            
-
         }
         .padding(5)
     }
@@ -198,6 +149,44 @@ struct MemoListCellView:View{
 //    }
 //}
 //
+
+struct MemoListNavigationView:View{
+    @EnvironmentObject var viewModel:MemoListViewModel
+    let currentMemo:Memo
+    let userName:String
+    let trainerName:String
+    var body: some View{
+        ZStack{
+            NavigationLink {
+                TrainerDetailMemoView(viewmodel: DetailMemoViewModel(userId: viewModel.userid,
+                                                              userName: self.userName,
+                                                              trainerId: viewModel.trainerid,
+                                                              trainerName: trainerName,
+                                                              memoId: currentMemo.uuid,
+                                                              userProfile: viewModel.userProfile),
+                               currentMemo: currentMemo)
+            } label: {
+                EmptyView()
+            }
+            .buttonStyle(.plain)
+            .opacity(0.0)
+
+            MemoListCellView(memo: currentMemo,
+                             userId: viewModel.userid,
+                             userName: userName,
+                             trainerId: viewModel.trainerid)
+        }
+    }
+}
+
+struct emptyMemoView:View{
+    var body: some View{
+        Spacer()
+        Text("저장된 메모가 없습니다.")
+        Spacer()
+    }
+}
+
 
 private struct MemoTabs<Label:View>:View{
     
@@ -241,4 +230,3 @@ private struct MemoTabs<Label:View>:View{
         
     }
 }
-

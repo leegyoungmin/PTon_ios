@@ -172,6 +172,7 @@ class UserBaseViewModel:ObservableObject{
             .document(self.trainerid)
             .collection(userId)
             .whereField("isRead", isEqualTo: false)
+            .whereField("isPrivate", isEqualTo: false)
             .addSnapshotListener { querySnapshot, error in
                 guard let documents = querySnapshot?.documents else{return}
                 print(documents)

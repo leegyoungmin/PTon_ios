@@ -88,18 +88,10 @@ class DetailMemoViewModel:ObservableObject{
         }
     }
     
-    //TODO: - 유저 타입에 따른 데이터 분기 처리 함수
+    //TODO: - Trainer 유저 메소드
     func setCommentData(_ content:String){
-        guard let currentUser = Firebase.Auth.auth().currentUser else{return}
-        
-        //Trainer일 경우
-        if trainerId == currentUser.uid{
-            let data = makeInputData(type: .trainer, content: content)
-            uploadData(data: data)
-        }else if userId == currentUser.uid{
-            let data = makeInputData(type: .user, content: content)
-            uploadData(data: data)
-        }
+        let data = makeInputData(type: .trainer, content: content)
+        uploadData(data: data)
     }
     
     //MARK: - 데이터 업로드 함수
@@ -111,23 +103,16 @@ class DetailMemoViewModel:ObservableObject{
     }
     
     //MARK: - 업로드 데이터 생성 함수
-    func makeInputData(type:userType,content:String) -> [String:Any]{
-        var data:[String:Any] = [
+    func makeInputData(type:userType = .trainer,content:String) -> [String:Any]{
+        let data:[String:Any] = [
             "uid" : UUID().uuidString,
             "content" : content,
             "time" : convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
             "isLike" : false,
-            "isRead":false
+            "isRead":false,
+            "writerId":trainerId,
+            "writerName":trainerName
         ]
-        
-        if type == .trainer{
-            data["writerId"] = trainerId
-            data["writerName"] = trainerName
-        }else if type == .user{
-            data["writerId"] = userId
-            data["writerName"] = userName
-        }
-        
         return data
     }
     

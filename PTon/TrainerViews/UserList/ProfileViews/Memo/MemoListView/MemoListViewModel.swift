@@ -101,4 +101,7 @@ class MemoListViewModel:ObservableObject{
         let listener = db.collection("Memo").document(trainerid).collection(userid).addSnapshotListener { snapshot, error in}
         listener.remove()
     }
+    func memoDatas(_ isPrivate:Bool)->[Memo]{
+        return memos.filter{$0.isPrivate == isPrivate}
+    }
 }

@@ -143,6 +143,18 @@ extension View{
     }
 }
 
+extension Bool{
+    init<T:BinaryInteger>(_ integer:T){
+        if integer == 0{
+            self.init(false)
+        }else if integer == 1{
+            self.init(true)
+        }else{
+            self.init(false)
+        }
+    }
+}
+
 
 //func loadLocalImage(fileName:String)->UIImage?{
 //

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DetailMemoView: View {
+struct TrainerDetailMemoView: View {
     //MARK: - PROPERTIES
     @Environment(\.editMode) private var editMode
     @StateObject var viewmodel:DetailMemoViewModel
