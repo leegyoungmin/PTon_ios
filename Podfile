@@ -24,7 +24,6 @@ target 'PTon' do
   pod 'FirebaseAnalytics'
   pod 'GoogleSignIn'
   pod 'MessageKit'
-  pod 'Kingfisher'
   pod 'Alamofire'
   pod 'ToastUI'
   pod 'AlertToast'

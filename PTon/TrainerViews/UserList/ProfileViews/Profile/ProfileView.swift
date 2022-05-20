@@ -143,7 +143,7 @@ struct ProfileView: View {
                         }
                         
                         NavigationLink {
-                            TrainerJournalView(viewModel: TrainerJournalViewModel(trainerId: viewmodel.traineid,
+                            TrainerJournalView(viewModel: TrainerJournalViewModel(trainerId: viewmodel.trainerId,
                                                                                   userId: viewmodel.trainee.userId)
                                                ,userName: viewmodel.trainee.userName)
                         } label: {
@@ -151,20 +151,20 @@ struct ProfileView: View {
                         }
                         
                         NavigationLink {
-                            StretchingRequestView(stretchingViewModel: StretchingViewModel(trainerid: viewmodel.traineid, userid:viewmodel.trainee.userId))
+                            StretchingRequestView(stretchingViewModel: StretchingViewModel(trainerid: viewmodel.trainerId, userid:viewmodel.trainee.userId))
                         } label: {
                             ProfileButton(icons[2])
                         }
                         NavigationLink {
-                            SurveyView(surveyViewModel: SurveyViewModel(viewmodel.traineid, viewmodel.trainee.userId))
+                            SurveyView(surveyViewModel: SurveyViewModel(viewmodel.trainerId, viewmodel.trainee.userId))
                                 .environmentObject(self.viewmodel)
                         } label: {
                             ProfileButton(icons[3])
                         }
                         NavigationLink {
-                            MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.traineid, userid: viewmodel.trainee.userId, userProfile: viewmodel.trainee.userProfile ?? ""),
+                            MemoListView(viewmodel: MemoListViewModel(trainerid: viewmodel.trainerId, userid: viewmodel.trainee.userId, userProfile: viewmodel.trainee.userProfile ?? ""),
                                          userName: viewmodel.trainee.userName,
-                                         trainerId: viewmodel.traineid,
+                                         trainerId: viewmodel.trainerId,
                                          trainerName: self.trainerName)
                             .navigationTitle("")
                             .navigationBarTitleDisplayMode(.inline)

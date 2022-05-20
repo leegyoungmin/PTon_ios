@@ -683,7 +683,6 @@ DEPENDENCIES:
   - FirebaseUI
   - GoogleSignIn
   - KakaoSDK (~> 2.8.5)
-  - Kingfisher
   - Kingfisher (~> 7.0)
   - MessageKit
   - naveridlogin-sdk-ios
@@ -823,6 +822,6 @@ SPEC CHECKSUMS:
   SwiftAlgorithms: 38dda4731d19027fdeee1125f973111bf3386b53
   ToastUI: 391eb9a1cc15e7ef4b79ee112e4a0b969259154f
 
-PODFILE CHECKSUM: fb148cee1aa7d105f190c4cae45967f2659a86cf
+PODFILE CHECKSUM: 55537cc67adbd251f42882e0a0e9d18aa9513e70
 
 COCOAPODS: 1.11.3

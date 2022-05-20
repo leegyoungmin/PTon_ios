@@ -136,25 +136,25 @@ class DetailMemoViewModel:ObservableObject{
             .delete()
     }
     
-    func updateMemoData(data:Memo){
-        let reference = Firestore.firestore().collection("Memo").document(trainerId).collection(userId).document(data.uuid)
-        let data:[String:Any] = [
-            "content":data.content,
-            "time":convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
-            "uuid":data.uuid,
-            mealType.first.rawValue:data.firstMeal,
-            mealType.second.rawValue:data.secondMeal,
-            mealType.snack.rawValue:data.snack,
-            mealType.third.rawValue:data.thirdMeal
-        ]
-        
-        reference.updateData(data)
-    }
-    
+//    func updateMemoData(data:Memo){
+//        let reference = Firestore.firestore().collection("Memo").document(trainerId).collection(userId).document(data.uuid)
+//        let data:[String:Any] = [
+//            "content":data.content,
+//            "time":convertString(content: Date(), dateFormat: "yyyy-MM-dd HH:mm"),
+//            "uuid":data.uuid,
+//            mealType.first.rawValue:data.firstMeal,
+//            mealType.second.rawValue:data.secondMeal,
+//            mealType.snack.rawValue:data.snack,
+//            mealType.third.rawValue:data.thirdMeal
+//        ]
+//        
+//        reference.updateData(data)
+//    }
+//    
     //MARK: - 리스너 제거 메소드 (뷰가 사라질 경우, 리스너를 분리한다.)
     func viewDisapper(data:Memo){
         
-        updateMemoData(data: data)
+//        updateMemoData(data: data)
         let listener = reference.addSnapshotListener { querySnapshot, error in}
         
         listener.remove()

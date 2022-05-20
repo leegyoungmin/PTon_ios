@@ -58,7 +58,7 @@ class MemoCreateViewModel:ObservableObject{
         ]
         
         data.meal.forEach{
-            values[$0.mealType.rawValue] = $0.foodList
+            values[$0.mealType.description()] = $0.foodList
         }
 
         reference.document(data.uuid).setData(values)

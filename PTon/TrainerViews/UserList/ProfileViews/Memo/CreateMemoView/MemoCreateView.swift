@@ -8,11 +8,24 @@
 import SwiftUI
 import AlertToast
 
-enum mealType:String,CaseIterable{
-    case first = "아침"
-    case second = "점심"
-    case snack = "간식"
-    case third = "저녁"
+enum mealType:Int,CaseIterable{
+    case first = 0
+    case second
+    case snack
+    case third
+    
+    func description()->String{
+        switch self {
+        case .first:
+            return "아침"
+        case .second:
+            return "점심"
+        case .snack:
+            return "간식"
+        case .third:
+            return "저녁"
+        }
+    }
 }
 
 struct MemoCreateView: View {

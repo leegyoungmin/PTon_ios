@@ -51,10 +51,10 @@ struct MealEditViews:View{
                             UIApplication.shared.endEditing()
                             isProgrss = true
                             
-                            viewModel.setImageData(selectedDate, index: index, image: image, foodName: food, ImageType: imageType, uuid: uuid) {
-                                self.isProgrss = false
-                                self.ispresented = false
-                            }
+//                            viewModel.setImageData(selectedDate, index: index, image: image, foodName: food, ImageType: imageType, uuid: uuid) {
+//                                self.isProgrss = false
+//                                self.ispresented = false
+//                            }
                         } label: {
                             HStack{
                                 Text(food)
@@ -79,7 +79,7 @@ struct MealEditViews:View{
             
         }
         .background(backgroundColor)
-        .navigationTitle(mealTypes[index])
+//        .navigationTitle(mealTypes[index])
         .searchable(text: $typingText)
     }
     var searchResult:[String]{

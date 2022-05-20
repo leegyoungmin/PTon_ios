@@ -7,6 +7,8 @@
 
 import Foundation
 import Firebase
+import FirebaseFirestore
+import FirebaseFirestoreSwift
 
 struct memberShip:Codable,Hashable{
     var startMember:Date?
@@ -38,14 +40,14 @@ class ProfileViewModel:ObservableObject{
     @Published var result = surveyResult(allKcal: "", carboKcal: "", carboGram: "", fatKcal: "", fatGram: "", proteinKcal: "", proteinGram: "")
     @Published var MemberShip = memberShip()
     
-    let traineid:String
+    let trainerId:String
     let fitnessCode:String
     let trainee:trainee
     
     let reference = Firebase.Database.database().reference().child("Membership")
     
     init(_ trainerid:String,_ fitnessCode:String,_ trainee:trainee){
-        self.traineid = trainerid
+        self.trainerId = trainerid
         self.fitnessCode = fitnessCode
         self.trainee = trainee
         
@@ -115,7 +117,6 @@ class ProfileViewModel:ObservableObject{
                     }
                 }
             })
-                
     }
     
     func setDateData(_ data:[String:String]){

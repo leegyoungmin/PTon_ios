@@ -245,7 +245,7 @@ struct TrainerMealCellView:View{
     var body: some View{
         VStack{
             HStack{
-                Text(mealType.rawValue)
+                Text(mealType.description())
                 Spacer()
             }
             
