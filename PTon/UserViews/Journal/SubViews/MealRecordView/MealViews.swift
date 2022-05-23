@@ -12,7 +12,7 @@ import Kingfisher
 
 //TODO: - 데이터 로컬 저장 및 로컬에서 불러오기
 struct MealViews:View{
-    @StateObject var viewModel:MealRecordViewModel
+    @StateObject var viewModel:UserMealViewModel
     @Binding var selectedDate:Date
     @State var currentTab:mealType = .first
     @State var selectedIndex:Int = 0
@@ -43,7 +43,7 @@ struct MealViews:View{
                 
                 Spacer()
                 
-                Text("0kcal / 600kcal")
+                Text("\(viewModel.totalKcal) / \(viewModel.totalIngrendientKcal)kcal")
                     .foregroundColor(.gray)
             }
             .padding()
@@ -59,46 +59,56 @@ struct MealViews:View{
                     .foregroundColor(isSelected ? .black:.gray)
             }
             
-            ZStack{
-                NavigationLink(isActive: $isPresentSearch) {
-                    MealSearchView(queryInputController: algoriaController.queryInputController,
-                                   hitsController: algoriaController.hitsController, isPresented: $isPresentSearch,
-                                   userId: viewModel.userId,
-                                   trainerId: viewModel.trainerId,
-                                   mealType: convertMealType(selectedIndex)
-                    )
-                } label: {
-                    EmptyView()
-                }
-                
-                userMealTableView(index: $selectedIndex,isPresent: $isPresentSearch)
-            }
+            userMealTableView(index: $selectedIndex,isPresent: $isPresentSearch)
+                .environmentObject(self.viewModel)
+
         }
+        .fullScreenCover(isPresented: $isPresentSearch, onDismiss: {
+            
+        }, content: {
+            MealSearchView(queryInputController: algoriaController.queryInputController,
+                           hitsController: algoriaController.hitsController,
+                           isPresent: $isPresentSearch,
+                           userId: viewModel.userId,
+                           trainerId: viewModel.trainerId,
+                           mealType: convertMealType(selectedIndex))
+        })
         .background(.white)
         .cornerRadius(5)
         .shadow(color: .gray.opacity(0.5), radius: 3)
+        
     }
 }
 
 struct userMealTableView:View{
     //MARK: - VIEW PROPERTIES
+    @EnvironmentObject var viewModel:UserMealViewModel
     @Binding var index:Int
     @Binding var isPresent:Bool
     let grid = Array(repeating: GridItem(.flexible()), count: 3)
     
     var body: some View{
         LazyVGrid(columns: grid, alignment: .center, spacing: 20) {
-            ForEach(1...4,id:\.self) { _ in
+            ForEach(viewModel.recordedMeals.filter({$0.mealType == mealType.init(rawValue: index)}),id:\.self) { food in
                 VStack{
-                    Circle()
-                        .fill()
+                    KFImage(URL(string: food.url))
+                        .placeholder({ progress in
+                            ProgressView()
+                        })
+                        .resizable()
+                        .frame(width: 80, height: 80, alignment: .center)
+                        .clipShape(Circle())
+                        .background(
+                            Circle()
+                                .fill(Color(UIColor.secondarySystemBackground))
+                        )
                     
-                    Text("소시지 구이")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
+                    Text(food.foodName)
+                        .lineLimit(1)
+                        .multilineTextAlignment(.center)
+                        .truncationMode(.middle)
                     
-                    Text("180Kcal")
-                        .foregroundColor(.black)
+                    Text("\(food.kcal)Kcal")
                 }
             }
             

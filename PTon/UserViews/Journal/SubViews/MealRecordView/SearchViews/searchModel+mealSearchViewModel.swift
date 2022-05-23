@@ -11,7 +11,7 @@ import InstantSearchCore
 import Firebase
 
 struct foodResult:Codable{
-    var foodname:String
+    var foodName:String
     var manufacture:String
     var intake:Double
     var kcal:Double
@@ -75,13 +75,16 @@ class FoodRecordViewModel:ObservableObject{
     @Published var ingredients:[ingredient] = []
     let userId:String
     let trainerId:String
-    let storage = FirebaseStorage.Storage.storage().reference().child("FoodJournal")
+    let mealType:mealType
+    let storage:StorageReference
     let reference:DatabaseReference
     
     init(userId:String,trainerId:String,mealtype:mealType){
         self.userId = userId
         self.trainerId = trainerId
-        self.reference = Firebase.Database.database().reference().child("FoodJournal").child(trainerId).child(userId).child(mealtype.keyDescription())
+        self.mealType = mealtype
+        self.storage = Firebase.Storage.storage().reference().child("FoodJournal").child(userId)
+        self.reference = Firebase.Database.database().reference().child("FoodJournal").child(trainerId).child(userId)
         
         loadIngredient()
     }
@@ -128,7 +131,11 @@ class FoodRecordViewModel:ObservableObject{
     }
     
     func uploadUserRecord(userData:[String:Any]){
-        reference.childByAutoId().updateChildValues(userData)
+        reference
+            .child(convertString(content: Date(), dateFormat: "yyyy-MM-dd"))
+            .child(self.mealType.keyDescription())
+            .childByAutoId()
+            .updateChildValues(userData)
     }
     
     func uploadImage(imageData:Data?,completion:@escaping(String?)->Void){
@@ -139,11 +146,12 @@ class FoodRecordViewModel:ObservableObject{
         meta.contentType = "image/jpg"
         
         let imagePath:String = "FoodJournal_\(convertString(content: Date(), dateFormat: "yyyy_MM_dd_hh_mm_ss")).jpg"
-        let path = "FoodJournal/\(self.userId)/\(imagePath)"
-        DispatchQueue.main.async {
-            completion(path)
-            self.storage.child(self.userId).child(imagePath).putData(imageData, metadata: meta)
+        storage.child(imagePath).putData(imageData, metadata: meta) { meta, error in
+            self.storage.child(imagePath).downloadURL { url, _ in
+                guard let path = url?.downloadURL.absoluteString else{return}
+                completion(path)
+            }
         }
-
+        
     }
 }

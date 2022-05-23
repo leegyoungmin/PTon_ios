@@ -44,7 +44,6 @@ class HomeBodyViewModel:ObservableObject{
         reference
             .child(userId)
             .observe(.childAdded) { snapshot in
-                print(snapshot)
                 let date = snapshot.key
                 guard let values = snapshot.value as? [String:Any] else{return}
                 bodyDataType.allCases.forEach{
@@ -52,8 +51,6 @@ class HomeBodyViewModel:ObservableObject{
                     
                     self.bodyDatas[$0]?.append((date,Double(value) ?? 0.0))
                     
-                    
-                    print(self.bodyDatas)
                 }
             }
         

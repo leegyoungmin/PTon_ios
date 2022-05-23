@@ -21,7 +21,7 @@ struct JornalView: View {
             
             //Component Views
             ScrollView(.vertical, showsIndicators: false){
-                MealViews(viewModel: MealRecordViewModel(userId: self.userId, trainerId: self.trainerId, fitnessCode: self.fitnessCode), selectedDate: $selectedDate)
+                MealViews(viewModel: UserMealViewModel(userId: self.userId, trainerId: self.trainerId, fitnessCode: self.fitnessCode, selectedDate: selectedDate), selectedDate: $selectedDate)
                     .padding(.horizontal)
                     .padding(.vertical,20)
                     .tag(1)

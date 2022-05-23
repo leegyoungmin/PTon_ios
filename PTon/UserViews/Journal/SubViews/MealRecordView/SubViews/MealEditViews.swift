@@ -14,7 +14,7 @@ enum ImageType{
 
 struct MealEditViews:View{
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var viewModel:MealRecordViewModel
+    @EnvironmentObject var viewModel:UserMealViewModel
     @Binding var ispresented:Bool
     @Binding var image:UIImage
     @Binding var uuid:String

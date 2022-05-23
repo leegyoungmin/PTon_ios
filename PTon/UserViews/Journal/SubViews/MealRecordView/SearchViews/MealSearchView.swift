@@ -8,21 +8,22 @@
 import SwiftUI
 import InstantSearchSwiftUI
 import InstantSearchCore
+import AlertToast
 
 struct MealSearchView: View {
     @ObservedObject var queryInputController:QueryInputObservableController
     @ObservedObject var hitsController:HitsObservableController<foodResult>
-    @Binding var isPresented:Bool
+    @Binding var isPresent:Bool
     @State private var isEditing = false
     let userId:String
     let trainerId:String
     let mealType:mealType
     
     var body: some View {
-        VStack{
+        NavigationView{
             HitsList(hitsController) { hit, _ in
                 NavigationLink {
-                    foodRecordView(selectedFood: hit, isPresented: $isPresented,viewModel: FoodRecordViewModel(userId: self.userId, trainerId: self.trainerId, mealtype: self.mealType))
+                    foodRecordView(isPresent: $isPresent, selectedFood: hit,viewModel: FoodRecordViewModel(userId: self.userId, trainerId: self.trainerId, mealtype: self.mealType))
                 } label: {
                     VStack(alignment: .leading, spacing: 5) {
                         HStack{
@@ -31,7 +32,7 @@ struct MealSearchView: View {
                                 Text(hit?.manufacture ?? "")
                                     .font(.callout)
                                 
-                                Text(hit?.foodname ?? "")
+                                Text(hit?.foodName ?? "")
                                     .font(.body)
                                     .foregroundColor(.accentColor)
                             }
@@ -55,20 +56,32 @@ struct MealSearchView: View {
                     Text("검색된 결과가 없습니다.")
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $queryInputController.query, placement: .navigationBarDrawer(displayMode: .always))
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        isPresent = false
+                    } label: {
+                        Text("취소")
+                    }
+
+                }
+            }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $queryInputController.query, placement: .navigationBarDrawer(displayMode: .always))
+        
     }
 }
 
 struct foodRecordView:View{
+    @Binding var isPresent:Bool
     let selectedFood:foodResult?
-    @Binding var isPresented:Bool
     @State var inputValue:String = "1"
     @State var image = UIImage()
     @State var isPresentPicture:Bool = false
     @State var isPresentCamera:Bool = false
     @State var isPresentAlbum:Bool = false
+    @State var isShowLoadingView:Bool = false
     @StateObject var viewModel:FoodRecordViewModel
     var body: some View{
         VStack(alignment:.leading){
@@ -100,7 +113,7 @@ struct foodRecordView:View{
                 
                 // 2. 음식 이름 및 인분 데이터
                 VStack(alignment:.leading,spacing: 5){
-                    Text(selectedFood?.foodname ?? "")
+                    Text(selectedFood?.foodName ?? "")
                         .font(.title)
                         .fontWeight(.heavy)
                         .lineLimit(1)
@@ -141,14 +154,11 @@ struct foodRecordView:View{
                 }
                 .padding(.top,10)
                 
-                
-                
                 //4. 영양 정보 카드 뷰
                 nutrientCardView("전체 칼로리 정보", selectedFood?.kcal ?? 0, userKcal: viewModel.userAllKcal(), userCount: $inputValue)
                 nutrientCardView("탄수화물", selectedFood?.carbsKcal ?? 0, userKcal: viewModel.userCarbo(), userCount: $inputValue)
                 nutrientCardView("단백질", selectedFood?.proteinKcal ?? 0, userKcal: viewModel.userProtein(), userCount: $inputValue)
                 nutrientCardView("지방", selectedFood?.fatKcal ?? 0, userKcal: viewModel.userProtein(), userCount: $inputValue)
-                
                 
             }
             .padding(.horizontal)
@@ -159,11 +169,11 @@ struct foodRecordView:View{
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    
+                    isShowLoadingView = true
                     viewModel.uploadImage(imageData: image.jpegData(compressionQuality: 0.8)) { path in
                         if path != nil{
                             let data:[String:Any] = [
-                                "foodName":selectedFood?.foodname ?? "",
+                                "foodName":selectedFood?.foodName ?? "",
                                 "url":path!,
                                 "intake":Int(selectedFood?.intake ?? 0) * Int(Double(inputValue) ?? 0),
                                 "carbs":Int(selectedFood?.carbs ?? 0) * Int(Double(inputValue) ?? 0),
@@ -172,8 +182,11 @@ struct foodRecordView:View{
                                 "kcal":Int(selectedFood?.kcal ?? 0) * Int(Double(inputValue) ?? 0),
                                 "sodium":Int(selectedFood?.sodium ?? 0) * Int(Double(inputValue) ?? 0)
                             ]
+
                             viewModel.uploadUserRecord(userData: data)
-                            isPresented = false
+                            self.isShowLoadingView = false
+                            isPresent = false
+                           
                         }
                     }
                     
@@ -199,6 +212,9 @@ struct foodRecordView:View{
         }
         .fullScreenCover(isPresented: $isPresentAlbum) {
             MealImagePickerView(image: $image, isPresented: $isPresentAlbum)
+        }
+        .toast(isPresented: $isShowLoadingView) {
+            AlertToast(displayMode: .alert, type: .loading)
         }
     }
 }

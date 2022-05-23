@@ -175,7 +175,6 @@ class UserBaseViewModel:ObservableObject{
             .whereField("isPrivate", isEqualTo: false)
             .addSnapshotListener { querySnapshot, error in
                 guard let documents = querySnapshot?.documents else{return}
-                print(documents)
                 if !documents.isEmpty{
                     self.isShowBadge = true
                 }else{

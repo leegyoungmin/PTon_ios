@@ -155,11 +155,24 @@ extension Bool{
     }
 }
 
+extension mealType{
+    init?(key:String) {
+        switch key{
+        case "breakfirst":
+            self.init(rawValue: 0)
+        case "launch":
+            self.init(rawValue: 1)
+        case "snack":
+            self.init(rawValue: 2)
+        case "dinner":
+            self.init(rawValue: 3)
+        default:
+            return nil
+        }
+    }
+}
 
-//func loadLocalImage(fileName:String)->UIImage?{
-//
-//}
-
+//MARK: - PREVIEWS
 struct Extensions_previews:PreviewProvider{
     static var previews: some View{
         CircleImage(url: "https://flif.info/example-images/fish.png", size: CGSize(width: 100, height: 100))

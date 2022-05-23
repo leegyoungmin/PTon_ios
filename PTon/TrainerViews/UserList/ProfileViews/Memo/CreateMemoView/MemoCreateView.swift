@@ -39,6 +39,7 @@ enum mealType:Int,CaseIterable{
             return "dinner"
         }
     }
+    
 }
 
 struct MemoCreateView: View {
