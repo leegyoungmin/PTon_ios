@@ -12,13 +12,28 @@ import Kingfisher
 
 //TODO: - 데이터 로컬 저장 및 로컬에서 불러오기
 struct MealViews:View{
-//    @StateObject var viewModel:MealRecordViewModel
+    @StateObject var viewModel:MealRecordViewModel
     @Binding var selectedDate:Date
     @State var currentTab:mealType = .first
     @State var selectedIndex:Int = 0
     @State var titles:[String] = ["아침","점심","간식","저녁"]
     @State var isPresentSearch:Bool = false
     let algoriaController = AlgoliaController()
+    
+    func convertMealType(_ selection:Int)->mealType{
+        switch selection{
+        case 0:
+            return .first
+        case 1:
+            return .second
+        case 2:
+            return .snack
+        case 3:
+            return .third
+        default:
+            return .first
+        }
+    }
     
     var body: some View{
         VStack{
@@ -47,7 +62,11 @@ struct MealViews:View{
             ZStack{
                 NavigationLink(isActive: $isPresentSearch) {
                     MealSearchView(queryInputController: algoriaController.queryInputController,
-                                   hitsController: algoriaController.hitsController)
+                                   hitsController: algoriaController.hitsController, isPresented: $isPresentSearch,
+                                   userId: viewModel.userId,
+                                   trainerId: viewModel.trainerId,
+                                   mealType: convertMealType(selectedIndex)
+                    )
                 } label: {
                     EmptyView()
                 }

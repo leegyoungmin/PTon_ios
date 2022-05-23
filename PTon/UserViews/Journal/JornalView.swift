@@ -11,6 +11,7 @@ struct JornalView: View {
     @State var selectedDate = Date()
     let trainerId:String
     let userId:String
+    let fitnessCode:String
     var body: some View {
         VStack{
             //Date picker view
@@ -20,7 +21,7 @@ struct JornalView: View {
             
             //Component Views
             ScrollView(.vertical, showsIndicators: false){
-                MealViews(selectedDate: $selectedDate)
+                MealViews(viewModel: MealRecordViewModel(userId: self.userId, trainerId: self.trainerId, fitnessCode: self.fitnessCode), selectedDate: $selectedDate)
                     .padding(.horizontal)
                     .padding(.vertical,20)
                     .tag(1)
@@ -61,6 +62,6 @@ struct ExerciseCellView:View{
 
 struct JornalView_Previews: PreviewProvider {
     static var previews: some View {
-        JornalView(trainerId: "3yvE0bnUEHbvDKasU1Orf7DhvjX2", userId: "kakao:1967260938")
+        JornalView(trainerId: "3yvE0bnUEHbvDKasU1Orf7DhvjX2", userId: "kakao:1967260938", fitnessCode: "000001")
     }
 }

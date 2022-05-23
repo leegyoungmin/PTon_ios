@@ -8,6 +8,7 @@
 import Foundation
 import InstantSearchSwiftUI
 import InstantSearchCore
+import Firebase
 
 struct foodResult:Codable{
     var foodname:String
@@ -18,6 +19,16 @@ struct foodResult:Codable{
     var fat:Double
     var carbs:Double
     var sodium:Double
+    
+    var proteinKcal:Double{
+        return protein*4
+    }
+    var carbsKcal:Double{
+        return carbs*4
+    }
+    var fatKcal:Double{
+        return fat*9
+    }
 }
 
 class AlgoliaController{
@@ -45,5 +56,94 @@ class AlgoliaController{
         queryInputInteractor.connectController(queryInputController)
         hitsInteractor.connectSearcher(searcher)
         hitsInteractor.connectController(hitsController)
+    }
+}
+
+enum ingredientType:String,Error,Codable{
+    case all = "AllKcal"
+    case carbo = "Carbohydrate"
+    case fat = "Fat"
+    case protein = "Protein"
+    case error
+}
+
+struct ingredient:Codable,Hashable{
+    var type:ingredientType
+    var kcal:Int
+}
+class FoodRecordViewModel:ObservableObject{
+    @Published var ingredients:[ingredient] = []
+    let userId:String
+    let trainerId:String
+    let storage = FirebaseStorage.Storage.storage().reference().child("FoodJournal")
+    let reference:DatabaseReference
+    
+    init(userId:String,trainerId:String,mealtype:mealType){
+        self.userId = userId
+        self.trainerId = trainerId
+        self.reference = Firebase.Database.database().reference().child("FoodJournal").child(trainerId).child(userId).child(mealtype.keyDescription())
+        
+        loadIngredient()
+    }
+    
+    func loadIngredient(){
+        Firebase.Database.database()
+            .reference()
+            .child("Ingredient")
+            .child(self.userId)
+            .observeSingleEvent(of: .value) { snapshot in
+                for child in snapshot.children{
+                    let childSnapshot = child as! DataSnapshot
+                    let key = childSnapshot.key
+                    print(key)
+                    guard let dict = childSnapshot.value as? [String:Any],
+                          let kcal = dict["Kcal"] as? String else{ return }
+                    let kcalValue = Int(Double(kcal) ?? 0)
+                    
+                    let type = ingredientType.init(rawValue: key) ?? .error
+                    
+                    self.ingredients.append(ingredient(type: type, kcal: kcalValue))
+                }
+            }
+    }
+    
+    func userAllKcal()->Int{
+        guard let first = ingredients.filter({$0.type == .all}).first else{return 1}
+        return first.kcal
+    }
+    
+    func userCarbo()->Int{
+        guard let first = ingredients.filter({$0.type == .carbo}).first else{return 1}
+        return first.kcal
+    }
+    
+    func userProtein()->Int{
+        guard let first = ingredients.filter({$0.type == .protein}).first else{return 1}
+        return first.kcal
+    }
+    
+    func userFat()->Int{
+        guard let first = ingredients.filter({$0.type == .fat}).first else{return 1}
+        return first.kcal
+    }
+    
+    func uploadUserRecord(userData:[String:Any]){
+        reference.childByAutoId().updateChildValues(userData)
+    }
+    
+    func uploadImage(imageData:Data?,completion:@escaping(String?)->Void){
+        guard let imageData = imageData else {
+            return
+        }
+        let meta = StorageMetadata()
+        meta.contentType = "image/jpg"
+        
+        let imagePath:String = "FoodJournal_\(convertString(content: Date(), dateFormat: "yyyy_MM_dd_hh_mm_ss")).jpg"
+        let path = "FoodJournal/\(self.userId)/\(imagePath)"
+        DispatchQueue.main.async {
+            completion(path)
+            self.storage.child(self.userId).child(imagePath).putData(imageData, metadata: meta)
+        }
+
     }
 }

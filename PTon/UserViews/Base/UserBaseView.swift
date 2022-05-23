@@ -25,7 +25,9 @@ struct UserBaseView: View {
                     selectedIndex = 0
                 }
             JornalView(trainerId: UserBaseViewModel.trainerid,
-                       userId: UserBaseViewModel.userid)
+                       userId: UserBaseViewModel.userid,
+                       fitnessCode: UserBaseViewModel.fitnessCode
+            )
             .tabItem {
                 Label("일지", systemImage: "bookmark.fill")
             }

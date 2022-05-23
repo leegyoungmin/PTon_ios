@@ -104,10 +104,6 @@ struct weekDatePickerView:View{
                     currentDate = getCurrentMonth()
                 }
             }
-            .onAppear {
-                print("Get data month ::: \(getCurrentMonth())")
-                print("get day ::: \(extractDate())")
-            }
         }
         .background(.white)
     }

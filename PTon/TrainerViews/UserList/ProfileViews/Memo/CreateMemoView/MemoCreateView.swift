@@ -26,6 +26,19 @@ enum mealType:Int,CaseIterable{
             return "저녁"
         }
     }
+    
+    func keyDescription()->String{
+        switch self {
+        case .first:
+            return "breakfirst"
+        case .second:
+            return "launch"
+        case .snack:
+            return "snack"
+        case .third:
+            return "dinner"
+        }
+    }
 }
 
 struct MemoCreateView: View {
