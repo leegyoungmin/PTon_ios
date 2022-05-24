@@ -10,11 +10,12 @@ import SwiftUI
 import SDWebImageSwiftUI
 import Kingfisher
 
+
 //TODO: - 데이터 로컬 저장 및 로컬에서 불러오기
 struct MealViews:View{
     @StateObject var viewModel:UserMealViewModel
     @Binding var selectedDate:Date
-    @State var currentTab:mealType = .first
+    @State var currentTab:mealType?
     @State var selectedIndex:Int = 0
     @State var titles:[String] = ["아침","점심","간식","저녁"]
     @State var isPresentSearch:Bool = false
@@ -43,14 +44,38 @@ struct MealViews:View{
                 
                 Spacer()
                 
-                Text("\(viewModel.totalKcal) / \(viewModel.totalIngrendientKcal)kcal")
+                Text("\(Int(viewModel.totalKcal)) / \(Int(viewModel.totalIngrendientKcal))kcal")
                     .foregroundColor(.gray)
             }
             .padding()
             
-            RoundedRectangle(cornerRadius: 10)
-                .frame(width: 200, height: 100, alignment: .center)
-                .padding()
+            ZStack{
+                Circle()
+                    .trim(from: 0, to: 0.5)
+                    .stroke(Color.secondary,style: StrokeStyle(lineWidth:15,lineCap: .round))
+                
+                Circle()
+                    .trim(from: 0, to: viewModel.chartRatio >= 0.5 ? 0.5:viewModel.chartRatio)
+                    .stroke(viewModel.chartRatio >= 0.5 ? Color.red:Color.accentColor,style: StrokeStyle(lineWidth:15,lineCap: .round))
+                    .animation(.easeIn, value: 5)
+                VStack{
+                    Text("현재칼로리")
+                        .font(.title2)
+                        .fontWeight(.light)
+                        .foregroundColor(.secondary)
+                    Text("\(Int(viewModel.totalKcal))kcal")
+                        .foregroundColor(.secondary)
+                        .fontWeight(.semibold)
+                        .font(.largeTitle)
+                }
+                .rotationEffect(.degrees(-180))
+                .offset(y:60)
+            }
+            .rotationEffect(.degrees(-180))
+            .frame(width: UIScreen.main.bounds.width*0.8, height: 300, alignment: .center)
+            .offset(y:300/5)
+            .padding(-20)
+
             
             mealTabs(tabs: $titles, selection: $selectedIndex, underlineColor: .black) { title, isSelected in
                 Text(title)
@@ -59,19 +84,18 @@ struct MealViews:View{
                     .foregroundColor(isSelected ? .black:.gray)
             }
             
-            userMealTableView(index: $selectedIndex,isPresent: $isPresentSearch)
+            userMealTableView(selectedType: $currentTab, index: $selectedIndex,isPresent: $isPresentSearch)
                 .environmentObject(self.viewModel)
 
         }
-        .fullScreenCover(isPresented: $isPresentSearch, onDismiss: {
+        .fullScreenCover(item: $currentTab, content: { type in
             
-        }, content: {
             MealSearchView(queryInputController: algoriaController.queryInputController,
                            hitsController: algoriaController.hitsController,
-                           isPresent: $isPresentSearch,
                            userId: viewModel.userId,
                            trainerId: viewModel.trainerId,
-                           mealType: convertMealType(selectedIndex))
+                           currentType: type,
+                           selectedType: $currentTab)
         })
         .background(.white)
         .cornerRadius(5)
@@ -83,6 +107,7 @@ struct MealViews:View{
 struct userMealTableView:View{
     //MARK: - VIEW PROPERTIES
     @EnvironmentObject var viewModel:UserMealViewModel
+    @Binding var selectedType:mealType?
     @Binding var index:Int
     @Binding var isPresent:Bool
     let grid = Array(repeating: GridItem(.flexible()), count: 3)
@@ -90,30 +115,39 @@ struct userMealTableView:View{
     var body: some View{
         LazyVGrid(columns: grid, alignment: .center, spacing: 20) {
             ForEach(viewModel.recordedMeals.filter({$0.mealType == mealType.init(rawValue: index)}),id:\.self) { food in
-                VStack{
-                    KFImage(URL(string: food.url))
-                        .placeholder({ progress in
-                            ProgressView()
-                        })
-                        .resizable()
-                        .frame(width: 80, height: 80, alignment: .center)
-                        .clipShape(Circle())
-                        .background(
-                            Circle()
-                                .fill(Color(UIColor.secondarySystemBackground))
-                        )
-                    
-                    Text(food.foodName)
-                        .lineLimit(1)
-                        .multilineTextAlignment(.center)
-                        .truncationMode(.middle)
-                    
-                    Text("\(food.kcal)Kcal")
+                NavigationLink {
+                    Text("Detail View")
+                } label: {
+                    VStack{
+                        KFImage(URL(string: food.url))
+                            .placeholder({ progress in
+                                ProgressView()
+                            })
+                            .resizable()
+                            .frame(width: 80, height: 80, alignment: .center)
+                            .clipShape(Circle())
+                            .background(
+                                Circle()
+                                    .fill(Color(UIColor.secondarySystemBackground))
+                            )
+                        
+                        Text(food.foodName)
+                            .lineLimit(1)
+                            .multilineTextAlignment(.center)
+                            .truncationMode(.middle)
+                        
+                        Text("\(food.kcal)Kcal")
+                    }
+                }
+                .buttonStyle(.plain)
+                .contextMenu {
+                    Image(systemName: "person.fill")
                 }
             }
             
             Button {
                 withAnimation {
+                    selectedType = mealType.init(rawValue: index) ?? .first
                     isPresent = true
                 }
             } label: {

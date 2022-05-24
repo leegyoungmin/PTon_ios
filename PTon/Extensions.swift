@@ -87,6 +87,10 @@ func convertString(content:Date,dateFormat:String)->String{
     return formatter.string(from: content)
 }
 
+func kcalString(content:Double)->String{
+    return String(format: "%.1f", content)
+}
+
 //프로필 아이콘 모델
 struct icon:Hashable{
     var iconName:String

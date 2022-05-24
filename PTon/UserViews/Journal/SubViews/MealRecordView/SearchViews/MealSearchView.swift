@@ -13,17 +13,24 @@ import AlertToast
 struct MealSearchView: View {
     @ObservedObject var queryInputController:QueryInputObservableController
     @ObservedObject var hitsController:HitsObservableController<foodResult>
-    @Binding var isPresent:Bool
     @State private var isEditing = false
     let userId:String
     let trainerId:String
-    let mealType:mealType
+    let currentType:mealType
+    @Binding var selectedType:mealType?
     
     var body: some View {
         NavigationView{
             HitsList(hitsController) { hit, _ in
                 NavigationLink {
-                    foodRecordView(isPresent: $isPresent, selectedFood: hit,viewModel: FoodRecordViewModel(userId: self.userId, trainerId: self.trainerId, mealtype: self.mealType))
+                    foodRecordView(selectedFood: hit,
+                                   selectedTab: $selectedType,
+                                   viewModel:
+                                    FoodRecordViewModel(userId: self.userId,
+                                                                  trainerId: self.trainerId,
+                                                                  mealtype: currentType
+                                                       )
+                    )
                 } label: {
                     VStack(alignment: .leading, spacing: 5) {
                         HStack{
@@ -56,12 +63,13 @@ struct MealSearchView: View {
                     Text("검색된 결과가 없습니다.")
                 }
             }
+            .navigationTitle(currentType.description()+" 검색하기")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $queryInputController.query, placement: .navigationBarDrawer(displayMode: .always))
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        isPresent = false
+                        selectedType = nil
                     } label: {
                         Text("취소")
                     }
@@ -74,7 +82,6 @@ struct MealSearchView: View {
 }
 
 struct foodRecordView:View{
-    @Binding var isPresent:Bool
     let selectedFood:foodResult?
     @State var inputValue:String = "1"
     @State var image = UIImage()
@@ -82,16 +89,15 @@ struct foodRecordView:View{
     @State var isPresentCamera:Bool = false
     @State var isPresentAlbum:Bool = false
     @State var isShowLoadingView:Bool = false
+    @Binding var selectedTab:mealType?
     @StateObject var viewModel:FoodRecordViewModel
     var body: some View{
         VStack(alignment:.leading){
             HStack{
                 // 1. 사진 추가 버튼
-                
                 Button {
                     isPresentPicture = true
                 } label: {
-                    
                     if image.size == .zero{
                         RoundedRectangle(cornerRadius: 20)
                             .frame(width: 150, height: 150, alignment: .center)
@@ -104,7 +110,7 @@ struct foodRecordView:View{
                     }else{
                         Image(uiImage: image)
                             .resizable()
-                            .scaledToFit()
+                            .scaledToFill()
                             .frame(width: 150, height: 150, alignment: .center)
                             .cornerRadius(20)
                     }
@@ -159,7 +165,6 @@ struct foodRecordView:View{
                 nutrientCardView("탄수화물", selectedFood?.carbsKcal ?? 0, userKcal: viewModel.userCarbo(), userCount: $inputValue)
                 nutrientCardView("단백질", selectedFood?.proteinKcal ?? 0, userKcal: viewModel.userProtein(), userCount: $inputValue)
                 nutrientCardView("지방", selectedFood?.fatKcal ?? 0, userKcal: viewModel.userProtein(), userCount: $inputValue)
-                
             }
             .padding(.horizontal)
         }//:VSTACK
@@ -185,8 +190,7 @@ struct foodRecordView:View{
 
                             viewModel.uploadUserRecord(userData: data)
                             self.isShowLoadingView = false
-                            isPresent = false
-                           
+                            selectedTab = nil
                         }
                     }
                     
@@ -215,6 +219,9 @@ struct foodRecordView:View{
         }
         .toast(isPresented: $isShowLoadingView) {
             AlertToast(displayMode: .alert, type: .loading)
+        }
+        .onAppear {
+            print("User selected meal Type ::: \(viewModel.mealType)")
         }
     }
 }

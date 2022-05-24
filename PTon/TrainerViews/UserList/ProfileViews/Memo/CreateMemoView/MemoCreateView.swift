@@ -8,7 +8,8 @@
 import SwiftUI
 import AlertToast
 
-enum mealType:Int,CaseIterable{
+enum mealType:Int,CaseIterable,Identifiable{
+    var id:RawValue{rawValue}
     case first = 0
     case second
     case snack
