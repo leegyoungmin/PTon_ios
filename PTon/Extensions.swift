@@ -176,6 +176,102 @@ extension mealType{
     }
 }
 
+// Custom Context Menu
+struct CustomContextMenu<Content:View,Preview:View>:View{
+    var content:Content
+    var preview:Preview
+    var menu:UIMenu
+    
+    init(
+        @ViewBuilder content:@escaping()->Content,
+        @ViewBuilder preview:@escaping()->Preview,
+        actions:@escaping()->UIMenu
+    ){
+        self.content = content()
+        self.preview = preview()
+        self.menu = actions()
+    }
+    
+    var body: some View{
+        ZStack{
+            content
+                .hidden()
+                .overlay(
+                    ContextMenuHelper(content: content, preview: preview, actions: menu)
+                )
+        }
+    }
+}
+
+struct ContextMenuHelper<Content:View,Preview:View>:UIViewRepresentable{
+    var content:Content
+    var preview:Preview
+    var actions:UIMenu
+    
+    init(content:Content,preview:Preview,actions:UIMenu){
+        self.content = content
+        self.preview = preview
+        self.actions = actions
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(parent: self)
+    }
+    
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .clear
+        
+        let hostView = UIHostingController(rootView: content)
+        hostView.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        let constraints = [
+            hostView.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hostView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hostView.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            hostView.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            hostView.view.widthAnchor.constraint(equalTo: view.widthAnchor),
+            hostView.view.heightAnchor.constraint(equalTo: view.heightAnchor),
+        ]
+        
+        view.addSubview(hostView.view)
+        view.addConstraints(constraints)
+        
+        let interaction = UIContextMenuInteraction(delegate: context.coordinator)
+        view.addInteraction(interaction)
+        
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {
+    }
+    
+    class Coordinator:NSObject,UIContextMenuInteractionDelegate{
+        var parent:ContextMenuHelper
+        
+        init(parent:ContextMenuHelper){
+            self.parent = parent
+        }
+        
+        func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+            return UIContextMenuConfiguration(identifier: nil, previewProvider: {
+                let previewController = UIHostingController(rootView: self.parent.preview)
+                previewController.view.backgroundColor = .clear
+                return previewController
+            }, actionProvider: { items in
+                return self.parent.actions
+            })
+        }
+        
+        func contextMenuInteraction(_ interaction: UIContextMenuInteraction, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
+            animator.addCompletion {
+                print("Ended")
+            }
+        }
+    }
+}
+
 //MARK: - PREVIEWS
 struct Extensions_previews:PreviewProvider{
     static var previews: some View{

@@ -75,7 +75,7 @@ struct MealViews:View{
             .frame(width: UIScreen.main.bounds.width*0.8, height: 300, alignment: .center)
             .offset(y:300/5)
             .padding(-20)
-
+            
             
             mealTabs(tabs: $titles, selection: $selectedIndex, underlineColor: .black) { title, isSelected in
                 Text(title)
@@ -86,7 +86,7 @@ struct MealViews:View{
             
             userMealTableView(selectedType: $currentTab, index: $selectedIndex,isPresent: $isPresentSearch)
                 .environmentObject(self.viewModel)
-
+            
         }
         .fullScreenCover(item: $currentTab, content: { type in
             
@@ -116,35 +116,48 @@ struct userMealTableView:View{
         LazyVGrid(columns: grid, alignment: .center, spacing: 20) {
             ForEach(viewModel.recordedMeals.filter({$0.mealType == mealType.init(rawValue: index)}),id:\.self) { food in
                 NavigationLink {
-                    Text("Detail View")
+                    userMealDetailView(food: food)
                 } label: {
-                    VStack{
-                        KFImage(URL(string: food.url))
-                            .placeholder({ progress in
-                                ProgressView()
-                            })
-                            .resizable()
-                            .frame(width: 80, height: 80, alignment: .center)
-                            .clipShape(Circle())
-                            .background(
-                                Circle()
-                                    .fill(Color(UIColor.secondarySystemBackground))
-                            )
+                    ZStack{
+                        VStack{
+                            CustomContextMenu {
+                                KFImage(URL(string: food.url))
+                                    .placeholder({ progress in
+                                        ProgressView()
+                                    })
+                                    .resizable()
+                                    .frame(width: 80, height: 80, alignment: .center)
+                                    .clipShape(Circle())
+                                    .background(
+                                        Circle()
+                                            .fill(Color(UIColor.secondarySystemBackground))
+                                    )
+                            } preview: {
+                                KFImage(URL(string: food.url))
+                                    .placeholder({ progress in
+                                        ProgressView()
+                                    })
+                                    .resizable()
+                                    .scaledToFill()
+                            } actions: {
+                                let delete = UIAction(title:"식사 삭제",image: UIImage(systemName: "delete.left"),attributes: .destructive){ _ in
+                                    print("Delete")
+                                }
+                                return UIMenu(title:food.foodName,children: [delete])
+                            }
+                            Text(food.foodName)
+                                .lineLimit(1)
+                                .multilineTextAlignment(.center)
+                                .truncationMode(.middle)
+                            
+                            Text("\(food.kcal)Kcal")
+                        }
                         
-                        Text(food.foodName)
-                            .lineLimit(1)
-                            .multilineTextAlignment(.center)
-                            .truncationMode(.middle)
-                        
-                        Text("\(food.kcal)Kcal")
                     }
                 }
                 .buttonStyle(.plain)
-                .contextMenu {
-                    Image(systemName: "person.fill")
-                }
+
             }
-            
             Button {
                 withAnimation {
                     selectedType = mealType.init(rawValue: index) ?? .first
@@ -168,9 +181,19 @@ struct userMealTableView:View{
                 }
             }
             .buttonStyle(.plain)
-
+            
         }
         .padding()
+    }
+}
+
+struct userMealDetailView:View{
+    let food:userFoodResult
+    var body: some View{
+        VStack{
+            Text(food.foodName)
+        }
+        .navigationTitle("기록된 식단")
     }
 }
 
