@@ -89,17 +89,16 @@ struct MealViews:View{
             
         }
         .fullScreenCover(item: $currentTab, content: { type in
-            
-            if isPresentDirect == true{
-                Text("direct Record view")
-            }else{
-                MealSearchView(queryInputController: algoriaController.queryInputController,
-                               hitsController: algoriaController.hitsController,
-                               userId: viewModel.userId,
-                               trainerId: viewModel.trainerId,
-                               currentType: type,
-                               selectedType: $currentTab)
-            }
+            MealSearchView(queryInputController: algoriaController.queryInputController,
+                           hitsController: algoriaController.hitsController,
+                           userId: viewModel.userId,
+                           trainerId: viewModel.trainerId,
+                           currentType: type,
+                           selectedType: $currentTab)
+        })
+        .fullScreenCover(isPresented: $isPresentDirect, content: {
+            userMealDirectRecordView()
+                .environmentObject(self.viewModel)
         })
         .background(.white)
         .cornerRadius(5)
@@ -199,7 +198,7 @@ struct userMealTableView:View{
                 Button {
                     withAnimation {
                         isPresentDirect = true
-                        selectedType = mealType.init(rawValue: index)
+                        selectedType = nil
                     }
                 } label: {
                     Text("직접 추가하기")
