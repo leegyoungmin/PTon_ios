@@ -39,21 +39,19 @@ class UserMemoViewModel:ObservableObject{
             }
     }
     
-    func changeData(_ diff:DocumentChange,result:Result<Memo?,Error>){
+    func changeData(_ diff:DocumentChange,result:Result<Memo,Error>){
         switch result{
-        case .success(let success):
-            if let memo = success{
-                switch diff.type{
-                case .added:
-                    self.memos.append(memo)
-                case _:
-                    guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
-                    
-                    if diff.type == .modified{
+        case .success(let memo):
+            switch diff.type{
+            case .added:
+                self.memos.append(memo)
+            case _:
+                guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
+                
+                if diff.type == .modified{
 //                        modifyMemo(index, memo: memo)
-                    }else if diff.type == .removed{
-                        removeMemo(index)
-                    }
+                }else if diff.type == .removed{
+                    removeMemo(index)
                 }
             }
         case .failure(let error):
@@ -74,8 +72,7 @@ class UserMemoViewModel:ObservableObject{
             .document(trainerId)
             .collection(userId)
             .document(memoId)
-            .updateData(["isRead":true]) { error in
-                print(error?.localizedDescription)
+            .updateData(["isRead":true]) { _ in
             }
     }
     

@@ -11,7 +11,6 @@ import FirebaseMessaging
 import FirebaseDatabase
 import GoogleSignIn
 import KakaoSDKUser
-import NaverThirdPartyLogin
 
 //MARK: MODEL
 struct TrainerBaseModel{
@@ -183,17 +182,17 @@ class TrainerBaseViewModel:ObservableObject{
                 }
             }
             
-        case .naver:
-            do{
-                NaverThirdPartyLoginConnection.getSharedInstance().requestDeleteToken()
-                
-                UserDefaults.standard.set(LoginType.none.rawValue, forKey: "LoginApi")
-                try FirebaseAuth.Auth.auth().signOut()
-                
-                completion()
-            }catch{
-                print("Error in LogOut")
-            }
+//        case .naver:
+//            do{
+//                NaverThirdPartyLoginConnection.getSharedInstance().requestDeleteToken()
+//
+//                UserDefaults.standard.set(LoginType.none.rawValue, forKey: "LoginApi")
+//                try FirebaseAuth.Auth.auth().signOut()
+//
+//                completion()
+//            }catch{
+//                print("Error in LogOut")
+//            }
             
         case .google:
             do{
@@ -224,6 +223,8 @@ class TrainerBaseViewModel:ObservableObject{
             catch{
                 print("Error in Logout")
             }
+        case _:
+            print("Naver Login")
         }
     }
 }

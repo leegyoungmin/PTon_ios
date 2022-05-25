@@ -62,7 +62,7 @@ struct TodayExerciseView:View{
     }
     
     func selectedAerobicExercise(index:Int)->Int{
-        var exercises = self.exercise.aerobic
+        let exercises = self.exercise.aerobic
         let exercise = viewModel.todayExercises[index]
         guard let firstIndex = exercises.firstIndex(where: {$0 == exercise.exerciseName}) else{return 0}
         return firstIndex

@@ -39,9 +39,7 @@ struct ChatRoomListCellView:View{
                 HStack{
                     
                     CircleImage(url: viewModel.trainee.userProfile ?? "", size: CGSize(width: 50, height: 50))
-                        .onAppear {
-                            print("User Profile URL ::: \(viewModel.trainee.userProfile)")
-                        }
+                        
                     
                     VStack(alignment:.leading,spacing:0){
                         HStack{

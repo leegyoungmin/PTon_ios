@@ -8,6 +8,7 @@
 import Foundation
 import InstantSearchSwiftUI
 import InstantSearchCore
+import FirebaseStorage
 import Firebase
 
 struct foodResult:Codable{
@@ -34,8 +35,8 @@ struct foodResult:Codable{
 class AlgoliaController{
     let searcher:HitsSearcher
     
-    let queryInputInteractor:QueryInputInteractor
-    let queryInputController:QueryInputObservableController
+    let queryInputInteractor:SearchBoxInteractor
+    let queryInputController:SearchBoxObservableController
     
     let hitsInteractor:HitsInteractor<foodResult>
     let hitsController: HitsObservableController<foodResult>
@@ -83,7 +84,7 @@ class FoodRecordViewModel:ObservableObject{
         self.userId = userId
         self.trainerId = trainerId
         self.mealType = mealtype
-        self.storage = Firebase.Storage.storage().reference().child("FoodJournal").child(userId)
+        self.storage = Storage.storage().reference().child("FoodJournal").child(userId)
         self.reference = Firebase.Database.database().reference().child("FoodJournal").child(trainerId).child(userId)
         
         loadIngredient()

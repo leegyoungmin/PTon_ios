@@ -64,23 +64,21 @@ class DetailMemoViewModel:ObservableObject{
     }
     
     //MARK: - 리스너 값 처리 함수
-    func loadData(_ changeType:DocumentChangeType,result:Result<comment?,Error>){
+    func loadData(_ changeType:DocumentChangeType,result:Result<comment,Error>){
         switch result{
         case .success(let comment):
-            if let comment = comment{
-                if changeType == .added{
-                    self.commentList.append(comment)
+            if changeType == .added{
+                self.commentList.append(comment)
+            }
+            else{
+                guard let index = self.commentList.firstIndex(where: {$0.uid == comment.uid}) else {return}
+                
+                if changeType == .removed{
+                    self.commentList.remove(at: index)
                 }
-                else{
-                    guard let index = self.commentList.firstIndex(where: {$0.uid == comment.uid}) else {return}
-                    
-                    if changeType == .removed{
-                        self.commentList.remove(at: index)
-                    }
-                    
-                    if changeType == .modified{
-                        self.commentList[index] = comment
-                    }
+                
+                if changeType == .modified{
+                    self.commentList[index] = comment
                 }
             }
         case .failure(let error):

@@ -22,8 +22,6 @@ struct TrainerBaseView: View {
         coloredNavAppearance.largeTitleTextAttributes = [.foregroundColor:UIColor.black]
         UINavigationBar.appearance().standardAppearance = coloredNavAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
-        
-        print(Color.accentColor.cgColor)
     }
     var body: some View {
         TabView(selection: $trainerSelectedIndex) {

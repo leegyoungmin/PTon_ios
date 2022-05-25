@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 import SwiftUICharts
-import ExytePopupView
+import PopupView
 
 struct UserBodyCellView:View{
     let title:String

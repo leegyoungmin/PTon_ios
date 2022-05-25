@@ -17,6 +17,7 @@ struct userMeal:Hashable{
 }
 
 struct userFoodResult:Hashable{
+    var id:String
     var mealType:mealType
     var carbs:Int
     var fat:Int
@@ -69,6 +70,7 @@ class UserMealViewModel:ObservableObject{
     
     func ObserveData(completion:@escaping()->Void){
         mealType.allCases.map{$0.keyDescription()}.forEach{ keyValue in
+            // child added
             reference
                 .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
                 .child(keyValue)
@@ -76,6 +78,7 @@ class UserMealViewModel:ObservableObject{
                     guard let self = self else{return}
                     guard let values = snapshot.value as? [String:Any] else{return}
                     
+                    let id = snapshot.key
                     let type = mealType.init(key: keyValue)
                     let carbs = values["carbs"] as? Int ?? 0
                     let fat = values["fat"] as? Int ?? 0
@@ -87,12 +90,39 @@ class UserMealViewModel:ObservableObject{
                     let sodium = values["sodium"] as? Int ?? 0
                     let path = values["url"] as? String ?? ""
                     
-                    let data = userFoodResult(mealType: type ?? .first, carbs: carbs, fat: fat, foodName: foodName, intake: intake, kcal: Int(kcal), protein: protein, sodium: sodium, url: path)
+                    let data = userFoodResult(id: id, mealType: type ?? .first, carbs: carbs, fat: fat, foodName: foodName, intake: intake, kcal: Int(kcal), protein: protein, sodium: sodium, url: path)
                     self.recordedMeals.append(data)
                     
                     
                     completion()
                 }
+            
+            // child removed
+            reference
+                .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+                .child(keyValue)
+                .observe(.childRemoved) { [weak self] snapshot in
+                    guard let self = self else { return }
+                    let key = snapshot.key
+                    guard let values = snapshot.value as? [String:Any] else {return}
+                    let kcal = values["kcal"] as? Double ?? 0
+                    self.totalKcal -= kcal
+                    
+                    self.recordedMeals.removeAll(where: {$0.id == key})
+                    
+                    completion()
+                }
         }
+        
+    }
+    
+    //아이템 제거 메소드
+    func removeItem(_ food:userFoodResult){
+        reference
+            .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+            .child(food.mealType.keyDescription())
+            .child(food.id)
+            .removeValue()
+        
     }
 }

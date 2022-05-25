@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFunctions
 import KakaoSDKAuth
 import FirebaseAuth
-import NaverThirdPartyLogin
+//import NaverThirdPartyLogin
 import Alamofire
 import GoogleSignIn
 import Firebase
@@ -33,14 +33,14 @@ class LoginViewModel:NSObject, ObservableObject{
     @Published var isNotNewUser:Bool = false
     @Published var isShowLoading:Bool = false
     let functions = Functions.functions()
-    let instance = NaverThirdPartyLoginConnection.getSharedInstance()
+//    let instance = NaverThirdPartyLoginConnection.getSharedInstance()
     @State var userType:userType?
     @Published var isTrainer:Bool?
     
     func AutoLogin(loginApi:LoginType){
         switch loginApi{
         case .kakao: self.kakaoLogin()
-        case .naver: self.getNaverInfo()
+        case .naver: print("Login Naver Error")
         case .google: self.googleLogin()
         case .apple: self.AppleLogin()
         case .none: print("login API None")
@@ -120,75 +120,75 @@ class LoginViewModel:NSObject, ObservableObject{
         }
     }
     
-    //네이버 데이터 불러오기 메소드
-    func getNaverInfo(){
-        self.isShowLoading = true
-        print("Tapped Get Naver Info")
-        
-        guard let isValidToken = instance?.isValidAccessTokenExpireTimeNow() else{return}
-        
-        if !isValidToken{
-            print("Not Is Valid Token")
-            return
-        }
-        guard let tokenType = instance?.tokenType else{return}
-        guard let accessToken = instance?.accessToken else{return}
-        let urlStr = "https://openapi.naver.com/v1/nid/me"
-        let url = URL(string: urlStr)!
-        
-        let authorization = "\(tokenType) \(accessToken)"
-        
-        let request = AF.request(url,
-                                 method: .get,
-                                 parameters: nil,
-                                 encoding: JSONEncoding.default,
-                                 headers: ["Authorization": authorization])
-        
-        request.responseData { response in
-            switch response.result{
-            case .success(let data):
-                do{
-                    let asJson = try JSONSerialization.jsonObject(with: data)
-                    
-                    guard let result = asJson as? [String:Any],
-                          let object = result["response"] as? [String:Any],
-                          let userid = object["id"] as? String,
-                          let name = object["name"] as? String,
-                          let email = object["email"] as? String else{return}
-                    
-                    let data:[String:String] = [
-                        "access_token":accessToken,
-                        "userid":userid,
-                        "name":name,
-                        "email":email
-                    ]
-                    
-                    self.userBaseModel.email = email
-                    self.userBaseModel.name = name
-                    
-                    print(self.userBaseModel)
-                    UserDefaults.standard.set(LoginType.naver.rawValue, forKey: "LoginApi")
-                    self.callNaverFunctions(data)
-                }catch{
-                    print(error.localizedDescription)
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }//MARK: Naver get User Info
-    
-    //클라우드 함수 적용 메소드
-    func callNaverFunctions(_ data:[String:String]){
-        functions.httpsCallable("NaverToken").call(data) { result, error in
-            if error == nil{
-                guard let data = result?.data else{return}
-                self.login(data as! String) { isnewuser in
-                    self.validNewUser(isnewuser)
-                }
-            }
-        }
-    }//MARK: Naver Call Cloud Functions
+//    //네이버 데이터 불러오기 메소드
+//    func getNaverInfo(){
+//        self.isShowLoading = true
+//        print("Tapped Get Naver Info")
+//
+//        guard let isValidToken = instance?.isValidAccessTokenExpireTimeNow() else{return}
+//
+//        if !isValidToken{
+//            print("Not Is Valid Token")
+//            return
+//        }
+//        guard let tokenType = instance?.tokenType else{return}
+//        guard let accessToken = instance?.accessToken else{return}
+//        let urlStr = "https://openapi.naver.com/v1/nid/me"
+//        let url = URL(string: urlStr)!
+//
+//        let authorization = "\(tokenType) \(accessToken)"
+//
+//        let request = AF.request(url,
+//                                 method: .get,
+//                                 parameters: nil,
+//                                 encoding: JSONEncoding.default,
+//                                 headers: ["Authorization": authorization])
+//
+//        request.responseData { response in
+//            switch response.result{
+//            case .success(let data):
+//                do{
+//                    let asJson = try JSONSerialization.jsonObject(with: data)
+//
+//                    guard let result = asJson as? [String:Any],
+//                          let object = result["response"] as? [String:Any],
+//                          let userid = object["id"] as? String,
+//                          let name = object["name"] as? String,
+//                          let email = object["email"] as? String else{return}
+//
+//                    let data:[String:String] = [
+//                        "access_token":accessToken,
+//                        "userid":userid,
+//                        "name":name,
+//                        "email":email
+//                    ]
+//
+//                    self.userBaseModel.email = email
+//                    self.userBaseModel.name = name
+//
+//                    print(self.userBaseModel)
+//                    UserDefaults.standard.set(LoginType.naver.rawValue, forKey: "LoginApi")
+//                    self.callNaverFunctions(data)
+//                }catch{
+//                    print(error.localizedDescription)
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
+//    }//MARK: Naver get User Info
+//
+//    //클라우드 함수 적용 메소드
+//    func callNaverFunctions(_ data:[String:String]){
+//        functions.httpsCallable("NaverToken").call(data) { result, error in
+//            if error == nil{
+//                guard let data = result?.data else{return}
+//                self.login(data as! String) { isnewuser in
+//                    self.validNewUser(isnewuser)
+//                }
+//            }
+//        }
+//    }//MARK: Naver Call Cloud Functions
     
     //구글 로그인 설정 및 파이어베이스 로그인 메소드 호출
     func googleLogin(){
@@ -353,27 +353,27 @@ extension LoginViewModel{
     }
 }
 
-//MARK: NAVER DELEGATE
-extension LoginViewModel:UIApplicationDelegate,NaverThirdPartyLoginConnectionDelegate{
-    func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
-        print("Success Login ")
-        getNaverInfo()
-    }
-    
-    func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() {
-        print("failed Login")
-        getNaverInfo()
-    }
-    
-    func oauth20ConnectionDidFinishDeleteToken() {
-        print("logout")
-    }
-    
-    func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
-        print("error in Naver Delegate \(error.localizedDescription)")
-        self.isShowLoading = false
-    }
-}
+////MARK: NAVER DELEGATE
+//extension LoginViewModel:UIApplicationDelegate,NaverThirdPartyLoginConnectionDelegate{
+//    func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
+//        print("Success Login ")
+//        getNaverInfo()
+//    }
+//    
+//    func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() {
+//        print("failed Login")
+//        getNaverInfo()
+//    }
+//    
+//    func oauth20ConnectionDidFinishDeleteToken() {
+//        print("logout")
+//    }
+//    
+//    func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
+//        print("error in Naver Delegate \(error.localizedDescription)")
+//        self.isShowLoading = false
+//    }
+//}
 
 //MARK: APPLE DELEGATE
 extension LoginViewModel:ASAuthorizationControllerDelegate{

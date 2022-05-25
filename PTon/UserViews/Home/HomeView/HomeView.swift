@@ -8,7 +8,7 @@
 import SwiftUI
 import Firebase
 import Kingfisher
-import ExytePopupView
+import PopupView
 
 struct HomeView: View {
     @EnvironmentObject var viewmodel:UserBaseViewModel

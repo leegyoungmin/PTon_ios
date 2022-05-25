@@ -9,7 +9,6 @@ import SwiftUI
 import Firebase
 import KakaoSDKAuth
 import KakaoSDKCommon
-import NaverThirdPartyLogin
 import Photos
 import Kingfisher
 
@@ -39,12 +38,9 @@ struct PTONApp: App {
                         AuthController.handleOpenUrl(url: url)
                     }
                     
-                    if NaverThirdPartyLoginConnection.getSharedInstance().isNaverThirdPartyLoginAppschemeURL(url){
-                        NaverThirdPartyLoginConnection.getSharedInstance().receiveAccessToken(url)
-                    }
-                }
-                .onAppear {
-                    print(Firebase.Auth.auth().currentUser)
+//                    if NaverThirdPartyLoginConnection.getSharedInstance().isNaverThirdPartyLoginAppschemeURL(url){
+//                        NaverThirdPartyLoginConnection.getSharedInstance().receiveAccessToken(url)
+//                    }
                 }
         }
     }
@@ -58,15 +54,15 @@ final class AppDelegate:UIResponder,UIApplicationDelegate{
         
         KakaoSDK.initSDK(appKey: "3ab88a82d4b9a11f1a993c02250270ce")
         
-        let instance = NaverThirdPartyLoginConnection.getSharedInstance()
-        
-        instance?.isNaverAppOauthEnable = false
-        instance?.isInAppOauthEnable = true
-        
-        instance?.serviceUrlScheme = kServiceAppUrlScheme // 앱을 등록할 때 입력한 URL Scheme
-        instance?.consumerKey = kConsumerKey // 상수 - client id
-        instance?.consumerSecret = kConsumerSecret // pw
-        instance?.appName = kServiceAppName
+//        let instance = NaverThirdPartyLoginConnection.getSharedInstance()
+//        
+//        instance?.isNaverAppOauthEnable = false
+//        instance?.isInAppOauthEnable = true
+//        
+//        instance?.serviceUrlScheme = kServiceAppUrlScheme // 앱을 등록할 때 입력한 URL Scheme
+//        instance?.consumerKey = kConsumerKey // 상수 - client id
+//        instance?.consumerSecret = kConsumerSecret // pw
+//        instance?.appName = kServiceAppName
         
         FirebaseMessaging.Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self

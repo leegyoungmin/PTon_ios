@@ -11,7 +11,7 @@ import InstantSearchCore
 import AlertToast
 
 struct MealSearchView: View {
-    @ObservedObject var queryInputController:QueryInputObservableController
+    @ObservedObject var queryInputController:SearchBoxObservableController
     @ObservedObject var hitsController:HitsObservableController<foodResult>
     @State private var isEditing = false
     let userId:String

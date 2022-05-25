@@ -8,7 +8,7 @@
 import SwiftUI
 import KakaoSDKAuth
 import KakaoSDKUser
-import NaverThirdPartyLogin
+//import NaverThirdPartyLogin
 import AuthenticationServices
 import AlertToast
 
@@ -44,12 +44,12 @@ struct LoginView: View {
                 Button(action: {
                     //TODO: 네이버 로그인 오류
                     
-                    if NaverThirdPartyLoginConnection.getSharedInstance().isPossibleToOpenNaverApp(){
-                        NaverThirdPartyLoginConnection.getSharedInstance().delegate = loginViewModel.self
-                        NaverThirdPartyLoginConnection.getSharedInstance().requestThirdPartyLogin()
-                    }else{
-                        NaverThirdPartyLoginConnection.getSharedInstance().openAppStoreForNaverApp()
-                    }
+//                    if NaverThirdPartyLoginConnection.getSharedInstance().isPossibleToOpenNaverApp(){
+//                        NaverThirdPartyLoginConnection.getSharedInstance().delegate = loginViewModel.self
+//                        NaverThirdPartyLoginConnection.getSharedInstance().requestThirdPartyLogin()
+//                    }else{
+//                        NaverThirdPartyLoginConnection.getSharedInstance().openAppStoreForNaverApp()
+//                    }
                 }, label: {
                     Image("naver")
                         .resizable()

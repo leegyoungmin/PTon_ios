@@ -46,22 +46,20 @@ class UserDetailMemoViewModel:ObservableObject{
         }
     }
     
-    func loadData(_ changeType:DocumentChangeType,result:Result<comment?,Error>){
+    func loadData(_ changeType:DocumentChangeType,result:Result<comment,Error>){
         switch result{
         case .success(let comment):
-            if let comment = comment{
-                if changeType == .added{
-                    self.comments.append(comment)
-                }else{
-                    guard let index = self.comments.firstIndex(where: {$0.uid == comment.uid}) else {return}
-                    
-                    if changeType == .removed{
-                        self.comments.remove(at: index)
-                    }
-                    
-                    if changeType == .modified{
-                        self.comments[index] = comment
-                    }
+            if changeType == .added{
+                self.comments.append(comment)
+            }else{
+                guard let index = self.comments.firstIndex(where: {$0.uid == comment.uid}) else {return}
+                
+                if changeType == .removed{
+                    self.comments.remove(at: index)
+                }
+                
+                if changeType == .modified{
+                    self.comments[index] = comment
                 }
             }
         case .failure(let error):

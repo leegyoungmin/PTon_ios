@@ -18,7 +18,7 @@ struct MealViews:View{
     @State var currentTab:mealType?
     @State var selectedIndex:Int = 0
     @State var titles:[String] = ["아침","점심","간식","저녁"]
-    @State var isPresentSearch:Bool = false
+    @State var isPresentDirect:Bool = false
     let algoriaController = AlgoliaController()
     
     func convertMealType(_ selection:Int)->mealType{
@@ -84,23 +84,26 @@ struct MealViews:View{
                     .foregroundColor(isSelected ? .black:.gray)
             }
             
-            userMealTableView(selectedType: $currentTab, index: $selectedIndex,isPresent: $isPresentSearch)
+            userMealTableView(selectedType: $currentTab, index: $selectedIndex,isPresentDirect: $isPresentDirect)
                 .environmentObject(self.viewModel)
             
         }
         .fullScreenCover(item: $currentTab, content: { type in
             
-            MealSearchView(queryInputController: algoriaController.queryInputController,
-                           hitsController: algoriaController.hitsController,
-                           userId: viewModel.userId,
-                           trainerId: viewModel.trainerId,
-                           currentType: type,
-                           selectedType: $currentTab)
+            if isPresentDirect == true{
+                Text("direct Record view")
+            }else{
+                MealSearchView(queryInputController: algoriaController.queryInputController,
+                               hitsController: algoriaController.hitsController,
+                               userId: viewModel.userId,
+                               trainerId: viewModel.trainerId,
+                               currentType: type,
+                               selectedType: $currentTab)
+            }
         })
         .background(.white)
         .cornerRadius(5)
         .shadow(color: .gray.opacity(0.5), radius: 3)
-        
     }
 }
 
@@ -109,7 +112,8 @@ struct userMealTableView:View{
     @EnvironmentObject var viewModel:UserMealViewModel
     @Binding var selectedType:mealType?
     @Binding var index:Int
-    @Binding var isPresent:Bool
+    @Binding var isPresentDirect:Bool
+    @State var isPresentAlert:Bool = false
     let grid = Array(repeating: GridItem(.flexible()), count: 3)
     
     var body: some View{
@@ -141,7 +145,7 @@ struct userMealTableView:View{
                                     .scaledToFill()
                             } actions: {
                                 let delete = UIAction(title:"식사 삭제",image: UIImage(systemName: "delete.left"),attributes: .destructive){ _ in
-                                    print("Delete")
+                                    viewModel.removeItem(food)
                                 }
                                 return UIMenu(title:food.foodName,children: [delete])
                             }
@@ -160,8 +164,7 @@ struct userMealTableView:View{
             }
             Button {
                 withAnimation {
-                    selectedType = mealType.init(rawValue: index) ?? .first
-                    isPresent = true
+                    isPresentAlert = true
                 }
             } label: {
                 VStack(alignment: .center, spacing: 0) {
@@ -181,6 +184,40 @@ struct userMealTableView:View{
                 }
             }
             .buttonStyle(.plain)
+            .alert("음식추가", isPresented: $isPresentAlert) {
+                Button {
+                    withAnimation {
+                        isPresentDirect = false
+                        selectedType = mealType.init(rawValue: index)
+                    }
+                } label: {
+                    Text("검색으로 추가하기")
+                }
+                .buttonStyle(.plain)
+                .tint(.blue)
+
+                Button {
+                    withAnimation {
+                        isPresentDirect = true
+                        selectedType = mealType.init(rawValue: index)
+                    }
+                } label: {
+                    Text("직접 추가하기")
+                }
+                .buttonStyle(.plain)
+                .tint(.blue)
+                
+                Button(role: ButtonRole.cancel) {
+                    isPresentAlert = false
+                } label: {
+                    Text("취소하기")
+                }
+                .buttonStyle(.plain)
+                .tint(.accentColor)
+
+            } message: {
+                Text("음식을 추가할 방법을 선택해주세요.")
+            }
             
         }
         .padding()

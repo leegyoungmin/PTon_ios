@@ -7,10 +7,10 @@
 
 import Foundation
 import Firebase
+import FirebaseStorage
 import GoogleSignIn
 import SwiftUI
 import KakaoSDKUser
-import NaverThirdPartyLogin
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
@@ -242,16 +242,17 @@ class UserBaseViewModel:ObservableObject{
             }
             
         case .naver:
-            do{
-                NaverThirdPartyLoginConnection.getSharedInstance().requestDeleteToken()
-                
-                UserDefaults.standard.set(LoginType.none.rawValue, forKey: "LoginApi")
-                try FirebaseAuth.Auth.auth().signOut()
-                
-                completion()
-            }catch{
-                print("Error in LogOut")
-            }
+            print("Login Error Naver")
+//            do{
+//                NaverThirdPartyLoginConnection.getSharedInstance().requestDeleteToken()
+//
+//                UserDefaults.standard.set(LoginType.none.rawValue, forKey: "LoginApi")
+//                try FirebaseAuth.Auth.auth().signOut()
+//
+//                completion()
+//            }catch{
+//                print("Error in LogOut")
+//            }
             
         case .google:
             do{

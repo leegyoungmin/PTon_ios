@@ -7,7 +7,7 @@
 
 import Foundation
 import Firebase
-import FirebaseStorageUI
+import FirebaseStorage
 import Kingfisher
 
 
@@ -117,24 +117,23 @@ class ChattingInputViewModel:ObservableObject{
     }
     
     func sendReservation(_ date:Date){
-        if let dateString = convertString(content: date, dateFormat: "MM월 dd일") as? String,
-           let timeString = convertString(content: date, dateFormat: "HH시 mm분") as? String{
-            let message = "\(self.trainerName) 트레이너님이 " + dateString + " " + timeString + "에 PT 일정을 예약하셨습니다."
-            
-            let data:[String:Any] = [
-                "Checked":false,
-                "Time":convertString(content: date, dateFormat: "HH:mm")
-            ]
-            
-            Firebase.Database.database().reference()
-                .child("Reservation")
-                .child(trainerId)
-                .child(convertString(content: date, dateFormat: "yyyy-MM-dd"))
-                .child(userId)
-                .setValue(data)
-            
-            sendText(message)
-        }
+        let dateString = convertString(content: date, dateFormat: "MM월 dd일")
+        let timeString = convertString(content: date, dateFormat: "HH시 mm분")
+        let message = "\(self.trainerName) 트레이너님이 " + dateString + " " + timeString + "에 PT 일정을 예약하셨습니다."
+        
+        let data:[String:Any] = [
+            "Checked":false,
+            "Time":convertString(content: date, dateFormat: "HH:mm")
+        ]
+        
+        Firebase.Database.database().reference()
+            .child("Reservation")
+            .child(trainerId)
+            .child(convertString(content: date, dateFormat: "yyyy-MM-dd"))
+            .child(userId)
+            .setValue(data)
+        
+        sendText(message)
     }
     //TODO: - chatting 읽음 처리
     func ChangeRead(){
@@ -157,7 +156,7 @@ class ChattingInputViewModel:ObservableObject{
     }
     
     func UserLicense(completions: @escaping (Bool,Bool)->Void){
-        guard let compareId = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
+//        guard let compareId = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
         
         Database.database().reference()
             .child("Membership")

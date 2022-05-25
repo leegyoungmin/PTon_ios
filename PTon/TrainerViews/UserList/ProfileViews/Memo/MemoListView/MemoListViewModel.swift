@@ -69,22 +69,18 @@ class MemoListViewModel:ObservableObject{
     }
     
     //MARK: - 데이터 변경 감지에 대한 데이터 처리 메소드
-    func ChangeData(_ diff:DocumentChange,result:Result<Memo?,Error>){
+    func ChangeData(_ diff:DocumentChange,result:Result<Memo,Error>){
         switch result {
-        case .success(let success):
-            if let memo = success{
-                switch diff.type{
-                case .added:
-                    self.memos.append(memo)
-                case .modified:
-                    guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
-                    self.memos[index] = memo
-                case .removed:
-                    guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
-                    self.memos.remove(at: index)
-                }
-            }else{
-                print("Error")
+        case .success(let memo):
+            switch diff.type{
+            case .added:
+                self.memos.append(memo)
+            case .modified:
+                guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
+                self.memos[index] = memo
+            case .removed:
+                guard let index = self.memos.firstIndex(where: {$0.uuid == memo.uuid}) else{return}
+                self.memos.remove(at: index)
             }
         case .failure(let failure):
             print("Error decoding Memo ::: \(failure)")
