@@ -7,6 +7,8 @@
 
 import Foundation
 import Firebase
+import CoreGraphics
+import FirebaseStorage
 
 struct userMeal:Hashable{
     var mealtype:mealType
@@ -114,6 +116,22 @@ class UserMealViewModel:ObservableObject{
                 }
         }
         
+    }
+    
+    func updateDirect(_ index:Int,_ data:[String:Any],completion:@escaping()->Void){
+        guard let keyString = mealType.init(rawValue: index)?.keyDescription() else{return}
+        reference
+            .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+            .child(keyString)
+            .childByAutoId()
+            .updateChildValues(data) { error, _ in
+                completion()
+            }
+    }
+    
+    //
+    func uploadImage(image:Data){
+        print("Upload Image data")
     }
     
     //아이템 제거 메소드

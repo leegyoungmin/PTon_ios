@@ -97,7 +97,7 @@ struct MealViews:View{
                            selectedType: $currentTab)
         })
         .fullScreenCover(isPresented: $isPresentDirect, content: {
-            userMealDirectRecordView()
+            userMealDirectRecordView(index: selectedIndex)
                 .environmentObject(self.viewModel)
         })
         .background(.white)

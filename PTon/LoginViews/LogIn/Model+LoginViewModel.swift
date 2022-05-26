@@ -40,7 +40,7 @@ class LoginViewModel:NSObject, ObservableObject{
     func AutoLogin(loginApi:LoginType){
         switch loginApi{
         case .kakao: self.kakaoLogin()
-        case .naver: print("Login Naver Error")
+        case .naver: print("tapped Naver")
         case .google: self.googleLogin()
         case .apple: self.AppleLogin()
         case .none: print("login API None")
@@ -353,22 +353,22 @@ extension LoginViewModel{
     }
 }
 
-////MARK: NAVER DELEGATE
+//MARK: NAVER DELEGATE
 //extension LoginViewModel:UIApplicationDelegate,NaverThirdPartyLoginConnectionDelegate{
 //    func oauth20ConnectionDidFinishRequestACTokenWithAuthCode() {
 //        print("Success Login ")
 //        getNaverInfo()
 //    }
-//    
+//
 //    func oauth20ConnectionDidFinishRequestACTokenWithRefreshToken() {
 //        print("failed Login")
 //        getNaverInfo()
 //    }
-//    
+//
 //    func oauth20ConnectionDidFinishDeleteToken() {
 //        print("logout")
 //    }
-//    
+//
 //    func oauth20Connection(_ oauthConnection: NaverThirdPartyLoginConnection!, didFailWithError error: Error!) {
 //        print("error in Naver Delegate \(error.localizedDescription)")
 //        self.isShowLoading = false

@@ -11,6 +11,7 @@ struct userMealDirectRecordView: View {
     //MARK: - PROPERTIES
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel:UserMealViewModel
+    let index:Int
     @State var foodName:String = ""
     @State var foodKcal:String = ""
     @State var foodGram:String = ""
@@ -115,7 +116,25 @@ struct userMealDirectRecordView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
-                            print(123)
+                            
+                            if !foodName.isEmpty{
+                                let data:[String:Any] = [
+                                    "carbs":Int(foodCarbs) ?? 0,
+                                    "fat":Int(foodFat) ?? 0,
+                                    "foodName":foodName,
+                                    "kcal":Int(foodKcal) ?? 0,
+                                    "protein":Int(foodProtein) ?? 0,
+                                    "url":"example.com"
+                                ]
+                                
+                                viewModel.updateDirect(index, data) {
+                                    dismiss.callAsFunction()
+                                }
+                            }else{
+                                print("Error in foodName")
+                            }
+                            
+                            
                         } label: {
                             Text("음식 저장")
                         }
@@ -174,6 +193,6 @@ struct DirectMealTextFieldStyle:TextFieldStyle{
 //MARK: - PREVIEWS
 struct userMealDirectRecordView_Previews: PreviewProvider {
     static var previews: some View {
-        userMealDirectRecordView()
+        userMealDirectRecordView(index: 0)
     }
 }

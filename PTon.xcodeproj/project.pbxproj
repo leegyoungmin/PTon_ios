@@ -73,6 +73,7 @@
 		186F11E527B7D7EC004BED0F /* MemoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186F11E427B7D7EC004BED0F /* MemoListView.swift */; };
 		186F11E727B7D821004BED0F /* MemoCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 186F11E627B7D821004BED0F /* MemoCreateView.swift */; };
 		187165B427B0059400C4FC6C /* PTonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187165B327B0059400C4FC6C /* PTonApp.swift */; };
+		1874D9A6283F72F8000BDF27 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1874D9A5283F72F8000BDF27 /* Kingfisher */; };
 		187D876927DB196500495576 /* ChattingImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D876827DB196500495576 /* ChattingImageViewModel.swift */; };
 		187D876B27DB422400495576 /* TrainerScheduleCreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D876A27DB422400495576 /* TrainerScheduleCreateView.swift */; };
 		187D876D27DB440200495576 /* Model + ScheduleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187D876C27DB440200495576 /* Model + ScheduleViewModel.swift */; };
@@ -119,7 +120,6 @@
 		18CFFF5A27BBF09D00BB95DA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5927BBF09D00BB95DA /* HomeView.swift */; };
 		18CFFF5C27BBF6E800BB95DA /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5B27BBF6E800BB95DA /* UserProfileView.swift */; };
 		18CFFF5F27BBF92500BB95DA /* StretchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5E27BBF92500BB95DA /* StretchingView.swift */; };
-		18D548E3283E1DEF0071D0D9 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 18D548E2283E1DEF0071D0D9 /* Kingfisher */; };
 		18D548E6283E20A30071D0D9 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 18D548E5283E20A30071D0D9 /* GoogleSignIn */; };
 		18D5491E283E66550071D0D9 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 18D5491D283E66550071D0D9 /* KakaoSDKAuth */; };
 		18D54920283E66550071D0D9 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 18D5491F283E66550071D0D9 /* KakaoSDKCommon */; };
@@ -158,6 +158,19 @@
 			script = "# rctool\n";
 		};
 /* End PBXBuildRule section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		1874D96E283F5DC5000BDF27 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		18036F1F27EC3F9300EFAE56 /* MealViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealViews.swift; sourceTree = "<group>"; };
@@ -302,7 +315,7 @@
 				18D54968283E6B180071D0D9 /* FirebaseFunctions in Frameworks */,
 				18D54966283E6B180071D0D9 /* FirebaseFirestoreSwift in Frameworks */,
 				18D54922283E66550071D0D9 /* KakaoSDKCommonCore in Frameworks */,
-				18D548E3283E1DEF0071D0D9 /* Kingfisher in Frameworks */,
+				1874D9A6283F72F8000BDF27 /* Kingfisher in Frameworks */,
 				18D54924283E66550071D0D9 /* KakaoSDKTalk in Frameworks */,
 				18D5496A283E6B180071D0D9 /* FirebaseMessaging in Frameworks */,
 				18D5495E283E6B180071D0D9 /* FirebaseAuth in Frameworks */,
@@ -836,6 +849,7 @@
 				189393FB27ABAF0100B4DB8A /* Sources */,
 				189393FC27ABAF0100B4DB8A /* Frameworks */,
 				189393FD27ABAF0100B4DB8A /* Resources */,
+				1874D96E283F5DC5000BDF27 /* Embed Frameworks */,
 			);
 			buildRules = (
 				18D54901283E63510071D0D9 /* PBXBuildRule */,
@@ -851,7 +865,6 @@
 				18A3B8EB283E1152003CDAEE /* SDWebImageSwiftUI */,
 				18A3B8EE283E11DE003CDAEE /* ToastUI */,
 				18A3B8F6283E12BD003CDAEE /* PopupView */,
-				18D548E2283E1DEF0071D0D9 /* Kingfisher */,
 				18D548E5283E20A30071D0D9 /* GoogleSignIn */,
 				18D5491D283E66550071D0D9 /* KakaoSDKAuth */,
 				18D5491F283E66550071D0D9 /* KakaoSDKCommon */,
@@ -867,6 +880,7 @@
 				18D54967283E6B180071D0D9 /* FirebaseFunctions */,
 				18D54969283E6B180071D0D9 /* FirebaseMessaging */,
 				18D5496B283E6B180071D0D9 /* FirebaseStorage */,
+				1874D9A5283F72F8000BDF27 /* Kingfisher */,
 			);
 			productName = PTon;
 			productReference = 18A3B8D1283E0ABF003CDAEE /* PTon.app */;
@@ -905,10 +919,10 @@
 				18A3B8EA283E1152003CDAEE /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				18A3B8ED283E11DE003CDAEE /* XCRemoteSwiftPackageReference "ToastUI" */,
 				18A3B8F5283E12BD003CDAEE /* XCRemoteSwiftPackageReference "PopupView" */,
-				18D548E1283E1DEF0071D0D9 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				18D548E4283E20A20071D0D9 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				18D5491C283E66550071D0D9 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 				18D5495A283E6B180071D0D9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				1874D9A4283F72F8000BDF27 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 189393F627ABAF0100B4DB8A;
 			projectDirPath = "";
@@ -1198,8 +1212,11 @@
 				DEVELOPMENT_TEAM = TZ33KAU3T9;
 				ENABLE_PREVIEWS = YES;
 				EXCLUDED_ARCHS = "";
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PTon/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PTON;
@@ -1215,13 +1232,14 @@
 				);
 				MARKETING_VERSION = 1.0;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				PRODUCT_BUNDLE_IDENTIFIER = Salud.PTon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_WORKSPACE = YES;
+				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = "";
 			};
 			name = Debug;
 		};
@@ -1237,8 +1255,11 @@
 				DEVELOPMENT_TEAM = TZ33KAU3T9;
 				ENABLE_PREVIEWS = YES;
 				EXCLUDED_ARCHS = "";
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PTon/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PTON;
@@ -1254,13 +1275,14 @@
 				);
 				MARKETING_VERSION = 1.0;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CODE_SIGN_FLAGS = "";
+				OTHER_CODE_SIGN_FLAGS = "--generate-entitlement-der";
 				PRODUCT_BUNDLE_IDENTIFIER = Salud.PTon;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_WORKSPACE = YES;
+				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = "";
 			};
 			name = Release;
 		};
@@ -1288,6 +1310,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1874D9A4283F72F8000BDF27 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 		18870F262837B877005B8636 /* XCRemoteSwiftPackageReference "instantsearch-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/algolia/instantsearch-ios";
@@ -1344,14 +1374,6 @@
 				version = 1.5.5;
 			};
 		};
-		18D548E1283E1DEF0071D0D9 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.0.0;
-			};
-		};
 		18D548E4283E20A20071D0D9 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
@@ -1379,6 +1401,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1874D9A5283F72F8000BDF27 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1874D9A4283F72F8000BDF27 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		18870F272837B877005B8636 /* InstantSearchSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 18870F262837B877005B8636 /* XCRemoteSwiftPackageReference "instantsearch-ios" */;
@@ -1413,11 +1440,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 18C20B3D280EA84D0063F154 /* XCRemoteSwiftPackageReference "ChartView" */;
 			productName = SwiftUICharts;
-		};
-		18D548E2283E1DEF0071D0D9 /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 18D548E1283E1DEF0071D0D9 /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
 		};
 		18D548E5283E20A30071D0D9 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;

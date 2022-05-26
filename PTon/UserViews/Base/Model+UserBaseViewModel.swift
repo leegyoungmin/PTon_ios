@@ -13,6 +13,7 @@ import SwiftUI
 import KakaoSDKUser
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+//import NaverThirdPartyLogin
 
 //MARK: MODEL
 struct UserBaseModel{
