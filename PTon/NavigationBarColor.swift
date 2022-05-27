@@ -13,12 +13,9 @@ struct NavigationBarModifier:ViewModifier{
     
     init(backgroundColor:UIColor?){
         self.backgroundColor = backgroundColor
-        
+        UINavigationBar.appearance().barTintColor = .clear
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
-        UINavigationBar.appearance().shadowImage = UIImage()
-        UINavigationBar.appearance().isTranslucent = false
-        UINavigationBar.appearance().tintColor = .clear
-        UINavigationBar.appearance().backgroundColor = .clear
+        UINavigationBar.appearance().isTranslucent = true
         UINavigationBar.appearance().scrollEdgeAppearance = UINavigationBarAppearance()
     }
     

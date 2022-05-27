@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFunctions
 import KakaoSDKAuth
+import KakaoSDKCommon
 import FirebaseAuth
 //import NaverThirdPartyLogin
 import Alamofire
@@ -39,7 +40,7 @@ class LoginViewModel:NSObject, ObservableObject{
     
     func AutoLogin(loginApi:LoginType){
         switch loginApi{
-        case .kakao: self.kakaoLogin()
+        case .kakao: self.validationKakaoToken()
         case .naver: print("tapped Naver")
         case .google: self.googleLogin()
         case .apple: self.AppleLogin()
@@ -57,13 +58,36 @@ class LoginViewModel:NSObject, ObservableObject{
         return email
     }
     
+    func validationKakaoToken(){
+        
+        self.isShowLoading = true
+        if AuthApi.hasToken(){
+            UserApi.shared.accessTokenInfo { info, error in
+                if let error = error {
+                    if let sdkError = error as? SdkError, sdkError.isInvalidTokenError() == true{
+                        self.kakaoLogin()
+                    }else{
+                        print(error.localizedDescription)
+                        self.isShowLoading = false
+                    }
+                }else{
+                    self.validNewUser(false)
+                }
+            }
+        }else{
+            self.kakaoLogin()
+        }
+    }
+    
     //카카오 로그인 메소드
     func kakaoLogin(){
         self.isShowLoading = true
+        
         if UserApi.isKakaoTalkLoginAvailable(){
             UserApi.shared.loginWithKakaoTalk{(oauthToken,error) in
                 if let error = error {
                     print(error)
+                    self.isShowLoading = false
                 }
                 else{
                     self.kakaoCloudFunctions(oauthToken)
@@ -74,6 +98,7 @@ class LoginViewModel:NSObject, ObservableObject{
             UserApi.shared.loginWithKakaoAccount{(oauthToken,error) in
                 if let error = error {
                     print(error)
+                    self.isShowLoading = false
                 }
                 else{
                     self.kakaoCloudFunctions(oauthToken)
@@ -87,19 +112,17 @@ class LoginViewModel:NSObject, ObservableObject{
     
     func kakaoCloudFunctions(_ token:OAuthToken?){
         guard let token = token else {
+            self.isShowLoading = false
             return
         }
         
         functions.httpsCallable("kakaoToken").call(["access_token":token.accessToken]) { (result,error) in
             if let error = error as NSError? {
                 if error.domain == FunctionsErrorDomain{
-                    let code = FunctionsErrorCode(rawValue: error.code)
-                    let message = error.localizedDescription
-                    let detail = error.userInfo[FunctionsErrorDetailsKey]
-                    
-                    print(code!)
-                    print(message)
-                    print(detail!)
+//                    let code = FunctionsErrorCode(rawValue: error.code)
+//                    let message = error.localizedDescription
+//                    let detail = error.userInfo[FunctionsErrorDetailsKey]
+                    self.isShowLoading = false
                 }
             }
             if let data = result?.data {
@@ -112,6 +135,7 @@ class LoginViewModel:NSObject, ObservableObject{
                             self.userBaseModel.name = user?.kakaoAccount?.profile?.nickname
                             print(self.userBaseModel)
                             UserDefaults.standard.set(LoginType.kakao.rawValue, forKey: "LoginApi")
+                            self.isShowLoading = false
                             self.validNewUser(newuser)
                         }
                     }

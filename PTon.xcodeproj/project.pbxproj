@@ -117,6 +117,7 @@
 		18C1641C27F58E2A0024FAAF /* UserHomeMemberShipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C1641B27F58E2A0024FAAF /* UserHomeMemberShipView.swift */; };
 		18C1641E27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C1641D27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift */; };
 		18C20B3F280EA84D0063F154 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 18C20B3E280EA84D0063F154 /* SwiftUICharts */; };
+		18C90EE42840BFF100F72E5B /* userMealDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C90EE32840BFF100F72E5B /* userMealDetailView.swift */; };
 		18CFFF5A27BBF09D00BB95DA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5927BBF09D00BB95DA /* HomeView.swift */; };
 		18CFFF5C27BBF6E800BB95DA /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5B27BBF6E800BB95DA /* UserProfileView.swift */; };
 		18CFFF5F27BBF92500BB95DA /* StretchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5E27BBF92500BB95DA /* StretchingView.swift */; };
@@ -278,6 +279,7 @@
 		18B7D94727E0A07200400310 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		18C1641B27F58E2A0024FAAF /* UserHomeMemberShipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserHomeMemberShipView.swift; sourceTree = "<group>"; };
 		18C1641D27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + UserHomeMemberShipViewModel.swift"; sourceTree = "<group>"; };
+		18C90EE32840BFF100F72E5B /* userMealDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userMealDetailView.swift; sourceTree = "<group>"; };
 		18CFFF5927BBF09D00BB95DA /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		18CFFF5B27BBF6E800BB95DA /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		18CFFF5E27BBF92500BB95DA /* StretchingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StretchingView.swift; sourceTree = "<group>"; };
@@ -687,6 +689,7 @@
 				18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */,
 				18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */,
 				18A3B882283E0506003CDAEE /* userMealDirectRecordView.swift */,
+				18C90EE32840BFF100F72E5B /* userMealDetailView.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -1005,6 +1008,7 @@
 				1833C65427BD5B7B0096E3E4 /* Notification.swift in Sources */,
 				1847AE6627B4E3C700F484E6 /* Model+ChattingListViewModel.swift in Sources */,
 				186E832727BA800C00CBB25E /* MembershipViewModel.swift in Sources */,
+				18C90EE42840BFF100F72E5B /* userMealDetailView.swift in Sources */,
 				185E010B27EA03770048F2B0 /* TrainerDetailMemoView.swift in Sources */,
 				18CFFF5A27BBF09D00BB95DA /* HomeView.swift in Sources */,
 				188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */,

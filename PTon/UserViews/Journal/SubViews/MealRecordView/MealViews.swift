@@ -225,16 +225,6 @@ struct userMealTableView:View{
     }
 }
 
-struct userMealDetailView:View{
-    let food:userFoodResult
-    var body: some View{
-        VStack{
-            Text(food.foodName)
-        }
-        .navigationTitle("기록된 식단")
-    }
-}
-
 extension MealViews{
     struct mealTabs<Label:View>:View{
         
