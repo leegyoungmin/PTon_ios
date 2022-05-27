@@ -11,8 +11,8 @@ import PhotosUI
 
 //MARK: - Meal Image Picker View
 struct MealImagePickerView:UIViewControllerRepresentable{
+    @Environment(\.dismiss) private var dimiss
     @Binding var image:UIImage
-    @Binding var isPresented:Bool
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
         var configuration:PHPickerConfiguration = PHPickerConfiguration(photoLibrary: .shared())
@@ -46,12 +46,12 @@ struct MealImagePickerView:UIViewControllerRepresentable{
                     
                     DispatchQueue.main.async {
                         self?.parent.image = image
-                        self?.parent.isPresented = false
+                        self?.parent.dimiss.callAsFunction()
                     }
                 }
             }else{
                 self.parent.image = UIImage()
-                self.parent.isPresented = false
+                self.parent.dimiss.callAsFunction()
             }
             
         }

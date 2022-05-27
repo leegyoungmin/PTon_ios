@@ -130,8 +130,26 @@ class UserMealViewModel:ObservableObject{
     }
     
     //
-    func uploadImage(image:Data){
-        print("Upload Image data")
+    func uploadImage(image:Data?,completion:@escaping(String)->()){
+        guard let image = image else { return }
+        let meta = StorageMetadata()
+        meta.contentType = "image/jpg"
+        
+        let url = "FoodJournal_\(convertString(content: Date(), dateFormat: "yyyy_MM_dd_hh_mm_ss")).jpg"
+        FirebaseStorage.Storage.storage().reference()
+            .child("FoodJournal")
+            .child(self.userId)
+            .child(url)
+            .putData(image,metadata: meta) { meta, error in
+                FirebaseStorage.Storage.storage().reference()
+                    .child("FoodJournal")
+                    .child(self.userId)
+                    .child(url)
+                    .downloadURL { url, _ in
+                        guard let path = url?.downloadURL.absoluteString else{return}
+                        completion(path)
+                    }
+            }
     }
     
     //아이템 제거 메소드

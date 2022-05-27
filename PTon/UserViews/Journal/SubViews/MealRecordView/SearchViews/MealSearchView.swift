@@ -89,6 +89,7 @@ struct foodRecordView:View{
     @State var isPresentCamera:Bool = false
     @State var isPresentAlbum:Bool = false
     @State var isShowLoadingView:Bool = false
+    @State var isShowError:Bool = false
     @Binding var selectedTab:mealType?
     @StateObject var viewModel:FoodRecordViewModel
     var body: some View{
@@ -174,26 +175,30 @@ struct foodRecordView:View{
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
-                    isShowLoadingView = true
-                    viewModel.uploadImage(imageData: image.jpegData(compressionQuality: 0.8)) { path in
-                        if path != nil{
-                            let data:[String:Any] = [
-                                "foodName":selectedFood?.foodName ?? "",
-                                "url":path!,
-                                "intake":Int(selectedFood?.intake ?? 0) * Int(Double(inputValue) ?? 0),
-                                "carbs":Int(selectedFood?.carbs ?? 0) * Int(Double(inputValue) ?? 0),
-                                "protein":Int(selectedFood?.protein ?? 0)*Int(Double(inputValue) ?? 0),
-                                "fat":Int(selectedFood?.fat ?? 0) * Int(Double(inputValue) ?? 0),
-                                "kcal":Int(selectedFood?.kcal ?? 0) * Int(Double(inputValue) ?? 0),
-                                "sodium":Int(selectedFood?.sodium ?? 0) * Int(Double(inputValue) ?? 0)
-                            ]
+                    
+                    if image.size == .zero{
+                        isShowError = true
+                    }else{
+                        isShowLoadingView = true
+                        viewModel.uploadImage(imageData: image.jpegData(compressionQuality: 0.8)) { path in
+                            if path != nil{
+                                let data:[String:Any] = [
+                                    "foodName":selectedFood?.foodName ?? "",
+                                    "url":path!,
+                                    "intake":Int(selectedFood?.intake ?? 0) * Int(Double(inputValue) ?? 0),
+                                    "carbs":Int(selectedFood?.carbs ?? 0) * Int(Double(inputValue) ?? 0),
+                                    "protein":Int(selectedFood?.protein ?? 0)*Int(Double(inputValue) ?? 0),
+                                    "fat":Int(selectedFood?.fat ?? 0) * Int(Double(inputValue) ?? 0),
+                                    "kcal":Int(selectedFood?.kcal ?? 0) * Int(Double(inputValue) ?? 0),
+                                    "sodium":Int(selectedFood?.sodium ?? 0) * Int(Double(inputValue) ?? 0)
+                                ]
 
-                            viewModel.uploadUserRecord(userData: data)
-                            self.isShowLoadingView = false
-                            selectedTab = nil
+                                viewModel.uploadUserRecord(userData: data)
+                                self.isShowLoadingView = false
+                                selectedTab = nil
+                            }
                         }
                     }
-                    
                 } label: {
                     Text("음식 추가")
                         .font(.system(size: 15))
@@ -215,10 +220,13 @@ struct foodRecordView:View{
             MealCameraView(image: $image, sourceType: .camera)
         }
         .fullScreenCover(isPresented: $isPresentAlbum) {
-            MealImagePickerView(image: $image, isPresented: $isPresentAlbum)
+            MealImagePickerView(image: $image)
         }
         .toast(isPresented: $isShowLoadingView) {
             AlertToast(displayMode: .alert, type: .loading)
+        }
+        .toast(isPresenting: $isShowError, duration: 2, tapToDismiss: true){
+            AlertToast(displayMode: .banner(.slide), type: .error(.red), title: "사진을 지정해주세요.")
         }
         .onAppear {
             print("User selected meal Type ::: \(viewModel.mealType)")
