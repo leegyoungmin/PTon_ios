@@ -128,6 +128,7 @@ struct userMealTableView:View{
                                     .placeholder({ progress in
                                         ProgressView()
                                     })
+                                    .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
                                     .resizable()
                                     .frame(width: 80, height: 80, alignment: .center)
                                     .clipShape(Circle())
@@ -135,6 +136,7 @@ struct userMealTableView:View{
                                         Circle()
                                             .fill(Color(UIColor.secondarySystemBackground))
                                     )
+                                    .shadow(color: .gray.opacity(0.5), radius: 1)
                             } preview: {
                                 KFImage(URL(string: food.url))
                                     .placeholder({ progress in
