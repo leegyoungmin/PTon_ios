@@ -181,15 +181,18 @@ struct CustomContextMenu<Content:View,Preview:View>:View{
     var content:Content
     var preview:Preview
     var menu:UIMenu
+    var onEnded: ()->()
     
     init(
         @ViewBuilder content:@escaping()->Content,
         @ViewBuilder preview:@escaping()->Preview,
-        actions:@escaping()->UIMenu
+        actions:@escaping()->UIMenu,
+        onEnded:@escaping()->()
     ){
         self.content = content()
         self.preview = preview()
         self.menu = actions()
+        self.onEnded = onEnded
     }
     
     var body: some View{
@@ -197,7 +200,7 @@ struct CustomContextMenu<Content:View,Preview:View>:View{
             content
                 .hidden()
                 .overlay(
-                    ContextMenuHelper(content: content, preview: preview, actions: menu)
+                    ContextMenuHelper(content: content, preview: preview, actions: menu, onEnded: onEnded)
                 )
         }
     }
@@ -207,11 +210,13 @@ struct ContextMenuHelper<Content:View,Preview:View>:UIViewRepresentable{
     var content:Content
     var preview:Preview
     var actions:UIMenu
+    var onEnded:()->()
     
-    init(content:Content,preview:Preview,actions:UIMenu){
+    init(content:Content,preview:Preview,actions:UIMenu,onEnded:@escaping()->()){
         self.content = content
         self.preview = preview
         self.actions = actions
+        self.onEnded = onEnded
     }
     
     func makeCoordinator() -> Coordinator {
@@ -266,7 +271,7 @@ struct ContextMenuHelper<Content:View,Preview:View>:UIViewRepresentable{
         
         func contextMenuInteraction(_ interaction: UIContextMenuInteraction, willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating) {
             animator.addCompletion {
-                print("Ended")
+                self.parent.onEnded()
             }
         }
     }

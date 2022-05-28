@@ -113,15 +113,28 @@ struct userMealTableView:View{
     @Binding var index:Int
     @Binding var isPresentDirect:Bool
     @State var isPresentAlert:Bool = false
+    @State var selectedFood:String?
     let grid = Array(repeating: GridItem(.flexible()), count: 3)
     
     var body: some View{
         LazyVGrid(columns: grid, alignment: .center, spacing: 20) {
             ForEach(viewModel.recordedMeals.filter({$0.mealType == mealType.init(rawValue: index)}),id:\.self) { food in
-                NavigationLink {
-                    userMealDetailView(food: food)
-                } label: {
-                    ZStack{
+                
+                ZStack{
+                    
+                    NavigationLink(tag: food.id, selection: $selectedFood) {
+                        
+                        userMealDetailView(food: food)
+                    } label: {
+                        
+                        EmptyView()
+                    }
+                    
+                    Button {
+                        withAnimation {
+                            selectedFood = food.id
+                        }
+                    } label: {
                         VStack{
                             CustomContextMenu {
                                 KFImage(URL(string: food.url))
@@ -142,6 +155,7 @@ struct userMealTableView:View{
                                     .placeholder({ progress in
                                         ProgressView()
                                     })
+                                    .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
                                     .resizable()
                                     .scaledToFill()
                             } actions: {
@@ -149,6 +163,10 @@ struct userMealTableView:View{
                                     viewModel.removeItem(food)
                                 }
                                 return UIMenu(title:food.foodName,children: [delete])
+                            } onEnded: {
+                                withAnimation {
+                                    selectedFood = food.id
+                                }
                             }
                             Text(food.foodName)
                                 .lineLimit(1)
@@ -157,11 +175,13 @@ struct userMealTableView:View{
                             
                             Text("\(food.kcal)Kcal")
                         }
-                        
                     }
+                    .buttonStyle(.plain)
+                    
+                    
                 }
-                .buttonStyle(.plain)
-
+                
+                
             }
             Button {
                 withAnimation {
@@ -196,7 +216,7 @@ struct userMealTableView:View{
                 }
                 .buttonStyle(.plain)
                 .tint(.blue)
-
+                
                 Button {
                     withAnimation {
                         isPresentDirect = true
@@ -215,7 +235,7 @@ struct userMealTableView:View{
                 }
                 .buttonStyle(.plain)
                 .tint(.accentColor)
-
+                
             } message: {
                 Text("음식을 추가할 방법을 선택해주세요.")
             }
@@ -267,5 +287,14 @@ extension MealViews{
             .buttonStyle(.plain)
             
         }
+    }
+}
+
+//MARK: - PREVIEWS
+struct MealView_Previews:PreviewProvider{
+    static var previews: some View{
+        MealViews(viewModel: UserMealViewModel(userId: "asd", trainerId: "asd", fitnessCode: "asd", selectedDate: Date()), selectedDate: .constant(Date()))
+            .padding()
+            .previewLayout(.sizeThatFits)
     }
 }

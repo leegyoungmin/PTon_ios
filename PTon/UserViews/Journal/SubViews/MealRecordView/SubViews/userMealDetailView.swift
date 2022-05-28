@@ -9,6 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct userMealDetailView:View{
+    @Environment(\.dismiss) private var dismiss
     let food:userFoodResult
     
     var body: some View{
@@ -26,18 +27,20 @@ struct userMealDetailView:View{
                                 .frame(width: proxy.size.width, height: proxy.size.height)
                                 .offset(y:proxy.frame(in: .global).minY/9)
                                 .clipped()
-                            
-//                            Image("exampleImage")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fill)
-//                                .frame(width: proxy.size.width, height: proxy.size.height)
-//                                .offset(y:proxy.frame(in: .global).minY/9)
-//                                .clipped()
                             VStack{
                                 HStack{
-                                    Image(systemName: "chevron.left")
-                                        .font(.title)
-                                        .foregroundColor(.white)
+                                    Button {
+                                        withAnimation {
+                                            dismiss.callAsFunction()
+                                        }
+                                    } label: {
+                                        Image(systemName: "chevron.left")
+                                            .font(.title)
+                                            .foregroundColor(.black)
+                                    }
+                                    .buttonStyle(.plain)
+
+
                                     Spacer()
                                 }
                                 .padding(.top,30)
@@ -57,18 +60,19 @@ struct userMealDetailView:View{
                                 .clipped()
                                 .offset(y:-proxy.frame(in: .global).minY)
                             
-//                            Image("exampleImage")
-//                                .resizable()
-//                                .aspectRatio(contentMode: .fill)
-//                                .frame(width: proxy.size.width, height: proxy.size.height + proxy.frame(in: .global).minY)
-//                                .clipped()
-//                                .offset(y:-proxy.frame(in: .global).minY)
                             
                             VStack{
                                 HStack{
-                                    Image(systemName: "chevron.left")
-                                        .font(.title)
-                                        .foregroundColor(.white)
+                                    Button {
+                                        withAnimation {
+                                            dismiss.callAsFunction()
+                                        }
+                                    } label: {
+                                        Image(systemName: "chevron.left")
+                                            .font(.title)
+                                            .foregroundColor(.black)
+                                    }
+                                    .buttonStyle(.plain)
                                     Spacer()
                                 }
                                 .padding(.top,30)

@@ -108,6 +108,8 @@
 		18A3B8EC283E1152003CDAEE /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 18A3B8EB283E1152003CDAEE /* SDWebImageSwiftUI */; };
 		18A3B8EF283E11DE003CDAEE /* ToastUI in Frameworks */ = {isa = PBXBuildFile; productRef = 18A3B8EE283E11DE003CDAEE /* ToastUI */; };
 		18A3B8F7283E12BD003CDAEE /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = 18A3B8F6283E12BD003CDAEE /* PopupView */; };
+		18A78C782841EDF500798F89 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 18A78C772841EDF500798F89 /* GoogleSignIn */; };
+		18A78C7A2841EDF500798F89 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 18A78C792841EDF500798F89 /* GoogleSignInSwift */; };
 		18A9270C282F7A56005D2599 /* UserDetailMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A9270B282F7A56005D2599 /* UserDetailMemoView.swift */; };
 		18A9270E282F7BF1005D2599 /* UserDetailMemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A9270D282F7BF1005D2599 /* UserDetailMemoViewModel.swift */; };
 		18B53D3927FB4BD000AC0E9C /* BottomSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 18B53D3827FB4BD000AC0E9C /* BottomSheet */; };
@@ -315,8 +317,10 @@
 				18D54962283E6B180071D0D9 /* FirebaseDatabaseSwift in Frameworks */,
 				18A3B8EC283E1152003CDAEE /* SDWebImageSwiftUI in Frameworks */,
 				18D54968283E6B180071D0D9 /* FirebaseFunctions in Frameworks */,
+				18A78C782841EDF500798F89 /* GoogleSignIn in Frameworks */,
 				18D54966283E6B180071D0D9 /* FirebaseFirestoreSwift in Frameworks */,
 				18D54922283E66550071D0D9 /* KakaoSDKCommonCore in Frameworks */,
+				18A78C7A2841EDF500798F89 /* GoogleSignInSwift in Frameworks */,
 				1874D9A6283F72F8000BDF27 /* Kingfisher in Frameworks */,
 				18D54924283E66550071D0D9 /* KakaoSDKTalk in Frameworks */,
 				18D5496A283E6B180071D0D9 /* FirebaseMessaging in Frameworks */,
@@ -884,6 +888,8 @@
 				18D54969283E6B180071D0D9 /* FirebaseMessaging */,
 				18D5496B283E6B180071D0D9 /* FirebaseStorage */,
 				1874D9A5283F72F8000BDF27 /* Kingfisher */,
+				18A78C772841EDF500798F89 /* GoogleSignIn */,
+				18A78C792841EDF500798F89 /* GoogleSignInSwift */,
 			);
 			productName = PTon;
 			productReference = 18A3B8D1283E0ABF003CDAEE /* PTon.app */;
@@ -926,6 +932,7 @@
 				18D5491C283E66550071D0D9 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 				18D5495A283E6B180071D0D9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				1874D9A4283F72F8000BDF27 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				18A78C762841EDF500798F89 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			productRefGroup = 189393F627ABAF0100B4DB8A;
 			projectDirPath = "";
@@ -1362,6 +1369,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		18A78C762841EDF500798F89 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
 		18B53D3727FB4BD000AC0E9C /* XCRemoteSwiftPackageReference "BottomSheet" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/adamfootdev/BottomSheet.git";
@@ -1434,6 +1449,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 18A3B8F5283E12BD003CDAEE /* XCRemoteSwiftPackageReference "PopupView" */;
 			productName = PopupView;
+		};
+		18A78C772841EDF500798F89 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18A78C762841EDF500798F89 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		18A78C792841EDF500798F89 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18A78C762841EDF500798F89 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
 		};
 		18B53D3827FB4BD000AC0E9C /* BottomSheet */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -32,44 +32,39 @@ struct LoginView: View {
                 Image("defaultImage")
                     .controlSize(.large)
                 
-                Button(action: {
-                    self.loginViewModel.kakaoLogin()
-                    
-                }, label: {
-                    Image("kakao")
-                        .resizable()
-                        .frame(width: 150, height: 40, alignment: .center)
-                })
+                Button {
+                    self.loginViewModel.validationKakaoToken()
+                } label: {
+                    kakaoShape()
+                }
 
-                Button(action: {
-                    //TODO: 네이버 로그인 오류
-                    
-//                    if NaverThirdPartyLoginConnection.getSharedInstance().isPossibleToOpenNaverApp(){
-//                        NaverThirdPartyLoginConnection.getSharedInstance().delegate = loginViewModel.self
-//                        NaverThirdPartyLoginConnection.getSharedInstance().requestThirdPartyLogin()
-//                    }else{
-//                        NaverThirdPartyLoginConnection.getSharedInstance().openAppStoreForNaverApp()
-//                    }
-                }, label: {
-                    Image("naver")
-                        .resizable()
-                        .frame(width: 150, height: 40, alignment: .center)
-                })
-
-                GoogleButton()
-                    .frame(width: 150, height: 40, alignment: .center)
-                    .onTapGesture {
-                        print("Tapped Google Button")
-                        UserDefaults.standard.set(LoginType.google.rawValue, forKey: "LoginApi")
-                        loginViewModel.googleLogin()
-                    }
-                AppleLogin()
-                    .frame(width: 150, height: 40, alignment: .center)
-                    .onTapGesture {
-                        print("Tapped Apple Login")
-                        UserDefaults.standard.set(LoginType.apple .rawValue, forKey: "LoginApi")
-                        loginViewModel.AppleLogin()
-                    }
+//                Button(action: {
+//                    //TODO: 네이버 로그인 오류
+//
+////                    if NaverThirdPartyLoginConnection.getSharedInstance().isPossibleToOpenNaverApp(){
+////                        NaverThirdPartyLoginConnection.getSharedInstance().delegate = loginViewModel.self
+////                        NaverThirdPartyLoginConnection.getSharedInstance().requestThirdPartyLogin()
+////                    }else{
+////                        NaverThirdPartyLoginConnection.getSharedInstance().openAppStoreForNaverApp()
+////                    }
+//                }, label: {
+//                    Image("naver")
+//                        .resizable()
+//                        .frame(width: 150, height: 40, alignment: .center)
+//                })
+                
+                Button {
+                    UserDefaults.standard.set(LoginType.google.rawValue, forKey: "LoginApi")
+                } label: {
+                    GoogleShape()
+                }
+                .buttonStyle(.plain)
+                
+                Button {
+                    UserDefaults.standard.set(LoginType.apple.rawValue, forKey: "LoginApi")
+                } label: {
+                    AppleShape()
+                }
 
                 NavigationLink(tag: true, selection:$loginViewModel.isTrainer) {
                     withAnimation {
