@@ -11,6 +11,7 @@ import InstantSearchCore
 import FirebaseStorage
 import Firebase
 
+//MARK: - Search Food Result Struct
 struct foodResult:Codable{
     var foodName:String
     var manufacture:String
@@ -32,7 +33,9 @@ struct foodResult:Codable{
     }
 }
 
+//MARK: - AlgoliaController
 class AlgoliaController{
+    let client:SearchClient
     let searcher:HitsSearcher
     
     let queryInputInteractor:SearchBoxInteractor
@@ -42,16 +45,16 @@ class AlgoliaController{
     let hitsController: HitsObservableController<foodResult>
     
     init(){
-        self.searcher = HitsSearcher(appID: "ZYD60NFWI1", apiKey: "3b7be953c85e84f564b6fd9e4f365d75", indexName: "food")
+        self.client = SearchClient(appID: "ZYD60NFWI1", apiKey: "3b7be953c85e84f564b6fd9e4f365d75")
+        self.searcher = HitsSearcher(client: client, indexName: "food")
+        
         self.queryInputController = .init()
         self.queryInputInteractor = .init()
         
         self.hitsController = .init()
         self.hitsInteractor = .init()
-        
         setupConnections()
     }
-    
     func setupConnections(){
         queryInputInteractor.connectSearcher(searcher)
         queryInputInteractor.connectController(queryInputController)
@@ -72,6 +75,8 @@ struct ingredient:Codable,Hashable{
     var type:ingredientType
     var kcal:Int
 }
+
+//MARK: - VIEWMODEL
 class FoodRecordViewModel:ObservableObject{
     @Published var ingredients:[ingredient] = []
     let userId:String

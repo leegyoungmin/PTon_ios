@@ -173,7 +173,12 @@ struct userMealDirectRecordView: View {
                             }else{
                                 UIApplication.shared.endEditing()
                                 isShowLoading = true
-                                var data:[String:Any] = ["carbs":Int(foodCarbs) ?? 0,"fat":Int(foodFat) ?? 0,"foodName":foodName,"kcal":Int(foodKcal) ?? 0,"protein":Int(foodProtein) ?? 0,"sodium":Int(foodSodium) ?? 0]
+                                var data:[String:Any] = ["carbs":Int(foodCarbs) ?? 0,
+                                                         "fat":Int(foodFat) ?? 0,
+                                                         "foodName":foodName,
+                                                         "kcal":Int(foodKcal) ?? 0,
+                                                         "protein":Int(foodProtein) ?? 0,
+                                                         "sodium":Int(foodSodium) ?? 0]
                                 
                                 
                                 if userPhoto.size != .zero{

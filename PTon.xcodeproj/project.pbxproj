@@ -11,12 +11,7 @@
 		18036F2227EC3FA600EFAE56 /* TodayExerciseview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2127EC3FA600EFAE56 /* TodayExerciseview.swift */; };
 		18036F2627EC3FDE00EFAE56 /* UserBaseInfoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2527EC3FDE00EFAE56 /* UserBaseInfoViews.swift */; };
 		18036F2827EC632100EFAE56 /* Model + MealRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2727EC632100EFAE56 /* Model + MealRecordViewModel.swift */; };
-		18036F2B27EC639A00EFAE56 /* UserMealRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2A27EC639A00EFAE56 /* UserMealRecordView.swift */; };
 		18036F2D27ECA40B00EFAE56 /* MealCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */; };
-		18036F2F27ECAA8F00EFAE56 /* MealEditViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */; };
-		18055AAA27EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AA927EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift */; };
-		18055AAC27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AAB27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift */; };
-		18055AAE27EEFA5200CB2AFE /* TodayExerciseRecordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AAD27EEFA5200CB2AFE /* TodayExerciseRecordView.swift */; };
 		18055AB027EF065400CB2AFE /* Exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = 18055AAF27EF065400CB2AFE /* Exercises.json */; };
 		18055AB227EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AB127EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift */; };
 		1807A83B27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1807A83A27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift */; };
@@ -93,7 +88,6 @@
 		188B2AAE27E70361004B9DA9 /* ChatRoomListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */; };
 		188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAF27E70AE2004B9DA9 /* ChatView.swift */; };
 		188B2AB227E854AC004B9DA9 /* ChattingInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */; };
-		188C452427F1A76300C2180A /* TodayExerciseModifyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188C452327F1A76300C2180A /* TodayExerciseModifyView.swift */; };
 		188C452727F2153200C2180A /* Model + UserBaseInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188C452627F2153200C2180A /* Model + UserBaseInfoViewModel.swift */; };
 		1893940527ABAF0100B4DB8A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893940427ABAF0100B4DB8A /* LoginView.swift */; };
 		1893960927ABDE0200B4DB8A /* UserBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893960827ABDE0200B4DB8A /* UserBaseView.swift */; };
@@ -146,6 +140,8 @@
 		18F493AB27F4ED57009898F9 /* UserBodyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F493AA27F4ED57009898F9 /* UserBodyView.swift */; };
 		18F493AD27F4EF86009898F9 /* Model + HomeBodyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18F493AC27F4EF86009898F9 /* Model + HomeBodyViewModel.swift */; };
 		18FC42C327D98ECB00002BB3 /* ChattingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FC42C227D98ECB00002BB3 /* ChattingImageView.swift */; };
+		18FE931C28436456007F837B /* userExerciseSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE931B28436456007F837B /* userExerciseSearchView.swift */; };
+		18FE931E28436493007F837B /* ExerciseSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE931D28436493007F837B /* ExerciseSearchController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -180,12 +176,7 @@
 		18036F2127EC3FA600EFAE56 /* TodayExerciseview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayExerciseview.swift; sourceTree = "<group>"; };
 		18036F2527EC3FDE00EFAE56 /* UserBaseInfoViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBaseInfoViews.swift; sourceTree = "<group>"; };
 		18036F2727EC632100EFAE56 /* Model + MealRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + MealRecordViewModel.swift"; sourceTree = "<group>"; };
-		18036F2A27EC639A00EFAE56 /* UserMealRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMealRecordView.swift; sourceTree = "<group>"; };
 		18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCameraView.swift; sourceTree = "<group>"; };
-		18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealEditViews.swift; sourceTree = "<group>"; };
-		18055AA927EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayAerobicExerciseRecordView.swift; sourceTree = "<group>"; };
-		18055AAB27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayAnAerobicExerciseRecordView.swift; sourceTree = "<group>"; };
-		18055AAD27EEFA5200CB2AFE /* TodayExerciseRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayExerciseRecordView.swift; sourceTree = "<group>"; };
 		18055AAF27EF065400CB2AFE /* Exercises.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Exercises.json; sourceTree = "<group>"; };
 		18055AB127EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + TodayExerciseRecordViewModel.swift"; sourceTree = "<group>"; };
 		1807A83A27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + ScheduleMakeViewModel.swift"; sourceTree = "<group>"; };
@@ -261,7 +252,6 @@
 		188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListView.swift; sourceTree = "<group>"; };
 		188B2AAF27E70AE2004B9DA9 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingInputViewModel.swift; sourceTree = "<group>"; };
-		188C452327F1A76300C2180A /* TodayExerciseModifyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayExerciseModifyView.swift; sourceTree = "<group>"; };
 		188C452627F2153200C2180A /* Model + UserBaseInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + UserBaseInfoViewModel.swift"; sourceTree = "<group>"; };
 		1893940427ABAF0100B4DB8A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1893940627ABAF0200B4DB8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../../../../../../Users/igyeongmin/Desktop/PTon/PTon/Assets.xcassets; sourceTree = SDKROOT; };
@@ -293,6 +283,8 @@
 		18F493AA27F4ED57009898F9 /* UserBodyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserBodyView.swift; sourceTree = "<group>"; };
 		18F493AC27F4EF86009898F9 /* Model + HomeBodyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + HomeBodyViewModel.swift"; sourceTree = "<group>"; };
 		18FC42C227D98ECB00002BB3 /* ChattingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingImageView.swift; sourceTree = "<group>"; };
+		18FE931B28436456007F837B /* userExerciseSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userExerciseSearchView.swift; sourceTree = "<group>"; };
+		18FE931D28436493007F837B /* ExerciseSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseSearchController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -344,7 +336,6 @@
 		18036F2927EC638200EFAE56 /* MealRecordView */ = {
 			isa = PBXGroup;
 			children = (
-				18870F232837B6B3005B8636 /* SearchViews */,
 				188C452827F21AFA00C2180A /* SubViews */,
 				18036F1F27EC3F9300EFAE56 /* MealViews.swift */,
 				18036F2727EC632100EFAE56 /* Model + MealRecordViewModel.swift */,
@@ -689,11 +680,10 @@
 		188C452827F21AFA00C2180A /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
-				18036F2A27EC639A00EFAE56 /* UserMealRecordView.swift */,
-				18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */,
-				18036F2E27ECAA8F00EFAE56 /* MealEditViews.swift */,
-				18A3B882283E0506003CDAEE /* userMealDirectRecordView.swift */,
 				18C90EE32840BFF100F72E5B /* userMealDetailView.swift */,
+				18870F232837B6B3005B8636 /* SearchViews */,
+				18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */,
+				18A3B882283E0506003CDAEE /* userMealDirectRecordView.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -701,10 +691,8 @@
 		188C452927F21FF200C2180A /* SubViews */ = {
 			isa = PBXGroup;
 			children = (
-				18055AA927EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift */,
-				18055AAB27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift */,
-				18055AAD27EEFA5200CB2AFE /* TodayExerciseRecordView.swift */,
-				188C452327F1A76300C2180A /* TodayExerciseModifyView.swift */,
+				18FE931B28436456007F837B /* userExerciseSearchView.swift */,
+				18FE931D28436493007F837B /* ExerciseSearchController.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -972,14 +960,12 @@
 				18036F2027EC3F9300EFAE56 /* MealViews.swift in Sources */,
 				18B7D94227E09C8A00400310 /* MemoListViewModel.swift in Sources */,
 				184F14F527B8FF7F00E5AF07 /* StretchingRequestView.swift in Sources */,
-				18036F2B27EC639A00EFAE56 /* UserMealRecordView.swift in Sources */,
 				18F493AD27F4EF86009898F9 /* Model + HomeBodyViewModel.swift in Sources */,
 				188B2AAE27E70361004B9DA9 /* ChatRoomListView.swift in Sources */,
 				18036F2227EC3FA600EFAE56 /* TodayExerciseview.swift in Sources */,
 				185687E927B272EA00753D5B /* TrainerScheduleView.swift in Sources */,
 				18EE19DE27B38C3100CCA16D /* NavigationBarColor.swift in Sources */,
 				183E745C27AD20B00075B058 /* BaseInformationPage.swift in Sources */,
-				188C452427F1A76300C2180A /* TodayExerciseModifyView.swift in Sources */,
 				1893961B27ABF9CD00B4DB8A /* Model+LoginViewModel.swift in Sources */,
 				1833091927BEC44000890212 /* VideoPlayer.swift in Sources */,
 				184F14FC27B91CD500E5AF07 /* Model + StretchingViewModel.swift in Sources */,
@@ -999,6 +985,7 @@
 				183E745327ACFC1F0075B058 /* Buttons.swift in Sources */,
 				18301DFA27CFB2BB00B77057 /* SurveyResultView.swift in Sources */,
 				18036F2D27ECA40B00EFAE56 /* MealCameraView.swift in Sources */,
+				18FE931C28436456007F837B /* userExerciseSearchView.swift in Sources */,
 				1833091427BE3E2800890212 /* SubExerciseViews.swift in Sources */,
 				1833090727BE3C0B00890212 /* RequestedExerciseView.swift in Sources */,
 				1833C64D27BCECAC0096E3E4 /* AllStretchingView.swift in Sources */,
@@ -1021,7 +1008,6 @@
 				188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */,
 				1833090D27BE3C6900890212 /* RequestedExerciseSubViews.swift in Sources */,
 				1833091227BE3E1700890212 /* RequestingExerciseView.swift in Sources */,
-				18055AAA27EEF9BC00CB2AFE /* TodayAerobicExerciseRecordView.swift in Sources */,
 				1888F9BC27B6818600EBAA43 /* Extensions.swift in Sources */,
 				186F11E527B7D7EC004BED0F /* MemoListView.swift in Sources */,
 				1888E3B927E33C7200EC80A9 /* Model + DetailMemoViewModel.swift in Sources */,
@@ -1033,7 +1019,7 @@
 				182DADB027B2815500D15C56 /* UserAddViewModel.swift in Sources */,
 				1807A83B27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift in Sources */,
 				188C452727F2153200C2180A /* Model + UserBaseInfoViewModel.swift in Sources */,
-				18036F2F27ECAA8F00EFAE56 /* MealEditViews.swift in Sources */,
+				18FE931E28436493007F837B /* ExerciseSearchController.swift in Sources */,
 				187D876B27DB422400495576 /* TrainerScheduleCreateView.swift in Sources */,
 				18EE19EB27B417B500CCA16D /* MessageView.swift in Sources */,
 				1889B98927EAD64400C9AFE1 /* EditModeMemoView.swift in Sources */,
@@ -1054,14 +1040,12 @@
 				184F14FA27B9191700E5AF07 /* StretchingThumnailView.swift in Sources */,
 				183CE8CB27D89B0E00A8B789 /* ChattingImagePickerView.swift in Sources */,
 				183308EC27BE309400890212 /* Model+ExerciseStorageViewModel.swift in Sources */,
-				18055AAC27EEF9C800CB2AFE /* TodayAnAerobicExerciseRecordView.swift in Sources */,
 				186F11E727B7D821004BED0F /* MemoCreateView.swift in Sources */,
 				18967B5827F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift in Sources */,
 				181DE20827B10C10002F33B2 /* Error.swift in Sources */,
 				186E832527BA79F400CBB25E /* MemberShipView.swift in Sources */,
 				1833090927BE3C2600890212 /* Model+RequestedExerciseViewModel.swift in Sources */,
 				1888F9AA27B67FF000EBAA43 /* SurveyView.swift in Sources */,
-				18055AAE27EEFA5200CB2AFE /* TodayExerciseRecordView.swift in Sources */,
 				18EE19E427B3C1A200CCA16D /* ChattingListView.swift in Sources */,
 				1833C65027BD00C00096E3E4 /* UserChattingView.swift in Sources */,
 				18A9270C282F7A56005D2599 /* UserDetailMemoView.swift in Sources */,

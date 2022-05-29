@@ -29,18 +29,6 @@ struct AnAerobic:Codable{
         }
 }
 
-struct todayExercise:Hashable{
-    var uuid:String
-    var exerciseName:String
-    var hydro:String
-    var hour:String?
-    var minute:String?
-    var time:String?
-    var part:String?
-    var sets:String?
-    var weight:String?
-}
-
 //MARK: - VIEWMODEL
 class TodayExerciseViewModel:ObservableObject{
     @Published var todayExercises:[todayExercise] = []

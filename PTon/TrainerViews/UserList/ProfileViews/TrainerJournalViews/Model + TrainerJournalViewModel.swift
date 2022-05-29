@@ -8,6 +8,18 @@
 import Foundation
 import Firebase
 
+struct todayExercise:Hashable{
+    var uuid:String
+    var exerciseName:String
+    var hydro:String
+    var hour:String?
+    var minute:String
+    var time:String
+    var part:String?
+    var sets:String?
+    var weight:String?
+}
+
 
 class TrainerJournalViewModel:ObservableObject{
     @Published var exercises:[todayExercise] = []

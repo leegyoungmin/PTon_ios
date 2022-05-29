@@ -10,6 +10,7 @@ import InstantSearchSwiftUI
 import InstantSearchCore
 import AlertToast
 
+//MARK: - Meal Search View
 struct MealSearchView: View {
     @ObservedObject var queryInputController:SearchBoxObservableController
     @ObservedObject var hitsController:HitsObservableController<foodResult>
@@ -21,6 +22,7 @@ struct MealSearchView: View {
     
     var body: some View {
         NavigationView{
+            
             HitsList(hitsController) { hit, _ in
                 NavigationLink {
                     foodRecordView(selectedFood: hit,
@@ -36,11 +38,13 @@ struct MealSearchView: View {
                         HStack{
                             
                             VStack(alignment: .leading, spacing: 0){
+                                
                                 Text(hit?.manufacture ?? "")
                                     .font(.callout)
-                                
                                 Text(hit?.foodName ?? "")
-                                    .font(.body)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.5)
+                                    .multilineTextAlignment(.leading)
                                     .foregroundColor(.accentColor)
                             }
                             
@@ -81,6 +85,7 @@ struct MealSearchView: View {
     }
 }
 
+//MARK: - Food Record View
 struct foodRecordView:View{
     let selectedFood:foodResult?
     @State var inputValue:String = "1"
