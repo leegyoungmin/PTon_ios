@@ -29,48 +29,61 @@ struct exerciseResult:Codable{
 
 class ExerciseSearchController{
     let searcher: HitsSearcher
-
+    
     let searchBoxInteractor: SearchBoxInteractor
     let searchBoxController: SearchBoxObservableController
-
+    
     let hitsInteractor: HitsInteractor<exerciseResult>
     let hitsController: HitsObservableController<exerciseResult>
-
+    
     let statsInteractor: StatsInteractor
-    let statsController: StatsObservableController
-
+    let statsController: StatsTextObservableController
+    
     let filterState: FilterState
     
     let facetListInteractor: FacetListInteractor
     let facetListController: FacetListObservableController
-
+    
+    
     init() {
-      self.searcher = HitsSearcher(appID: "latency",
-                                   apiKey: "1f6fd3a6fb973cb08419fe7d288fa4db",
-                                   indexName: "CommonExercise")
-      self.searchBoxInteractor = .init()
-      self.searchBoxController = .init()
-      self.hitsInteractor = .init()
-      self.hitsController = .init()
-      self.statsInteractor = .init()
-      self.statsController = .init()
-      self.filterState = .init()
-      self.facetListInteractor = .init()
-      self.facetListController = .init()
-      setupConnections()
+        self.searcher = HitsSearcher(appID: "ZYD60NFWI1",
+                                     apiKey: "3b7be953c85e84f564b6fd9e4f365d75",
+                                     indexName: "CommonExercise")
+        
+        self.searchBoxInteractor = .init()
+        self.searchBoxController = .init()
+        
+        self.hitsInteractor = .init()
+        self.hitsController = .init()
+        
+        self.statsInteractor = .init()
+        self.statsController = .init()
+        
+        self.filterState = .init()
+        
+        self.facetListInteractor = .init()
+        self.facetListController = .init()
+        
+        setupConnections()
+        self.searcher.search()
     }
     
     func setupConnections() {
-      searchBoxInteractor.connectSearcher(searcher)
-      searchBoxInteractor.connectController(searchBoxController)
-      hitsInteractor.connectSearcher(searcher)
-      hitsInteractor.connectController(hitsController)
-      statsInteractor.connectSearcher(searcher)
-//      statsInteractor.connectController(statsController)
-      searcher.connectFilterState(filterState)
-      facetListInteractor.connectSearcher(searcher, with: "part")
-      facetListInteractor.connectFilterState(filterState, with: "part", operator: .or)
-      facetListInteractor.connectController(facetListController, with: FacetListPresenter(sortBy: [.isRefined, .count(order: .descending)]))
-    }
+        searchBoxInteractor.connectSearcher(searcher)
+        searchBoxInteractor.connectController(searchBoxController)
         
+        hitsInteractor.connectSearcher(searcher)
+        hitsInteractor.connectController(hitsController)
+        
+        statsInteractor.connectSearcher(searcher)
+        statsInteractor.connectController(statsController)
+        
+        searcher.connectFilterState(filterState)
+        
+        facetListInteractor.connectSearcher(searcher, with: "part")
+        facetListInteractor.connectFilterState(filterState, with: "part", operator: .or)
+        facetListInteractor.connectController(facetListController, with: FacetListPresenter(sortBy: [.isRefined, .count(order: .descending)]))
+        
+    }
+    
 }

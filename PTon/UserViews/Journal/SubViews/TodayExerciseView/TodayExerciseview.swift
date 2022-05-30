@@ -21,7 +21,9 @@ struct TodayExerciseView:View{
                 Spacer()
                 
                 NavigationLink {
-                    userExerciseSearchView(hitsController: controller.hitsController, queryController: controller.queryInputController, facetListController: controller.facetListContorller)
+                    userExerciseSearchView(hitsController: controller.hitsController,
+                                           queryController: controller.searchBoxController,
+                                           facetListController: controller.facetListController)
                 } label: {
                     Label("운동등록하기", systemImage: "plus.circle.fill")
                         .font(.footnote)

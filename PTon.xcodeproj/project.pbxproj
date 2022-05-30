@@ -117,6 +117,7 @@
 		18CFFF5A27BBF09D00BB95DA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5927BBF09D00BB95DA /* HomeView.swift */; };
 		18CFFF5C27BBF6E800BB95DA /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5B27BBF6E800BB95DA /* UserProfileView.swift */; };
 		18CFFF5F27BBF92500BB95DA /* StretchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5E27BBF92500BB95DA /* StretchingView.swift */; };
+		18D243CB2844910400223382 /* InstantSearch in Frameworks */ = {isa = PBXBuildFile; productRef = 18D243CA2844910400223382 /* InstantSearch */; };
 		18D548E6283E20A30071D0D9 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 18D548E5283E20A30071D0D9 /* GoogleSignIn */; };
 		18D5491E283E66550071D0D9 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 18D5491D283E66550071D0D9 /* KakaoSDKAuth */; };
 		18D54920283E66550071D0D9 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 18D5491F283E66550071D0D9 /* KakaoSDKCommon */; };
@@ -300,6 +301,7 @@
 				18B53D3927FB4BD000AC0E9C /* BottomSheet in Frameworks */,
 				18870F282837B877005B8636 /* InstantSearchSwiftUI in Frameworks */,
 				18D548E6283E20A30071D0D9 /* GoogleSignIn in Frameworks */,
+				18D243CB2844910400223382 /* InstantSearch in Frameworks */,
 				18D54960283E6B180071D0D9 /* FirebaseDatabase in Frameworks */,
 				18A3B8EF283E11DE003CDAEE /* ToastUI in Frameworks */,
 				18D5495C283E6B180071D0D9 /* FirebaseAnalytics in Frameworks */,
@@ -878,6 +880,7 @@
 				1874D9A5283F72F8000BDF27 /* Kingfisher */,
 				18A78C772841EDF500798F89 /* GoogleSignIn */,
 				18A78C792841EDF500798F89 /* GoogleSignInSwift */,
+				18D243CA2844910400223382 /* InstantSearch */,
 			);
 			productName = PTon;
 			productReference = 18A3B8D1283E0ABF003CDAEE /* PTon.app */;
@@ -921,6 +924,7 @@
 				18D5495A283E6B180071D0D9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				1874D9A4283F72F8000BDF27 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				18A78C762841EDF500798F89 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				18D243C92844910400223382 /* XCRemoteSwiftPackageReference "instantsearch-ios" */,
 			);
 			productRefGroup = 189393F627ABAF0100B4DB8A;
 			projectDirPath = "";
@@ -1377,6 +1381,14 @@
 				version = 1.5.5;
 			};
 		};
+		18D243C92844910400223382 /* XCRemoteSwiftPackageReference "instantsearch-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/algolia/instantsearch-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 		18D548E4283E20A20071D0D9 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
@@ -1453,6 +1465,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 18C20B3D280EA84D0063F154 /* XCRemoteSwiftPackageReference "ChartView" */;
 			productName = SwiftUICharts;
+		};
+		18D243CA2844910400223382 /* InstantSearch */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18870F262837B877005B8636 /* XCRemoteSwiftPackageReference "instantsearch-ios" */;
+			productName = InstantSearch;
 		};
 		18D548E5283E20A30071D0D9 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
