@@ -9,7 +9,8 @@ import Foundation
 import InstantSearchCore
 import InstantSearchSwiftUI
 
-struct exerciseResult:Codable{
+struct exerciseResult:Codable,Identifiable{
+    let id = UUID()
     var exerciseName:String
     var part:String
     var hydro:String
