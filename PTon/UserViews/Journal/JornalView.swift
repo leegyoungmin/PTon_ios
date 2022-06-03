@@ -27,7 +27,7 @@ struct JornalView: View {
                     .tag(1)
                 
                 //TODO: - Kcal Setting
-                TodayExerciseView()
+                TodayExerciseView(viewModel: userExerciseSearchViewModel(userId: self.userId, fitnessCode: self.fitnessCode, selectedDate: selectedDate))
                     .padding(.horizontal)
                     .padding(.bottom,20)
                     .tag(2)

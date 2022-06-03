@@ -9,7 +9,7 @@ import Foundation
 import InstantSearchCore
 import InstantSearchSwiftUI
 
-struct exerciseResult:Codable,Identifiable{
+struct exerciseResult:Codable,Identifiable,Hashable{
     let id = UUID()
     var exerciseName:String
     var part:String
