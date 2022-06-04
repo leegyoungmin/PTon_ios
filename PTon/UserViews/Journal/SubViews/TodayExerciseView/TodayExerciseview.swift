@@ -34,6 +34,12 @@ enum dataType{
     }
 }
 
+enum pageType:Int,Identifiable{
+    var id:RawValue{rawValue}
+    case gym = -1
+    case general = 1
+}
+
 struct TodayExerciseView:View{
     let controller = ExerciseSearchController()
     let rows = Array(repeating: GridItem(.flexible()), count: 4)
@@ -45,6 +51,8 @@ struct TodayExerciseView:View{
     ]
     @StateObject var viewModel:userExerciseSearchViewModel
     @State var selectedIndex:Int = 0
+    @State var isshowAlert:Bool = false
+    @State var userSelctedType:pageType?
     
     //MARK: - FUNCTIONS
     private func checkStrength(_ raw:Double)->Color{
@@ -69,11 +77,9 @@ struct TodayExerciseView:View{
                 
                 Spacer()
                 
-                NavigationLink {
-                    userExerciseSearchView(hitsController: controller.hitsController,
-                                           queryController: controller.searchBoxController,
-                                           facetListController: controller.facetListController)
-                    .environmentObject(self.viewModel)
+                
+                Button {
+                    isshowAlert = true
                 } label: {
                     Label("운동등록하기", systemImage: "plus.circle.fill")
                         .font(.footnote)
@@ -83,70 +89,77 @@ struct TodayExerciseView:View{
             .padding()
             
             TabView(selection: $selectedIndex) {
-                ForEach(viewModel.recordedData,id:\.id) { exercise in
-                    VStack{
-                        HStack(spacing:10){
-                            KFImage(URL(string: exercise.url))
-                                .resizable()
-                                .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
-                                .frame(width: 80, height: 80, alignment: .center)
-                                .cornerRadius(30)
-                                .shadow(color: .gray, radius: 1, x: 0, y: 0)
-                            
-                            VStack(alignment:.leading,spacing:3){
+                if viewModel.recordedData.isEmpty{
+                    Text("기록된 운동이 없습니다.")
+                        .foregroundColor(.gray)
+                        .font(.footnote)
+                        .fontWeight(.semibold)
+                }else{
+                    ForEach(viewModel.recordedData,id:\.id) { exercise in
+                        VStack{
+                            HStack(spacing:10){
+                                KFImage(URL(string: exercise.url))
+                                    .resizable()
+                                    .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
+                                    .frame(width: 80, height: 80, alignment: .center)
+                                    .cornerRadius(30)
+                                    .shadow(color: .gray, radius: 1, x: 0, y: 0)
                                 
-                                Text(exercise.exerciseName)
-                                    .font(.title3)
-                                    .fontWeight(.heavy)
-                                
-                                Text(exercise.engName)
-                                    .font(.footnote)
-                                    .foregroundColor(.gray)
-                                HStack{
-                                    if exercise.part.description.contains("운동"){
-                                        Text(exercise.part.description)
-                                            .font(.footnote)
-                                            .foregroundColor(.gray)
-                                    }else{
-                                        Text(exercise.part.description+" 운동")
-                                            .font(.footnote)
-                                            .foregroundColor(.gray)
-                                    }
-
-                                    Circle()
-                                        .fill(checkStrength(exercise.parameter))
-                                        .frame(width: 10, height: 10)
-                                }
-                                
-                            }
-                            
-                            Spacer()
-                        }
-                        .padding()
-                        
-                        Divider()
-                        
-                        LazyVGrid(columns: rows, alignment: .center) {
-                            ForEach(iconItems,id:\.self){ icon in
-                                VStack{
-                                    Image(icon.iconName)
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 30, height: 30)
+                                VStack(alignment:.leading,spacing:3){
                                     
-                                    Text(icon.dataType.description)
+                                    Text(exercise.exerciseName)
+                                        .font(.title3)
+                                        .fontWeight(.heavy)
+                                    
+                                    Text(exercise.engName)
                                         .font(.footnote)
                                         .foregroundColor(.gray)
-                                    
-                                    userDataView(exercise: exercise, icon.dataType)
-                                        .font(.footnote)
+                                    HStack{
+                                        if exercise.part.description.contains("운동"){
+                                            Text(exercise.part.description)
+                                                .font(.footnote)
+                                                .foregroundColor(.gray)
+                                        }else{
+                                            Text(exercise.part.description+" 운동")
+                                                .font(.footnote)
+                                                .foregroundColor(.gray)
+                                        }
+
+                                        Circle()
+                                            .fill(checkStrength(exercise.parameter))
+                                            .frame(width: 10, height: 10)
+                                    }
                                     
                                 }
                                 
+                                Spacer()
                             }
+                            .padding()
+                            
+                            Divider()
+                            
+                            LazyVGrid(columns: rows, alignment: .center) {
+                                ForEach(iconItems,id:\.self){ icon in
+                                    VStack{
+                                        Image(icon.iconName)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 30, height: 30)
+                                        
+                                        Text(icon.dataType.description)
+                                            .font(.footnote)
+                                            .foregroundColor(.gray)
+                                        
+                                        userDataView(exercise: exercise, icon.dataType)
+                                            .font(.footnote)
+                                        
+                                    }
+                                    
+                                }
+                            }
+                            .padding()
+                            
                         }
-                        .padding()
-                        
                     }
                 }
             }
@@ -156,6 +169,30 @@ struct TodayExerciseView:View{
         .background(.white)
         .cornerRadius(5)
         .shadow(color: .gray.opacity(0.5), radius: 3)
+        .confirmationDialog("운동 추가 방법", isPresented: $isshowAlert,titleVisibility: .visible) {
+            Button {
+                self.userSelctedType = .general
+            } label: {
+                Text("일반 운동 검색")
+            }
+
+            Button {
+                self.userSelctedType = .gym
+            } label: {
+                Text("피트니스 센터 운동")
+            }
+
+        }
+        .fullScreenCover(item: $userSelctedType) { type in
+            if type.rawValue < 0{
+                fitnessCenterExerciseView(viewModel: userFitnessExerciseViewModel(userId: viewModel.userId, fitnessCode: viewModel.fitnessCode))
+            }else{
+                userExerciseSearchView(hitsController: controller.hitsController,
+                                       queryController: controller.searchBoxController,
+                                       facetListController: controller.facetListController)
+                .environmentObject(self.viewModel)
+            }
+        }
     }
     
     @ViewBuilder

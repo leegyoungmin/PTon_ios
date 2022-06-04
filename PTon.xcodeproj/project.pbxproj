@@ -90,6 +90,8 @@
 		188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAF27E70AE2004B9DA9 /* ChatView.swift */; };
 		188B2AB227E854AC004B9DA9 /* ChattingInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */; };
 		188C452727F2153200C2180A /* Model + UserBaseInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188C452627F2153200C2180A /* Model + UserBaseInfoViewModel.swift */; };
+		188CD953284A0EA80011A711 /* fitnessCenterExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188CD952284A0EA80011A711 /* fitnessCenterExerciseView.swift */; };
+		188CD955284A0F190011A711 /* userFitnessExerciseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188CD954284A0F190011A711 /* userFitnessExerciseViewModel.swift */; };
 		1893940527ABAF0100B4DB8A /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893940427ABAF0100B4DB8A /* LoginView.swift */; };
 		1893960927ABDE0200B4DB8A /* UserBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893960827ABDE0200B4DB8A /* UserBaseView.swift */; };
 		1893961727ABF3E700B4DB8A /* TrainerBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1893961627ABF3E700B4DB8A /* TrainerBaseView.swift */; };
@@ -256,6 +258,8 @@
 		188B2AAF27E70AE2004B9DA9 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 		188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingInputViewModel.swift; sourceTree = "<group>"; };
 		188C452627F2153200C2180A /* Model + UserBaseInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + UserBaseInfoViewModel.swift"; sourceTree = "<group>"; };
+		188CD952284A0EA80011A711 /* fitnessCenterExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fitnessCenterExerciseView.swift; sourceTree = "<group>"; };
+		188CD954284A0F190011A711 /* userFitnessExerciseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userFitnessExerciseViewModel.swift; sourceTree = "<group>"; };
 		1893940427ABAF0100B4DB8A /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		1893940627ABAF0200B4DB8A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../../../../../../../../Users/igyeongmin/Desktop/PTon/PTon/Assets.xcassets; sourceTree = SDKROOT; };
 		1893941327ABAF8B00B4DB8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -698,6 +702,8 @@
 				18FE931B28436456007F837B /* userExerciseSearchView.swift */,
 				18FE931D28436493007F837B /* ExerciseSearchController.swift */,
 				18171E4E284731690058BB5B /* userExerciseSearchViewModel.swift */,
+				188CD952284A0EA80011A711 /* fitnessCenterExerciseView.swift */,
+				188CD954284A0F190011A711 /* userFitnessExerciseViewModel.swift */,
 			);
 			path = SubViews;
 			sourceTree = "<group>";
@@ -1005,6 +1011,7 @@
 				1893961727ABF3E700B4DB8A /* TrainerBaseView.swift in Sources */,
 				188B2AAB27E701B8004B9DA9 /* Model + ChattingViewModel.swift in Sources */,
 				18036F2827EC632100EFAE56 /* Model + MealRecordViewModel.swift in Sources */,
+				188CD953284A0EA80011A711 /* fitnessCenterExerciseView.swift in Sources */,
 				1833091B27BEC51700890212 /* YouTubeView.swift in Sources */,
 				1833C65427BD5B7B0096E3E4 /* Notification.swift in Sources */,
 				1847AE6627B4E3C700F484E6 /* Model+ChattingListViewModel.swift in Sources */,
@@ -1033,6 +1040,7 @@
 				1889B98927EAD64400C9AFE1 /* EditModeMemoView.swift in Sources */,
 				188B2AB227E854AC004B9DA9 /* ChattingInputViewModel.swift in Sources */,
 				18EE19E927B416EE00CCA16D /* ContentMessageView.swift in Sources */,
+				188CD955284A0F190011A711 /* userFitnessExerciseViewModel.swift in Sources */,
 				187D876D27DB440200495576 /* Model + ScheduleViewModel.swift in Sources */,
 				1888F9BF27B6878100EBAA43 /* SurveyViewModel.swift in Sources */,
 				18394DDD27C626B70092C617 /* JornalView.swift in Sources */,
