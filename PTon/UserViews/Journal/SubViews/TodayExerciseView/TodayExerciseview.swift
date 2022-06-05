@@ -84,17 +84,19 @@ struct TodayExerciseView:View{
                     Label("운동등록하기", systemImage: "plus.circle.fill")
                         .font(.footnote)
                 }
-
+                
             }
             .padding()
             
-            TabView(selection: $selectedIndex) {
-                if viewModel.recordedData.isEmpty{
-                    Text("기록된 운동이 없습니다.")
-                        .foregroundColor(.gray)
-                        .font(.footnote)
-                        .fontWeight(.semibold)
-                }else{
+            if viewModel.recordedData.isEmpty{
+                Text("기록된 운동이 없습니다.")
+                    .foregroundColor(.gray)
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .frame(height:250)
+            }else{
+                TabView(selection: $selectedIndex) {
+                    
                     ForEach(viewModel.recordedData,id:\.id) { exercise in
                         VStack{
                             HStack(spacing:10){
@@ -124,7 +126,7 @@ struct TodayExerciseView:View{
                                                 .font(.footnote)
                                                 .foregroundColor(.gray)
                                         }
-
+                                        
                                         Circle()
                                             .fill(checkStrength(exercise.parameter))
                                             .frame(width: 10, height: 10)
@@ -161,10 +163,13 @@ struct TodayExerciseView:View{
                             
                         }
                     }
+                    
                 }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .frame(height:250)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .frame(height:250)
+            
+
         }
         .background(.white)
         .cornerRadius(5)
@@ -175,13 +180,13 @@ struct TodayExerciseView:View{
             } label: {
                 Text("일반 운동 검색")
             }
-
+            
             Button {
                 self.userSelctedType = .gym
             } label: {
                 Text("피트니스 센터 운동")
             }
-
+            
         }
         .fullScreenCover(item: $userSelctedType) { type in
             if type.rawValue < 0{
@@ -203,7 +208,7 @@ struct TodayExerciseView:View{
         case .kcal:
             Text("\(Int(exercise.expectedKcal))kcal")
         case .numberCount:
-            Text("\(exercise.time ?? "0")분")
+            Text("\(exercise.time ?? "0")회")
         case .setCount:
             Text("\(exercise.set ?? "0")세트")
         }

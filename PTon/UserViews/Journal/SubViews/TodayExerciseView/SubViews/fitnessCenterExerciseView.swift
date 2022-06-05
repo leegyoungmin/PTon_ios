@@ -12,6 +12,7 @@ import Kingfisher
 struct fitnessCenterExerciseView:View{
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel:userFitnessExerciseViewModel
+    @State var selectedExercise:exerciseResult?
     var body: some View{
         NavigationView{
             ScrollView(.vertical, showsIndicators: false) {
@@ -42,9 +43,14 @@ struct fitnessCenterExerciseView:View{
                             .cornerRadius(10, corners: .bottomLeft)
                             .cornerRadius(10, corners: .bottomRight)
                         }
+                        .onTapGesture {
+                            self.selectedExercise = exercise
+                        }
                     }
                 }
+                .padding(.vertical)
             }
+            .navigationTitle("센터 운동 추가")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -57,10 +63,20 @@ struct fitnessCenterExerciseView:View{
 
                 }
             }
+            .sheet(item: $selectedExercise) { exercise in
+                if exercise.hydro == "Aerobic"{
+                    userExerciseAerobicView(data: exercise)
+                        .environmentObject(userExerciseSearchViewModel(userId: viewModel.userId, fitnessCode: viewModel.fitnessCode, selectedDate: Date()))
+                }else{
+                    userExerciseRecordAnAerobic(data: exercise)
+                        .environmentObject(userExerciseSearchViewModel(userId: viewModel.userId, fitnessCode: viewModel.fitnessCode, selectedDate: Date()))
+                }
+            }
         }
         
     }
 }
+
 
 struct fitnessCenterExerciseView_Previews:PreviewProvider{
     static var previews: some View{

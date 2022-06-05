@@ -11,6 +11,7 @@ import InstantSearchSwiftUI
 import Kingfisher
 
 struct userExerciseSearchView: View {
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject var hitsController:HitsObservableController<exerciseResult>
     @ObservedObject var queryController:SearchBoxObservableController
     @ObservedObject var facetListController: FacetListObservableController
@@ -79,118 +80,140 @@ struct userExerciseSearchView: View {
     }
     
     var body: some View {
-        ZStack{
-            //1. 검색 뷰
-            VStack {
-                //검색 결과 뷰
-                searchBar
-                    .disabled(isPresentSheet || isPresentRecord)
+        NavigationView{
+            ZStack{
                 
-                HitsList(hitsController) { hit, _ in
-                    if hit != nil{
-                        HStack(alignment: .center){
-                            VStack{
+                VStack {
+                    //2. 검색 결과 뷰
+                    HitsList(hitsController) { hit, _ in
+                        if hit != nil{
+                            HStack(alignment: .center){
+                                VStack{
 
 
-                                CustomContextMenu {
-                                    
-                                    if hit!.url == "default"{
-                                        Image("defaultImage")
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 60, height: 60, alignment: .center)
-                                            .cornerRadius(20)
-                                            .clipped()
-                                            .shadow(color: .gray, radius: 1, x: 0, y: 0)
-                                    }else{
-                                        KFImage(URL(string: hit!.url))
+                                    CustomContextMenu {
+                                        
+                                        if hit!.url == "default"{
+                                            Image("defaultImage")
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 60, height: 60, alignment: .center)
+                                                .cornerRadius(20)
+                                                .clipped()
+                                                .shadow(color: .gray, radius: 1, x: 0, y: 0)
+                                        }else{
+                                            KFImage(URL(string: hit!.url))
+                                                .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 60, height: 60, alignment: .center)
+                                                .cornerRadius(20)
+                                                .clipped()
+                                                .shadow(color: .gray, radius: 1, x: 0, y: 0)
+                                        }
+                                        
+                                        
+                                    } preview: {
+                                        KFImage(URL(string: hit?.url ?? ""))
                                             .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
                                             .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 60, height: 60, alignment: .center)
-                                            .cornerRadius(20)
-                                            .clipped()
-                                            .shadow(color: .gray, radius: 1, x: 0, y: 0)
+                                            .scaledToFit()
+                                            .onAppear {
+                                                print("User weight setting value ::: \(viewModel.userWeight)")
+                                            }
+                                    } actions: {
+                                        return UIMenu()
+                                    } onEnded: {
+                                        self.selectedExercise = hit!
                                     }
-                                    
-                                    
-                                } preview: {
-                                    KFImage(URL(string: hit?.url ?? ""))
-                                        .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
-                                        .resizable()
-                                        .scaledToFit()
-                                        .onAppear {
-                                            print("User weight setting value ::: \(viewModel.userWeight)")
-                                        }
-                                } actions: {
-                                    return UIMenu()
-                                } onEnded: {
                                 }
+
+                                VStack(alignment: .leading,spacing: 0){
+                                    HStack(spacing:5){
+                                        Text(hit!.exerciseName)
+                                            .font(.title3)
+                                            .fontWeight(.heavy)
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.5)
+
+
+                                        Circle()
+                                            .fill(checkStrength(hit!.parameter))
+                                            .frame(width: 10, height: 10, alignment: .center)
+
+                                    }
+                                    HStack(spacing:5){
+                                        Text(hit!.engName)
+                                            .font(.footnote)
+                                            .foregroundColor(Color(UIColor.secondaryLabel))
+
+                                        Spacer()
+
+                                        Text(hit!.part)
+                                            .font(.footnote)
+                                            .foregroundColor(Color.accentColor)
+                                            .padding(5)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 5)
+                                                    .fill(Color(UIColor.secondarySystemBackground))
+                                            )
+                                    }
+                                }
+
+                                Spacer()
                             }
-
-                            VStack(alignment: .leading,spacing: 0){
-                                HStack(spacing:5){
-                                    Text(hit!.exerciseName)
-                                        .font(.title3)
-                                        .fontWeight(.heavy)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.5)
-
-
-                                    Circle()
-                                        .fill(checkStrength(hit!.parameter))
-                                        .frame(width: 10, height: 10, alignment: .center)
-
-                                }
-                                HStack(spacing:5){
-                                    Text(hit!.engName)
-                                        .font(.footnote)
-                                        .foregroundColor(Color(UIColor.secondaryLabel))
-
-                                    Spacer()
-
-                                    Text(hit!.part)
-                                        .font(.footnote)
-                                        .foregroundColor(Color.accentColor)
-                                        .padding(5)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 5)
-                                                .fill(Color(UIColor.secondarySystemBackground))
-                                        )
-                                }
+                            .padding(5)
+                            .onTapGesture {
+                                self.selectedExercise = hit!
                             }
+                        }
 
-                            Spacer()
-                        }
-                        .padding(5)
-                        .onTapGesture {
-                            self.selectedExercise = hit!
-                        }
+                    }//:HITSLIST
+                }
+                .disabled(isPresentSheet || isPresentRecord)
+                .padding(.horizontal)
+                
+                
+                //2. 필터 뷰
+                if isPresentSheet{
+                    facets()
+                        .transition(.scale)
+                }
+                
+            }//:ZSTACK
+            .navigationTitle("운동 검색")
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(item: $selectedExercise,onDismiss: {
+                self.selectedExercise = nil
+            }) { exercise in
+                if ["Aerobic","Compound"].contains(exercise.part){
+                    userExerciseAerobicView(data: exercise)
+                        .environmentObject(self.viewModel)
+                }else{
+                    userExerciseRecordAnAerobic(data: exercise)
+                        .environmentObject(self.viewModel)
+                }
+            }
+            .searchable(text: $queryController.query, placement: .navigationBarDrawer(displayMode: .always))
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        dismiss.callAsFunction()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
                     }
 
-                }//:HITSLIST
-            }
-            .disabled(isPresentSheet || isPresentRecord)
-            .padding(.horizontal)
-            
-            
-            //2. 필터 뷰
-            if isPresentSheet{
-                facets()
-                    .transition(.scale)
-            }
-            
-        }//:ZSTACK
-        .navigationBarTitleDisplayMode(.inline)
-        .sheet(item: $selectedExercise,onDismiss: {
-            self.selectedExercise = nil
-        }) { exercise in
-            if ["Aerobic","Compound"].contains(exercise.part){
-                userExerciseAerobicView(data: exercise)
-                    .environmentObject(self.viewModel)
-            }else{
-                userExerciseRecordAnAerobic(namespace: namespace, data: exercise)
-                    .environmentObject(self.viewModel)
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        self.isPresentSheet = true
+                    } label: {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                    }
+
+
+                }
             }
         }
         
@@ -253,7 +276,6 @@ struct userExerciseSearchView: View {
 struct userExerciseRecordAnAerobic:View{
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var viewModel:userExerciseSearchViewModel
-    let namespace:Namespace.ID
     let data:exerciseResult
     @State private var showText:Bool = false
     @State var weightInput:String = ""

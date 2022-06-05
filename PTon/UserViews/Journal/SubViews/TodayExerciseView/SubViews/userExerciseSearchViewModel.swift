@@ -17,6 +17,7 @@ enum exercisePart:String{
     case Compound
     case Leg
     case Shoulder
+    case Fitness
     
     var description:String{
         switch self {
@@ -36,6 +37,8 @@ enum exercisePart:String{
             return "하체"
         case .Shoulder:
             return "어깨"
+        case .Fitness:
+            return "피트니스"
         }
     }
 }
@@ -97,6 +100,7 @@ class userExerciseSearchViewModel:ObservableObject{
             .observe(.childAdded) { [weak self] snapshot in
                 guard let self = self,
                       let values = snapshot.value as? [String:Any] else{return}
+                print("user exercise Record ::: \(values)")
                 let id = snapshot.key
                 let part = exercisePart(rawValue: (values["part"] as? String)!) ?? .Aerobic
                 let engName = values["engName"] as? String ?? ""
@@ -126,8 +130,6 @@ class userExerciseSearchViewModel:ObservableObject{
                 
                 self.recordedData.append(currentData)
             }
-        
-        
     }
     
     //MARK: 유저 소모 칼로리 계산 함수
@@ -141,7 +143,6 @@ class userExerciseSearchViewModel:ObservableObject{
     }
     
     //MARK: 데이터 저장 메소드
-    
     func updateDataBase(_ values:[String:Any],completion:@escaping()->()){
         Firebase.Database.database().reference()
             .child("ExerciseRecord")

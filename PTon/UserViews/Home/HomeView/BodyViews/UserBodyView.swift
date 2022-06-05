@@ -72,11 +72,16 @@ struct chartView:View{
     }
     
     var body: some View{
-        let chartStyle = ChartStyle(backgroundColor: backgroundColor, accentColor: .white, gradientColor: .init(start: .blue.opacity(0.3), end: .purple.opacity(0.3)), textColor: .black, legendTextColor: .black, dropShadowColor: .white)
+        let chartStyle = ChartStyle(backgroundColor: Color(UIColor.secondarySystemBackground), accentColor: .accentColor, gradientColor: .init(start: .accentColor.opacity(0.1), end: .accentColor.opacity(0.5)), textColor: .black, legendTextColor: .black, dropShadowColor: .white)
         
-        BarChartView(data: ChartData(values: data), title: convertTitle(), legend: convertUnit(), style: chartStyle, form: ChartForm.extraLarge, dropShadow: false, cornerImage: nil, valueSpecifier: "%.0f", animatedToBack: true)
+        BarChartView(data: ChartData(values: data), title: convertTitle(), legend: convertUnit(), style: chartStyle, form: ChartForm.extraLarge, dropShadow: true, cornerImage: nil, valueSpecifier: "%.0f", animatedToBack: true)
         
     }
 }
 
 
+struct chartView_Previews:PreviewProvider{
+    static var previews: some View{
+        chartView(.muscle, data: [("2021.10.01",20.0),("2021.10.02",20.0)])
+    }
+}

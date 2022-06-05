@@ -33,6 +33,8 @@ class UserBaseViewModel:ObservableObject{
     @Published var chattings:[message] = []
     @Published var userBaseModel = UserBaseModel()
     @Published var isShowBadge:Bool = false
+    @Published var settingKcal:Int = 0
+    @Published var userKcal:Int = 0
     @Environment(\.presentationMode) var presentaionMode
     let reference = FirebaseDatabase.Database.database().reference()
     var rawValue:Int = UserDefaults.standard.integer(forKey: "LoginApi")
@@ -46,6 +48,8 @@ class UserBaseViewModel:ObservableObject{
                 self.settingtrainerName()
                 self.ObserveChatting()
                 self.ObserveMemo()
+                self.ObserveBodyData()
+                self.ObserveExerciseData()
             }
         }
         
@@ -83,6 +87,16 @@ class UserBaseViewModel:ObservableObject{
     
     var unreadCount:Int{
         return self.chattings.filter({$0.isRead == false && $0.isCurrentUser == false}).count
+    }
+    
+    var chartRatio:CGFloat{
+        if self.settingKcal != 0{
+            let rawRatio = self.userKcal / self.settingKcal
+            return CGFloat(round(Float(rawRatio) * pow(10, 2)) / pow(10, 2))/2
+        }else{
+            return CGFloat(0)
+        }
+
     }
     
     //FCM 토큰 저장 메소드
@@ -181,6 +195,35 @@ class UserBaseViewModel:ObservableObject{
                 }else{
                     self.isShowBadge = false
                 }
+            }
+    }
+    
+    func ObserveBodyData(){
+        guard let userId = Firebase.Auth.auth().currentUser?.uid else{return}
+        
+        Firebase.Database.database().reference()
+            .child("UserInfo")
+            .child(userId)
+            .child("kcalSetting")
+            .observeSingleEvent(of: .value) { snapshot, key in
+                guard let value = snapshot.value as? String else{return}
+                print("user get setting kcal ::: \(value)")
+                self.settingKcal = Int(value) ?? 0
+            }
+    }
+    
+    func ObserveExerciseData(){
+        guard let userId = Firebase.Auth.auth().currentUser?.uid else{return}
+        
+        Firebase.Database.database().reference()
+            .child("ExerciseRecord")
+            .child(userId)
+            .child(convertString(content: Date(), dateFormat: "yyyy-MM-dd"))
+            .observe(.childAdded) { [weak self] snapshot in
+                guard let self = self,
+                      let kcal = snapshot.childSnapshot(forPath: "expectKcal").value as? Double else{return}
+                
+                self.userKcal += Int(kcal)
             }
     }
     

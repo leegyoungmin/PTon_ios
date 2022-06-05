@@ -48,12 +48,50 @@ struct HomeView: View {
                     }
                     
                     //TODO: 그래프 생성
-                    
                     RoundedRectangle(cornerRadius: 5)
                         .fill(.white)
-                        .cornerRadius(5)
-                        .frame(height:250)
-                        .shadow(color: .gray.opacity(0.2), radius: 5)
+                        .frame(height:230)
+                        .shadow(color: .gray.opacity(0.5), radius: 5)
+                        .overlay(
+                            ZStack{
+                                Circle()
+                                    .trim(from: 0, to: 0.5)
+                                    .stroke(Color.secondary,style: StrokeStyle(lineWidth:15,lineCap: .round))
+                                
+                                Circle()
+                                    .trim(from: 0, to: viewmodel.chartRatio >= 0.5 ? 0.5:viewmodel.chartRatio)
+                                    .stroke(Color.accentColor,style: StrokeStyle(lineWidth:15,lineCap: .round))
+                                    .animation(.easeIn, value: 5)
+                                VStack{
+                                    Text("소모칼로리")
+                                        .font(.title2)
+                                        .fontWeight(.light)
+                                        .foregroundColor(.secondary)
+                                    
+                                    Text("\(viewmodel.userKcal) / \(viewmodel.settingKcal)kcal")
+                                        .foregroundColor(.secondary)
+                                        .fontWeight(.semibold)
+                                        .font(.largeTitle)
+                                    
+                                }
+                                .rotationEffect(.degrees(-180))
+                                .offset(y:60)
+                                
+                                
+                                Text(wiseData.randomElement() ?? wiseData[0])
+                                    .lineLimit(1)
+                                    .multilineTextAlignment(.center)
+                                    .minimumScaleFactor(0.5)
+                                    .frame(height:50)
+                                    .rotationEffect(.degrees(-180))
+                                    .offset(y:-30)
+                            }
+                                .rotationEffect(.degrees(-180))
+                                .frame(width: UIScreen.main.bounds.width*0.8, height: 300, alignment: .center)
+                                .offset(y:80)
+                                .padding(-20)
+                            ,alignment: .bottom
+                        )
                     
                     VStack{
                         HStack{
