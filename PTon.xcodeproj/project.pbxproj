@@ -87,7 +87,7 @@
 		1889B98D27EB78EB00C9AFE1 /* WeekDatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1889B98C27EB78EB00C9AFE1 /* WeekDatePickerView.swift */; };
 		188B2AAB27E701B8004B9DA9 /* Model + ChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */; };
 		188B2AAE27E70361004B9DA9 /* ChatRoomListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */; };
-		188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAF27E70AE2004B9DA9 /* ChatView.swift */; };
+		188B2AB027E70AE2004B9DA9 /* ChattingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AAF27E70AE2004B9DA9 /* ChattingView.swift */; };
 		188B2AB227E854AC004B9DA9 /* ChattingInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */; };
 		188C452727F2153200C2180A /* Model + UserBaseInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188C452627F2153200C2180A /* Model + UserBaseInfoViewModel.swift */; };
 		188CD953284A0EA80011A711 /* fitnessCenterExerciseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 188CD952284A0EA80011A711 /* fitnessCenterExerciseView.swift */; };
@@ -116,6 +116,7 @@
 		18C1641C27F58E2A0024FAAF /* UserHomeMemberShipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C1641B27F58E2A0024FAAF /* UserHomeMemberShipView.swift */; };
 		18C1641E27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C1641D27F5AC690024FAAF /* Model + UserHomeMemberShipViewModel.swift */; };
 		18C20B3F280EA84D0063F154 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = 18C20B3E280EA84D0063F154 /* SwiftUICharts */; };
+		18C3C465284CAAB1004707B6 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 18C3C464284CAAB1004707B6 /* NukeUI */; };
 		18C90EE42840BFF100F72E5B /* userMealDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C90EE32840BFF100F72E5B /* userMealDetailView.swift */; };
 		18CFFF5A27BBF09D00BB95DA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5927BBF09D00BB95DA /* HomeView.swift */; };
 		18CFFF5C27BBF6E800BB95DA /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFF5B27BBF6E800BB95DA /* UserProfileView.swift */; };
@@ -255,7 +256,7 @@
 		1889B98C27EB78EB00C9AFE1 /* WeekDatePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekDatePickerView.swift; sourceTree = "<group>"; };
 		188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + ChattingViewModel.swift"; sourceTree = "<group>"; };
 		188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRoomListView.swift; sourceTree = "<group>"; };
-		188B2AAF27E70AE2004B9DA9 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		188B2AAF27E70AE2004B9DA9 /* ChattingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingView.swift; sourceTree = "<group>"; };
 		188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingInputViewModel.swift; sourceTree = "<group>"; };
 		188C452627F2153200C2180A /* Model + UserBaseInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + UserBaseInfoViewModel.swift"; sourceTree = "<group>"; };
 		188CD952284A0EA80011A711 /* fitnessCenterExerciseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fitnessCenterExerciseView.swift; sourceTree = "<group>"; };
@@ -323,6 +324,7 @@
 				18A78C7A2841EDF500798F89 /* GoogleSignInSwift in Frameworks */,
 				1874D9A6283F72F8000BDF27 /* Kingfisher in Frameworks */,
 				18D54924283E66550071D0D9 /* KakaoSDKTalk in Frameworks */,
+				18C3C465284CAAB1004707B6 /* NukeUI in Frameworks */,
 				18D5496A283E6B180071D0D9 /* FirebaseMessaging in Frameworks */,
 				18D5495E283E6B180071D0D9 /* FirebaseAuth in Frameworks */,
 			);
@@ -462,7 +464,7 @@
 			children = (
 				188B2AAA27E701B8004B9DA9 /* Model + ChattingViewModel.swift */,
 				188B2AAD27E70361004B9DA9 /* ChatRoomListView.swift */,
-				188B2AAF27E70AE2004B9DA9 /* ChatView.swift */,
+				188B2AAF27E70AE2004B9DA9 /* ChattingView.swift */,
 				188B2AB127E854AC004B9DA9 /* ChattingInputViewModel.swift */,
 				183308F027BE31A400890212 /* ChattingSubViews */,
 			);
@@ -890,6 +892,7 @@
 				18A78C772841EDF500798F89 /* GoogleSignIn */,
 				18A78C792841EDF500798F89 /* GoogleSignInSwift */,
 				18D243CA2844910400223382 /* InstantSearch */,
+				18C3C464284CAAB1004707B6 /* NukeUI */,
 			);
 			productName = PTon;
 			productReference = 18A3B8D1283E0ABF003CDAEE /* PTon.app */;
@@ -934,6 +937,7 @@
 				1874D9A4283F72F8000BDF27 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				18A78C762841EDF500798F89 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				18D243C92844910400223382 /* XCRemoteSwiftPackageReference "instantsearch-ios" */,
+				18C3C463284CAAB1004707B6 /* XCRemoteSwiftPackageReference "NukeUI" */,
 			);
 			productRefGroup = 189393F627ABAF0100B4DB8A;
 			projectDirPath = "";
@@ -1019,7 +1023,7 @@
 				18C90EE42840BFF100F72E5B /* userMealDetailView.swift in Sources */,
 				185E010B27EA03770048F2B0 /* TrainerDetailMemoView.swift in Sources */,
 				18CFFF5A27BBF09D00BB95DA /* HomeView.swift in Sources */,
-				188B2AB027E70AE2004B9DA9 /* ChatView.swift in Sources */,
+				188B2AB027E70AE2004B9DA9 /* ChattingView.swift in Sources */,
 				1833090D27BE3C6900890212 /* RequestedExerciseSubViews.swift in Sources */,
 				1833091227BE3E1700890212 /* RequestingExerciseView.swift in Sources */,
 				1888F9BC27B6818600EBAA43 /* Extensions.swift in Sources */,
@@ -1393,6 +1397,14 @@
 				version = 1.5.5;
 			};
 		};
+		18C3C463284CAAB1004707B6 /* XCRemoteSwiftPackageReference "NukeUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/NukeUI.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		18D243C92844910400223382 /* XCRemoteSwiftPackageReference "instantsearch-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/algolia/instantsearch-ios";
@@ -1477,6 +1489,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 18C20B3D280EA84D0063F154 /* XCRemoteSwiftPackageReference "ChartView" */;
 			productName = SwiftUICharts;
+		};
+		18C3C464284CAAB1004707B6 /* NukeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18C3C463284CAAB1004707B6 /* XCRemoteSwiftPackageReference "NukeUI" */;
+			productName = NukeUI;
 		};
 		18D243CA2844910400223382 /* InstantSearch */ = {
 			isa = XCSwiftPackageProductDependency;

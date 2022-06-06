@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
-import Kingfisher
 import Firebase
+import FirebaseStorage
+import NukeUI
 
 struct ChattingImageView: View {
     let currentUser:Bool
@@ -21,8 +22,7 @@ struct ChattingImageView: View {
         
         if currentUser{
             HStack{
-                
-                ImageElementView(urlPath: urlPath, fitnessCode: fitnessCode, trainerId: trainerId, userId: userId, isCurrentUser: currentUser)
+                ImageElementView(viewModel: ChattingImageViewModel(self.urlPath, self.trainerId, self.userId, self.fitnessCode))
                 
                 Spacer()
             }
@@ -32,7 +32,7 @@ struct ChattingImageView: View {
             
             HStack(alignment:.bottom){
                 Spacer()
-                ImageElementView(urlPath: urlPath, fitnessCode: fitnessCode, trainerId: trainerId, userId: userId, isCurrentUser: currentUser)
+                ImageElementView(viewModel: ChattingImageViewModel(self.urlPath, self.trainerId, self.userId, self.fitnessCode))
                 
                 CircleImage(url: userImage ?? "", size: CGSize(width: 40, height: 40))
                     .rotationEffect(Angle(degrees: -180))
@@ -48,11 +48,7 @@ struct ChattingImageView: View {
 
 
 struct ImageElementView:View{
-    let urlPath:String
-    let fitnessCode:String
-    let trainerId:String
-    let userId:String
-    let isCurrentUser:Bool
+    @StateObject var viewModel:ChattingImageViewModel
     @State var isOpen:Bool = false
     @State var image:UIImage = UIImage()
     @State var isHidden:Bool = false
@@ -60,43 +56,21 @@ struct ImageElementView:View{
     @State var progressHeight:CGFloat = 400
     @State var progrssWidth:CGFloat = 300
     
-    private func ImageUrl()->URL?{
-        guard let compareId = Firebase.Auth.auth().currentUser?.uid else{return URL(string: "")}
-        
-        var sub = ""
-        if compareId == trainerId{
-            if isCurrentUser{
-                sub = "ChatsImage%2F\(fitnessCode)%2F\(trainerId)%2F\(userId)%2F"
-            }else{
-                sub = "ChatsImage%2F\(fitnessCode)%2F\(userId)%2F\(trainerId)%2F"
-            }
-        }else {
-            if isCurrentUser{
-                sub = "ChatsImage%2F\(fitnessCode)%2F\(userId)%2F\(trainerId)%2F"
-            }else{
-                sub = "ChatsImage%2F\(fitnessCode)%2F\(trainerId)%2F\(userId)%2F"
-            }
-        }
-        let baseUrl = "https://firebasestorage.googleapis.com/v0/b/pton-1ffc0.appspot.com/o/"
-        let query = "?alt=media"
-        let path = urlPath.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!
-        let url = URL(string: baseUrl + sub + path + query)
-        
-        return url
-    }
     var body: some View{
         ZStack{
-            
-            KFImage(ImageUrl())
-                .resizable()
-                .placeholder({ progress in
+            LazyImage(source: viewModel.imageUrl, resizingMode: .aspectFit)
+                .onProgress({ response, completed, total in
                     ProgressView()
                         .progressViewStyle(.circular)
                 })
-                .scaledToFit()
+                .onFailure({ response in
+                    print("error :: \(response)")
+                })
                 .frame(maxWidth:UIScreen.main.bounds.width*0.6)
-                .cornerRadius(5)
-                .background(RoundedRectangle(cornerRadius: 5).fill(.white))
+                .onAppear {
+                    print(viewModel.imageUrl)
+                }
+
             
 //            MARK - 2. SDWEBIMAGE LIBRARY
 //            WebImage(url: ImageUrl())

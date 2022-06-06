@@ -30,13 +30,13 @@ struct UserBaseModel{
 
 //MARK: VIEWMODEL
 class UserBaseViewModel:ObservableObject{
-    @Published var chattings:[message] = []
+//    @Published var chattings:[message] = []
     @Published var userBaseModel = UserBaseModel()
     @Published var isShowBadge:Bool = false
     @Published var settingKcal:Int = 0
     @Published var userKcal:Int = 0
     @Environment(\.presentationMode) var presentaionMode
-    let reference = FirebaseDatabase.Database.database().reference()
+    let reference = Firebase.Database.Database.database().reference()
     var rawValue:Int = UserDefaults.standard.integer(forKey: "LoginApi")
     var loginApi:LoginType
     
@@ -46,7 +46,7 @@ class UserBaseViewModel:ObservableObject{
         self.registerToken {
             self.fetchData {
                 self.settingtrainerName()
-                self.ObserveChatting()
+//                self.ObserveChatting()
                 self.ObserveMemo()
                 self.ObserveBodyData()
                 self.ObserveExerciseData()
@@ -85,9 +85,9 @@ class UserBaseViewModel:ObservableObject{
         return url
     }
     
-    var unreadCount:Int{
-        return self.chattings.filter({$0.isRead == false && $0.isCurrentUser == false}).count
-    }
+//    var unreadCount:Int{
+//        return self.chattings.filter({$0.isRead == false && $0.isCurrentUser == false}).count
+//    }
     
     var chartRatio:CGFloat{
         if self.settingKcal != 0{
@@ -148,37 +148,37 @@ class UserBaseViewModel:ObservableObject{
             }
     }
     
-    func ObserveChatting(){
-        guard let userId = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
-        
-        reference
-            .child("Chats")
-            .child(fitnessCode)
-            .child(trainerid)
-            .child(userId)
-            .child("chat")
-            .observe(.childAdded) { snapshot in
-                let key = snapshot.key
-                guard let values = snapshot.value as? [String:Any] else{return}
-                let currentMessage = self.makeDataForm(values, trainerId: self.trainerid, chatId: key)
-                self.chattings.append(currentMessage)
-            }
-        
-        
-        reference
-            .child("Chats")
-            .child(fitnessCode)
-            .child(trainerid)
-            .child(userId)
-            .child("chat")
-            .observe(.childChanged) { snapshot in
-                let key = snapshot.key
-                guard let values = snapshot.value as? [String:Any] else{return}
-                let currentMessage = self.makeDataForm(values, trainerId: self.trainerid, chatId: key)
-                guard let index = self.chattings.firstIndex(where: {$0.chatId == key}) else{return}
-                self.chattings[index] = currentMessage
-            }
-    }
+//    func ObserveChatting(){
+//        guard let userId = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
+//
+//        reference
+//            .child("Chats")
+//            .child(fitnessCode)
+//            .child(trainerid)
+//            .child(userId)
+//            .child("chat")
+//            .observe(.childAdded) { snapshot in
+//                let key = snapshot.key
+//                guard let values = snapshot.value as? [String:Any] else{return}
+//                let currentMessage = self.makeDataForm(values, trainerId: self.trainerid, chatId: key)
+//                self.chattings.append(currentMessage)
+//            }
+//
+//
+//        reference
+//            .child("Chats")
+//            .child(fitnessCode)
+//            .child(trainerid)
+//            .child(userId)
+//            .child("chat")
+//            .observe(.childChanged) { snapshot in
+//                let key = snapshot.key
+//                guard let values = snapshot.value as? [String:Any] else{return}
+//                let currentMessage = self.makeDataForm(values, trainerId: self.trainerid, chatId: key)
+//                guard let index = self.chattings.firstIndex(where: {$0.chatId == key}) else{return}
+//                self.chattings[index] = currentMessage
+//            }
+//    }
     
     func ObserveMemo(){
         guard let userId = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
@@ -332,19 +332,19 @@ class UserBaseViewModel:ObservableObject{
         }
     }
     
-    private func makeDataForm(_ values:[String:Any],trainerId:String,chatId:String)->message{
-        
-        let currentMessage = message(chatId: chatId, content: "", time: "", date: "", data: nil, isRead: false, isCurrentUser: false)
-        
-        guard let receiver = values["receiver"] as? String,
-              let receiverName = values["receivername"] as? String,
-              let time = values["time"] as? String,
-              let isRead = values["read"] as? String,
-              let senderName = values["sendername"] as? String,
-              let content = values["message"] as? String,
-              let date = values["date"] as? String,
-              let sender = values["sender"] as? String else{return currentMessage}
-        
-        return message(chatId: chatId, content: content, time: time, date: date, data: nil, isRead: isRead.bool, isCurrentUser: sender == userid)
-    }
+//    private func makeDataForm(_ values:[String:Any],trainerId:String,chatId:String)->message{
+//
+//        let currentMessage = message(chatId: chatId, content: "", time: "", date: "", data: nil, isRead: false, isCurrentUser: false)
+//
+//        guard let receiver = values["receiver"] as? String,
+//              let receiverName = values["receivername"] as? String,
+//              let time = values["time"] as? String,
+//              let isRead = values["read"] as? String,
+//              let senderName = values["sendername"] as? String,
+//              let content = values["message"] as? String,
+//              let date = values["date"] as? String,
+//              let sender = values["sender"] as? String else{return currentMessage}
+//
+//        return message(chatId: chatId, content: content, time: time, date: date, data: nil, isRead: isRead.bool, isCurrentUser: sender == userid)
+//    }
 }

@@ -12,30 +12,15 @@ struct MessageView: View {
     var currentMessage:message
     let userProfileUrl:String?
     var body: some View {
-        HStack(alignment: .bottom){
-            
-            if !currentMessage.isCurrentUser{
-                
-                HStack(alignment:.center){
-                    
-                    CircleImage(url: userProfileUrl ?? "", size: CGSize(width: 40, height: 40))
-                    HStack(alignment:.bottom){
-                        ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: currentMessage.isCurrentUser)
-                        Text(currentMessage.time)
-                        Spacer()
-                    }
-                    .padding(.top)
-                }
-                
-
-            }
-            else{
+        HStack{
+            if currentMessage.isCurrentUser{
                 Spacer()
-                Text(currentMessage.time)
-                ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: currentMessage.isCurrentUser)
+                ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: true)
+            }else{
+                ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: false)
+                Spacer()
             }
         }
-        .rotationEffect(.degrees(-180))
     }
 }
 struct noTimeMessageView:View{
@@ -56,13 +41,15 @@ struct noTimeMessageView:View{
 }
 
 struct MessageView_previews:PreviewProvider{
+    static var userMessage:String = """
+이
+"""
     static var previews: some View{
         Group{
-            MessageView(currentMessage: message(chatId: "asdasd", content: "asd", time: "12:00", date: "03.21", data: nil, isRead: false, isCurrentUser: false), userProfileUrl: "")
-            MessageView(currentMessage: message(chatId: "", content: "asd", time: "12:00", date: "03.21", data: nil, isRead: false, isCurrentUser: true), userProfileUrl: "")
+            MessageView(currentMessage: message(chatId: "asd", content: userMessage, time: "12:10", date: "2022.10.20", isRead: false, isCurrentUser: true), userProfileUrl: "")
+            
+            MessageView(currentMessage: message(chatId: "asd", content: userMessage, time: "12:10", date: "2022.10.20", isRead: false, isCurrentUser: false), userProfileUrl: "")
         }
-        .previewLayout(.sizeThatFits)
-        .rotationEffect(.degrees(-180))
-        
+        .padding()
     }
 }

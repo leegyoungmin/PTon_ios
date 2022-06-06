@@ -12,128 +12,53 @@ import Firebase
 struct chattingRoom:Hashable{
     var opponentId:String
     var opponentName:String
-    var chatRoomExist:Bool = false
     var favorite:Bool = false
-    var Messages:[message]
 }
 
-struct message:Hashable{
-    var chatId:String
-    var content:String
-    var time:String
-    var date:String
-    var data:Data?
-    var isRead:Bool
-    var isCurrentUser:Bool
-}
-
-class ChattingViewModel:ObservableObject{
-    @Published var ChattingRoom:chattingRoom
-    let trainee:trainee
-    let trainerId:String
-    let trainerName:String
+class ChattingRoomListViewModel:ObservableObject{
+    @Published var chatRooms:[chattingRoom] = []
     let fitnessCode:String
-    let reference = Firebase.Database.database().reference().child("Chats")
+    let trainerId:String
+    let reference:DatabaseReference
     
-    init(trainee:trainee,_ trainerId:String,_ trainerName:String,_ fitnessCode:String){
-        self.trainee = trainee
-        self.trainerId = trainerId
-        self.trainerName = trainerName
+    init(fitnessCode:String,trainerId:String){
         self.fitnessCode = fitnessCode
-        _ChattingRoom = Published.init(initialValue: chattingRoom(opponentId: trainee.userId, opponentName: trainee.userName, Messages: []))
+        self.trainerId = trainerId
         
-        ObserveData()
+        self.reference = Firebase.Database.database().reference().child("Chats").child(fitnessCode).child(trainerId)
+        
+        self.observeChats()
     }
     
-    var unReadCount:Int{
-        return ChattingRoom.Messages.filter({$0.isRead == false && $0.isCurrentUser == false}).count
-    }
-    
-    var messages:[message]{
-        return ChattingRoom.Messages
-    }
-    
-    func ObserveData(){
-        if trainee.userid != nil{
+    func observeChats(){
+        reference.observe(.childAdded) { [weak self] snapshot in
+            print("child Added \(snapshot)")
             
-            Database.database().reference()
-                .child("ChatList")
-                .child(fitnessCode)
-                .child(trainerId)
-                .child(self.trainee.userId)
-                .observe(.childAdded) { [weak self] snapshot in
-                    print("ChatList snapshot ::: \(snapshot)")
-                    guard let self = self else{return}
-                    if snapshot.exists(){
-                        self.ChattingRoom.chatRoomExist = true
-                    }
-                }
+//            snapshot.childSnapshot(forPath: "chat").ref.queryLimited(toLast: 1)
             
+            guard let self = self,let values = snapshot.value as? [String:Any] else{return}
             
-            reference
-                .child(fitnessCode)
-                .child(trainerId)
-                .child(trainee.userId)
-                .child("chat")
-                .observe(.childAdded) { [weak self] snapshot in
-                    guard let self = self else{return}
-                    let key = snapshot.key
-                    guard let values = snapshot.value as? [String:Any] else{return}
-                    
-                    let currentMessage = self.makeDataForm(values, trainerId: self.trainerId, chatId: key)
-                    self.ChattingRoom.Messages.append(currentMessage)
-                }
+            let userId = snapshot.key
+            let userName = values["userName"] as? String ?? ""
+            let isFavorite = values["isFavorite"] as? Bool ?? false
+            self.chatRooms.append(chattingRoom(opponentId: userId, opponentName: userName, favorite: isFavorite))
+        }
+        
+        reference.child("isFavorite").observe(.childChanged) { [weak self] snapshot in
+            print("child changed \(snapshot)")
+            guard let self = self,let values = snapshot.value as? [String:Any] else{return}
             
-            reference
-                .child(fitnessCode)
-                .child(trainerId)
-                .child(trainee.userId)
-                .child("favorite")
-                .observe(.value) { [weak self] snapshot in
-                    
-                    guard let self = self else {return}
-                    guard let isFavorite = snapshot.value as? Bool else{return}
-                    self.ChattingRoom.favorite = isFavorite
-                }
+            let userId = snapshot.key
+            let isFavorite = values["isFavorite"] as? Bool ?? false
             
-            reference
-                .child(fitnessCode)
-                .child(trainerId)
-                .child(trainee.userId)
-                .child("chat")
-                .observe(.childChanged) { [weak self] snapshot in
-                    guard let self = self else{return}
-                    let key = snapshot.key
-                    guard let values = snapshot.value as? [String:Any] else{return}
-                    let currentMessage = self.makeDataForm(values, trainerId: self.trainerId, chatId: key)
-                    
-                    guard let index = self.ChattingRoom.Messages.firstIndex(where: {$0.chatId == key}) else{return}
-                    self.ChattingRoom.Messages[index] = currentMessage
-                }
+            guard let index = self.chatRooms.firstIndex(where: { $0.opponentId == userId }) else{return}
+            
+            self.chatRooms[index].favorite = isFavorite
         }
     }
-    private func makeDataForm(_ values:[String:Any],trainerId:String,chatId:String)->message{
-        
-        let currentMessage = message(chatId: chatId, content: "", time: "", date: "", data: nil, isRead: false, isCurrentUser: false)
-        
-        guard let receiver = values["receiver"] as? String,
-              let receiverName = values["receivername"] as? String,
-              let time = values["time"] as? String,
-              let isRead = values["read"] as? String,
-              let senderName = values["sendername"] as? String,
-              let content = values["message"] as? String,
-              let date = values["date"] as? String,
-              let sender = values["sender"] as? String else{return currentMessage}
-        
-        return message(chatId: chatId, content: content, time: time, date: date, data: nil, isRead: isRead.bool, isCurrentUser: sender == trainerId)
-    }
     
-    func changeFavorite(){
-        reference
-            .child(fitnessCode)
-            .child(trainerId)
-            .child(trainee.userId)
-            .child("favorite")
-            .setValue(!self.ChattingRoom.favorite)
+    func ToggleFavorite(_ userId:String){
+        guard let room = chatRooms.first(where: { $0.opponentId == userId }) else{ return }
+        reference.child(room.opponentId).updateChildValues(["isFavorite":!room.favorite])
     }
 }

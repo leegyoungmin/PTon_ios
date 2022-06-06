@@ -92,22 +92,22 @@ struct TrainerUserListView: View {
                     .searchable(text: $searchText)
                 }
                 
-                NavigationLink(isActive: $isPresentChat) {
-                    LazyView(
-                        ChatView(viewModel: ChattingInputViewModel(baseViewmodel.trainerId,
-                                                                   trainerName: baseViewmodel.trainername,
-                                                                   trainerUserListViewModel.userid(userindex),
-                                                                   userName: trainerUserListViewModel.trainees[userindex].userName,
-                                                                   baseViewmodel.fitnessCode),
-                                 userProfileImage: trainerUserListViewModel.trainees[userindex].userProfile)
-                        .environmentObject(ChattingViewModel(trainee: trainerUserListViewModel.trainees[userindex],
-                                                             baseViewmodel.trainerId,
-                                                             baseViewmodel.trainername,
-                                                             baseViewmodel.fitnessCode))
-                    )
-                } label: {
-                    EmptyView()
-                }
+//                NavigationLink(isActive: $isPresentChat) {
+//                    LazyView(
+//                        ChatView(viewModel: ChattingInputViewModel(baseViewmodel.trainerId,
+//                                                                   trainerName: baseViewmodel.trainername,
+//                                                                   trainerUserListViewModel.userid(userindex),
+//                                                                   userName: trainerUserListViewModel.trainees[userindex].userName,
+//                                                                   baseViewmodel.fitnessCode),
+//                                 userProfileImage: trainerUserListViewModel.trainees[userindex].userProfile)
+////                        .environmentObject(ChattingViewModel(trainee: trainerUserListViewModel.trainees[userindex],
+////                                                             baseViewmodel.trainerId,
+////                                                             baseViewmodel.trainername,
+////                                                             baseViewmodel.fitnessCode))
+//                    )
+//                } label: {
+//                    EmptyView()
+//                }
                 
             }
             .padding(.horizontal)

@@ -55,6 +55,7 @@ struct LoginView: View {
                 
                 Button {
                     UserDefaults.standard.set(LoginType.google.rawValue, forKey: "LoginApi")
+                    self.loginViewModel.googleLogin()
                 } label: {
                     GoogleShape()
                 }

@@ -41,11 +41,10 @@ struct TrainerBaseView: View {
                 }
                 .environmentObject(self.trainerBaseViewModel)
             
-            ChatRoomListView(trainees: trainerBaseViewModel.trainerbasemodel.trainee,
-                         trainerId: trainerBaseViewModel.trainerId,
-                         trainerName: trainerBaseViewModel.trainername,
-                         fitnessCode: trainerBaseViewModel.fitnessCode
-            )
+            ChatRoomListView(viewModel: ChattingRoomListViewModel(fitnessCode: trainerBaseViewModel.fitnessCode,
+                                                                  trainerId: trainerBaseViewModel.trainerId)
+                             ,trainees: trainerBaseViewModel.trainerbasemodel.trainee
+                             ,trainerName: trainerBaseViewModel.trainerbasemodel.name ?? "")
                 .tabItem {
                     Label {
                         Text("채팅목록")

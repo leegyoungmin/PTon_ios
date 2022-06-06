@@ -96,13 +96,13 @@ struct UserBaseView: View {
                 HStack{
                     
                     NavigationLink {
-                        UserChattingView(viewModel: ChattingInputViewModel(UserBaseViewModel.trainerid,
-                                                                           trainerName: UserBaseViewModel.trainerName,
-                                                                           UserBaseViewModel.userid,
-                                                                           userName: UserBaseViewModel.username,
-                                                                           UserBaseViewModel.fitnessCode),
-                                         messages: $UserBaseViewModel.chattings,
-                                         userProfileImage: "")
+//                        UserChattingView(viewModel: ChattingInputViewModel(UserBaseViewModel.trainerid,
+//                                                                           trainerName: UserBaseViewModel.trainerName,
+//                                                                           UserBaseViewModel.userid,
+//                                                                           userName: UserBaseViewModel.username,
+//                                                                           UserBaseViewModel.fitnessCode),
+//                                         messages: $UserBaseViewModel.chattings,
+//                                         userProfileImage: "")
                     } label: {
                         Image(systemName: "message.fill")
                             .foregroundColor(Color.accentColor)
@@ -157,16 +157,16 @@ struct Badge:View{
         ZStack(alignment: .topTrailing) {
             Color.clear
             
-            if viewModel.unreadCount != 0{
-                Text(String(viewModel.unreadCount))
-                    .foregroundColor(.white)
-                    .fontWeight(.semibold)
-                    .font(.system(size: 10))
-                    .padding(3)
-                    .background(Color.red)
-                    .clipShape(Circle())
-                    .offset(x: -15, y: -5)
-            }
+//            if viewModel.unreadCount != 0{
+//                Text(String(viewModel.unreadCount))
+//                    .foregroundColor(.white)
+//                    .fontWeight(.semibold)
+//                    .font(.system(size: 10))
+//                    .padding(3)
+//                    .background(Color.red)
+//                    .clipShape(Circle())
+//                    .offset(x: -15, y: -5)
+//            }
         }
     }
 }

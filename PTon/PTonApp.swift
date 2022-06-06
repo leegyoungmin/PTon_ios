@@ -11,7 +11,6 @@ import KakaoSDKAuth
 import KakaoSDKCommon
 import FirebaseMessaging
 import Photos
-import Kingfisher
 //import NaverThirdPartyLogin
 
 
@@ -27,9 +26,6 @@ struct PTONApp: App {
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
         
-        let cache = ImageCache.default
-        cache.memoryStorage.config.totalCostLimit = 1
-        cache.diskStorage.config.sizeLimit = 1000 * 1024 * 1024
     }
     
     var body: some Scene {
