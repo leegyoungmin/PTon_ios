@@ -13,23 +13,36 @@ struct ChatRoomListView: View {
     let trainees:[trainee]
     let trainerName:String
     var body: some View {
-        ScrollView(.vertical, showsIndicators: true) {
-            ForEach(viewModel.chatRooms,id:\.self){ chatroom in
-                let userProfile = self.trainees.first(where: {$0.userId == chatroom.opponentId})?.userProfile ?? ""
+        
+        
+        List {
+            ForEach(viewModel.chatRooms,id:\.opponentId) { chatRoom in
+                let userProfile = self.trainees.first(where: {$0.userid == chatRoom.opponentId})?.userProfile ?? ""
+                
                 NavigationLink {
                     ChattingView(viewModel: chattingViewModel(fitnessCode: viewModel.fitnessCode,
                                                               trainerId: viewModel.trainerId,
                                                               trainerName: self.trainerName,
-                                                              userId: chatroom.opponentId,
+                                                              userId: chatRoom.opponentId,
                                                               reference: viewModel.reference),
-                                 opponentName: chatroom.opponentName, opponentProfileUrl: userProfile)
+                                 opponentName: chatRoom.opponentName, opponentProfileUrl: userProfile)
                 } label: {
-                    chatRoomListCellView(room: chatroom, userProfile: userProfile)
+                    chatRoomListCellView(room: chatRoom, userProfile: userProfile)
                         .environmentObject(self.viewModel)
                 }//NAVIGATIONLINK
-            }
-        }//SCROLLVIEW
-        .padding(.horizontal)
+                .listRowSeparator(.hidden)
+                .listSectionSeparator(.hidden)
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button {
+                        viewModel.ToggleFavorite(chatRoom.opponentId)
+                    } label: {
+                        Image(systemName: "star.fill")
+                    }
+                    .tint(.yellow)
+                }
+            }//LOOP
+        }//LIST
+        .listStyle(.plain)
     }
 }
 struct chatRoomListCellView:View{
@@ -41,20 +54,10 @@ struct chatRoomListCellView:View{
             CircleImage(url: userProfile, size: CGSize(width: 50, height: 50))
             
             VStack(alignment:.leading,spacing: 5){
-                HStack(spacing:5){
-                    Text(room.opponentName)
-                        .font(.title3)
-                        .bold()
-                        .foregroundColor(.black)
-                    Button {
-                        viewModel.ToggleFavorite(room.opponentId)
-                    } label: {
-                        Image(systemName:"star.fill")
-                            .symbolVariant(.circle)
-                            .foregroundColor(room.favorite ? Color.accentColor:Color.gray.opacity(0.5))
-                    }
-                    .buttonStyle(.plain)
-                }//HSTACK
+                Text(room.opponentName)
+                    .font(.title3)
+                    .bold()
+                    .foregroundColor(.black)
                 
                 Text("무성할 잠, 이런 소학교 청춘이 책상을 봅니다. 하나에 한 별에도 이제 아직 내 까닭입니다. 위에 언덕 별 멀리 그리고 다 하나에 듯합니다. 남은 파란 청춘이 라이너 계십니다. 차 패, 토끼, 가득 계집애들의 계십니다.")
                     .fontWeight(.light)

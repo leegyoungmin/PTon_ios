@@ -12,13 +12,15 @@ import PhotosUI
 
 //MARK: - Chatting Image Picker View
 struct ChattingImagePickerView:UIViewControllerRepresentable{
-//    @EnvironmentObject var viewmodel:ChattingInputViewModel
-    @Binding var isSend:Bool
-    @Binding var isPresented:Bool
+    @EnvironmentObject var viewmodel:chattingViewModel
+    @Binding var isPhotoType:photoType?
+    let userName:String
+//    @Binding var isSend:Bool
+//    @Binding var isPresented:Bool
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
         var configuration:PHPickerConfiguration = PHPickerConfiguration(photoLibrary: .shared())
-        configuration.selectionLimit = 0
+        configuration.selectionLimit = 1
         configuration.filter = .any(of: [.images])
         let controller = PHPickerViewController(configuration: configuration)
         controller.delegate = context.coordinator
@@ -43,32 +45,32 @@ struct ChattingImagePickerView:UIViewControllerRepresentable{
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
             let itemProvider = results.first?.itemProvider
             
-//            if let itemProvider = itemProvider,
-//               itemProvider.canLoadObject(ofClass: UIImage.self){
-//                itemProvider.loadObject(ofClass: UIImage.self) { (image,error) in
-//                    self.parent.isSend = true
-//                    guard let image = image as? UIImage,
-//                          let data = image.jpegData(compressionQuality: 0.5) else{return}
-//
-//                    self.parent.viewmodel.uploadImage(data) {
-//                        self.parent.isSend = false
-//                        print("Success Upload")
-//                    }
-//
-//                }
-//            }
-//            self.parent.isPresented = false
-            
-            
+            if let itemProvider = itemProvider,
+               itemProvider.canLoadObject(ofClass: UIImage.self){
+                itemProvider.loadObject(ofClass: UIImage.self) { image, error in
+                    guard let image = image as? UIImage,
+                          let imageData = image.jpegData(compressionQuality: 0.5) else {
+                        return
+                    }
+                    self.parent.isPhotoType = nil
+                    self.parent.viewmodel.uploadImage(self.parent.userName, imageData: imageData) {
+                        print("error ")
+                    }
+                    
+                }
+            }else{
+                self.parent.isPhotoType = nil
+            }
         }
+        
     }
 }
 
 //MARK: - Chatting Camera View
 struct ChattingCameraView:UIViewControllerRepresentable{
-    @Environment(\.dismiss) var dismiss
-    @Binding var isSend:Bool
-//    @EnvironmentObject var viewmodel:ChattingInputViewModel
+    @EnvironmentObject var viewmodel:chattingViewModel
+    @Binding var isPhotoType:photoType?
+    let userName:String
     let sourceType : UIImagePickerController.SourceType = .camera
     
     func makeUIViewController(context: UIViewControllerRepresentableContext<ChattingCameraView>) -> UIImagePickerController {
@@ -94,20 +96,17 @@ struct ChattingCameraView:UIViewControllerRepresentable{
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-//            if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
-//               let data = image.jpegData(compressionQuality: 0.5){
-//
-//                self.parent.isSend = true
-//
-//                self.parent.viewmodel.uploadImage(data) {
-//                    self.parent.isSend = false
-//                }
-//            }
-//            self.parent.dismiss.callAsFunction()
+            if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
+               let data = image.jpegData(compressionQuality: 0.5){
+                self.parent.isPhotoType = nil
+                self.parent.viewmodel.uploadImage(self.parent.userName, imageData: data) {
+                    print("Error in image")
+                }
+            }
         }
         
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-//            self.parent.dismiss.callAsFunction()
+            self.parent.isPhotoType = nil
         }
     }
 }

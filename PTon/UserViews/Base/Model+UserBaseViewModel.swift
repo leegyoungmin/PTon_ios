@@ -36,7 +36,7 @@ class UserBaseViewModel:ObservableObject{
     @Published var settingKcal:Int = 0
     @Published var userKcal:Int = 0
     @Environment(\.presentationMode) var presentaionMode
-    let reference = Firebase.Database.Database.database().reference()
+    let reference = Firebase.Database.database().reference()
     var rawValue:Int = UserDefaults.standard.integer(forKey: "LoginApi")
     var loginApi:LoginType
     

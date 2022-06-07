@@ -6,6 +6,7 @@
 //
 import SwiftUI
 import Firebase
+import FirebaseStorage
 
 struct message:Hashable{
     var chatId:String
@@ -19,7 +20,8 @@ struct message:Hashable{
 class chattingViewModel:ObservableObject{
     @Published var typingMessage:String = ""
     @Published var isUpdate:Bool = false
-    @Published var chats:[message] = []
+    @Published var chats:[String:[message]] = [:]
+    @Published var lastMessageId = ""
     
     let fitnessCode:String
     let trainerId:String
@@ -56,13 +58,21 @@ class chattingViewModel:ObservableObject{
             let sender = values["sender"] as? String ?? ""
             let time = values["time"] as? String ?? ""
             
+            
             if self.trainerId != sender{
                 self.isUpdate = true
             }
             
             
             let currentData = message(chatId: chatId, content: content, time: time, date: date, isRead: read, isCurrentUser: sender == self.trainerId ? true:false)
-            self.chats.append(currentData)
+            
+            if self.chats[date] == nil{
+                self.chats[date] = [currentData]
+            }else{
+                self.chats[date]!.append(currentData)
+            }
+            
+            self.lastMessageId = chatId
         }
     }
     
@@ -86,5 +96,56 @@ class chattingViewModel:ObservableObject{
             }
             self.typingMessage = ""
         }
+    }
+    
+    func uploadImageMessage(resource imageURL:String,with userName:String,onError:@escaping()->()){
+        let data:[String:Any] = [
+            "date":convertString(content: Date(), dateFormat: "yyyy-MM-dd"),
+            "message":imageURL,
+            "read":false,
+            "receiver":userId,
+            "receiverName":userName,
+            "sender":trainerId,
+            "senderName":trainerName,
+            "time":convertString(content: Date(), dateFormat: "a HH시 mm분")
+        ]
+        reference.childByAutoId().updateChildValues(data) { err, ref in
+            guard err == nil else{
+                onError()
+                return
+            }
+            
+        }
+    }
+    
+    func uploadImage(_ userName:String,imageData:Data,onError:@escaping()->Void) {
+        let currentDateString = convertString(content: Date(), dateFormat: "yyyy-MM-dd-hh-mm-ss").split(separator: "-").map{ String($0) }
+        let imagePath = "ChatsImage_\(currentDateString.joined(separator: "_"))"
+        //        print(imagePath)
+        let ref = FirebaseStorage.Storage.storage().reference().child("ChatsImage").child(self.fitnessCode).child(self.trainerId).child(self.userId).child(imagePath)
+        let meta = StorageMetadata()
+        meta.contentType = "image/jpeg"
+        ref.putData(imageData,metadata: meta) { [weak self] meta, error in
+            guard let self = self, let _ = meta else{
+                onError()
+                return
+            }
+            
+            ref.downloadURL { url, err in
+                guard let downloadURL = url?.absoluteString else{
+                    onError()
+                    return
+                }
+                
+                self.uploadImageMessage(resource: downloadURL, with: userName) {
+                    onError()
+                }
+                
+            }
+        }
+    }
+    
+    func downloadUrl(){
+        
     }
 }
