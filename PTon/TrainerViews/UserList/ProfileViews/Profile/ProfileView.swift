@@ -23,7 +23,6 @@ struct ProfileView: View {
     @Binding var isChatting:Bool
     @State var isPresentBottomSheet:Bool = false
     @State var memberShipType:membershipType?
-    @Binding var index:Int
     let trainerName:String
     var body: some View {
         
@@ -135,7 +134,6 @@ struct ProfileView: View {
                     LazyVGrid(columns: grids, alignment: .center){
                         
                         Button {
-                            self.index = 1
                             self.isChatting = true
                             dismiss()
                         } label: {

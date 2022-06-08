@@ -37,21 +37,6 @@ struct LoginView: View {
                 } label: {
                     kakaoShape()
                 }
-
-//                Button(action: {
-//                    //TODO: 네이버 로그인 오류
-//
-////                    if NaverThirdPartyLoginConnection.getSharedInstance().isPossibleToOpenNaverApp(){
-////                        NaverThirdPartyLoginConnection.getSharedInstance().delegate = loginViewModel.self
-////                        NaverThirdPartyLoginConnection.getSharedInstance().requestThirdPartyLogin()
-////                    }else{
-////                        NaverThirdPartyLoginConnection.getSharedInstance().openAppStoreForNaverApp()
-////                    }
-//                }, label: {
-//                    Image("naver")
-//                        .resizable()
-//                        .frame(width: 150, height: 40, alignment: .center)
-//                })
                 
                 Button {
                     UserDefaults.standard.set(LoginType.google.rawValue, forKey: "LoginApi")
@@ -104,7 +89,6 @@ struct LoginView: View {
             }
         }
         .navigationBarHidden(true)
-        .navigationViewStyle(.stack)
         .onAppear {
             self.loginViewModel.AutoLogin(loginApi: loginApi)
         }

@@ -8,16 +8,40 @@
 import SwiftUI
 import Firebase
 import Kingfisher
+import BottomSheet
 
 struct ChattingView:View{
-    @StateObject var viewModel:chattingViewModel
+    //MARK: - DATA PROPERTIES
+    @EnvironmentObject var viewModel:chattingViewModel
+    let opponentName:String
+    let opponentProfileUrl:String
+    @State var selectedDate:Date = Date()
+    
+    //MARK: - VIEW PROPERTIES
     @State var isEdtiding:Bool = false
     @State var isShowMenu:Bool = false
     @State var photoType:photoType?
-    let opponentName:String
-    let opponentProfileUrl:String
-    
+    @State var reservationError:Bool = true
     let gridItems:[GridItem] = Array(repeating: GridItem(.flexible()), count: 3)
+    
+    //MARK: - FUNCTIONS
+    @ViewBuilder
+    private func menuButton(_ title:String,_ image:String,onClicked:@escaping ()->())-> some View{
+        Button {
+            onClicked()
+        } label: {
+            VStack(spacing:10){
+                Image(systemName: image)
+                    .font(.system(size: 30))
+                Text(title)
+                    .fontWeight(.light)
+            }
+            .padding()
+            .foregroundColor(.gray.opacity(0.8))
+        }
+        .buttonStyle(.plain)
+    }
+    
     var body: some View{
         VStack(spacing:0){
             ScrollViewReader { proxy in
@@ -39,23 +63,23 @@ struct ChattingView:View{
                                 }else{
                                     MessageView(currentMessage: chat, chattingType: .text, userProfileUrl: opponentProfileUrl)
                                 }
-
+                                
                             }
-
+                            
                         }
                     }
                     .onChange(of: viewModel.lastMessageId) { id in
                         withAnimation {
                             proxy.scrollTo(id)
                         }
-
+                        
                     }
                     .onTapGesture {
                         withAnimation {
                             UIApplication.shared.endEditing()
                             self.isShowMenu = false
                         }
-
+                        
                     }
                     
                     //2. 상대방 새로운 메시지 스크롤 뷰
@@ -80,7 +104,8 @@ struct ChattingView:View{
                         }
                         .padding()
                     }
-                }
+                }//ZSTACK
+                
                 //3. 채팅 입력창
                 HStack(spacing:0){
                     Button {
@@ -145,55 +170,26 @@ struct ChattingView:View{
                 if isShowMenu{
                     
                     LazyVGrid(columns: gridItems, alignment: .center, spacing: 30) {
-                        Button {
-//                            self.photoType = .library
-                            print(123)
-                        } label: {
-                            VStack(spacing:10){
-                                Image(systemName: "calendar")
-                                    .font(.system(size: 30))
-                                Text("스케줄")
-                                    .fontWeight(.light)
-                            }
-                            .padding()
-                            .foregroundColor(.gray.opacity(0.8))
-                        }
-                        .buttonStyle(.plain)
                         
-                        Button {
+                        menuButton("스케줄", "calendar") {
+                            withAnimation {
+                                self.isShowMenu = false
+                                viewModel.isShowCalendar = true
+                            }
+                        }
+                        
+                        menuButton("카메라", "camera") {
                             self.photoType = .camera
-                        } label: {
-                            VStack(spacing:10){
-                                Image(systemName: "camera")
-                                    .font(.system(size: 30))
-                                Text("카메라")
-                                    .fontWeight(.light)
-                            }
-                            .padding()
-                            .foregroundColor(.gray.opacity(0.8))
-
                         }
-                        .buttonStyle(.plain)
                         
-                        Button {
+                        menuButton("앨범", "photo.on.rectangle") {
                             self.photoType = .library
-                        } label: {
-                            VStack(spacing:10){
-                                Image(systemName: "photo.on.rectangle")
-                                    .font(.system(size: 30))
-                                Text("앨범")
-                                    .fontWeight(.light)
-                            }
-                            .padding()
-                            .foregroundColor(.gray.opacity(0.8))
                         }
-                        .buttonStyle(.plain)
                     }
                     .frame(height:70)
                 }
                 
             }//SCROLLVIEWREADER
-            
         }//VSTACK
         .background(backgroundColor)
         .navigationTitle(opponentName)
@@ -211,6 +207,57 @@ struct ChattingView:View{
                 ChattingImagePickerView(isPhotoType: $photoType, userName: opponentName)
                     .environmentObject(self.viewModel)
             }
+        }
+        .bottomSheet(isPresented: $viewModel.isShowCalendar, height: 600,topBarCornerRadius: 30) {
+            VStack{
+                VStack(alignment:.leading){
+                    Text("PT예약하기")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    
+                    Divider()
+                }
+                
+                VStack{
+                    DatePicker("", selection: $selectedDate)
+                        .datePickerStyle(.graphical)
+                        .environment(\.locale, Locale(identifier: "ko-KR"))
+                    
+                    if !reservationError{
+                        Text("같은 시간에 예약된 인원이 있습니다. 일정 관리 탭에서 확인해주세요.")
+                            .foregroundColor(.red)
+                            .font(.callout)
+                            .fontWeight(.semibold)
+                    }
+                    
+                    Spacer()
+                    
+                    Button {
+                        viewModel.ReadReservation(selectedDate) {
+                            print("Completion read Reservation \(viewModel.reservations)")
+                            
+                            viewModel.checkTime(selectedDate) { isSelected in
+                                self.reservationError = isSelected
+                                if isSelected{
+                                    let message = "[\(convertString(content: selectedDate, dateFormat: "yyyy.MM.dd HH시 mm분"))] PT일정 예약 되셨습니다."
+                                    viewModel.uploadchats(opponentName, message: message)
+                                }
+                            }
+                        }
+                    } label: {
+                        Text("예약하기")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .frame(width: UIScreen.main.bounds.width*0.8, alignment: .center)
+                            .padding(.vertical,10)
+                            .foregroundColor(.white)
+                    }
+                    .background(Color.accentColor)
+                    .cornerRadius(50)
+
+                }
+            }
+            .padding(.horizontal)
         }
     }
 }
@@ -234,17 +281,17 @@ struct CustomTextfield:View{
     }
 }
 
+
+
+//MARK: - PREVIEWS
 struct ChattinView_Previews:PreviewProvider{
     @State static var text:String = ""
+    @StateObject static var viewModel = chattingViewModel(fitnessCode: "000001", trainerId: "3yvE0bnUEHbvDKasU1Orf7DhvjX2", trainerName: "이경민", userId: "kakao:1967260938", reference: Firebase.Database.database().reference())
     static var previews: some View{
         Group{
             
-            NavigationView{
-                ChattingView(viewModel: chattingViewModel(fitnessCode: "000001", trainerId: "3yvE0bnUEHbvDKasU1Orf7DhvjX2", trainerName: "이경민", userId: "kakao:1967260938", reference: Firebase.Database.database().reference()), opponentName: "이경민", opponentProfileUrl: "")
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-            
-            
+            ChattingView(opponentName: "이경민", opponentProfileUrl: "")
+                .environmentObject(self.viewModel)
         }
         
     }

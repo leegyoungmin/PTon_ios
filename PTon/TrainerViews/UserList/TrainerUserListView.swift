@@ -9,6 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct TrainerUserListView: View {
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var baseViewmodel:TrainerBaseViewModel
     @StateObject var trainerUserListViewModel = TrainerUserListViewModel()
     @State var isShowSheet:Bool = false
@@ -17,7 +18,6 @@ struct TrainerUserListView: View {
     @State var selectedTrainee:trainee?
     @State var searchText:String = ""
     @State var userindex:Int = 0
-    @Binding var baseIndex:Int
     var body: some View {
         
         ZStack{
@@ -83,7 +83,6 @@ struct TrainerUserListView: View {
                                                                     trainee),
                                         ispresent: $isShowSheet,
                                         isChatting: $isPresentChat,
-                                        index: $baseIndex,
                                         trainerName: baseViewmodel.trainername)
                                 }
                         }
@@ -120,7 +119,6 @@ struct TrainerUserListView: View {
             }
             
         }
-        
     }
     
     var searchResult:[trainee]{
@@ -168,7 +166,7 @@ struct userListRowView:View{
 //MARK: - PREVIEWS
 struct TrainerUserListView_Previews: PreviewProvider {
     static var previews: some View {
-        TrainerUserListView(baseIndex: .constant(0))
+        TrainerUserListView()
         //        userListRowView(item: trainee(username: "이경민", useremail: "cow970814@naver.com", userid: "asd", userProfile: "asdasd"))
         //            .previewLayout(.sizeThatFits)
     }

@@ -13,25 +13,21 @@ struct ChatRoomListView: View {
     let trainees:[trainee]
     let trainerName:String
     var body: some View {
-        
-        
-        List {
-            ForEach(viewModel.chatRooms,id:\.opponentId) { chatRoom in
+        List{
+            ForEach(viewModel.chatRooms,id:\.self){ chatRoom in
                 let userProfile = self.trainees.first(where: {$0.userid == chatRoom.opponentId})?.userProfile ?? ""
-                
                 NavigationLink {
-                    ChattingView(viewModel: chattingViewModel(fitnessCode: viewModel.fitnessCode,
-                                                              trainerId: viewModel.trainerId,
-                                                              trainerName: self.trainerName,
-                                                              userId: chatRoom.opponentId,
-                                                              reference: viewModel.reference),
-                                 opponentName: chatRoom.opponentName, opponentProfileUrl: userProfile)
+                    ChattingView(opponentName: chatRoom.opponentName, opponentProfileUrl: userProfile)
+                        .environmentObject(chattingViewModel(fitnessCode: viewModel.fitnessCode,
+                                                             trainerId: viewModel.trainerId,
+                                                             trainerName: trainerName,
+                                                             userId: chatRoom.opponentId,
+                                                             reference: viewModel.reference))
                 } label: {
                     chatRoomListCellView(room: chatRoom, userProfile: userProfile)
-                        .environmentObject(self.viewModel)
-                }//NAVIGATIONLINK
+                }
+                .buttonStyle(.plain)
                 .listRowSeparator(.hidden)
-                .listSectionSeparator(.hidden)
                 .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                     Button {
                         viewModel.ToggleFavorite(chatRoom.opponentId)
@@ -40,8 +36,8 @@ struct ChatRoomListView: View {
                     }
                     .tint(.yellow)
                 }
-            }//LOOP
-        }//LIST
+            }
+        }
         .listStyle(.plain)
     }
 }
@@ -67,6 +63,15 @@ struct chatRoomListCellView:View{
             }//VSTACK
             Spacer()
         }//HSTACK
+        .padding(.horizontal,5)
+    }
+}
+
+struct listButtonStyle:ButtonStyle{
+    func makeBody(configuration: Configuration) -> some View {
+        if configuration.isPressed{
+            configuration.label.background(backgroundColor)
+        }
     }
 }
 

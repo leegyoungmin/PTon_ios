@@ -22,6 +22,8 @@ class chattingViewModel:ObservableObject{
     @Published var isUpdate:Bool = false
     @Published var chats:[String:[message]] = [:]
     @Published var lastMessageId = ""
+    @Published var isShowCalendar:Bool = false
+    @Published var reservations:[String:[String]] = [:]
     
     let fitnessCode:String
     let trainerId:String
@@ -38,6 +40,7 @@ class chattingViewModel:ObservableObject{
         self.reference = Firebase.Database.database().reference().child("Chats").child(fitnessCode).child(self.trainerId).child(userId).child("chats")
         
         observeData()
+        
     }
     
     var isTrainer:Bool{
@@ -98,6 +101,24 @@ class chattingViewModel:ObservableObject{
         }
     }
     
+    func uploadchats(_ userName:String,message:String){
+        let data:[String:Any] = [
+            "date":convertString(content: Date(), dateFormat: "yyyy-MM-dd"),
+            "message":message,
+            "read":false,
+            "receiver":userId,
+            "receiverName":userName,
+            "sender":trainerId,
+            "senderName":trainerName,
+            "time":convertString(content: Date(), dateFormat: "a HH시 mm분")
+        ]
+        
+        reference.childByAutoId().updateChildValues(data) { _, _ in
+            self.typingMessage = ""
+            self.isShowCalendar = false
+        }
+    }
+    
     func uploadImageMessage(resource imageURL:String,with userName:String,onError:@escaping()->()){
         let data:[String:Any] = [
             "date":convertString(content: Date(), dateFormat: "yyyy-MM-dd"),
@@ -145,7 +166,65 @@ class chattingViewModel:ObservableObject{
         }
     }
     
-    func downloadUrl(){
+    func ReadReservation(_ selectedDate:Date,completion:@escaping()->()){
+        self.reservations.removeAll()
+        Firebase.Database.database().reference()
+            .child("Reservation")
+            .child(self.trainerId)
+            .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+            .observeSingleEvent(of: .value) { [weak self] snapshot in
+                guard let self = self else{return}
+                
+                for child in snapshot.children{
+                    let childSnapshot = child as! DataSnapshot
+                    
+                    guard let values = childSnapshot.value as? [String:Any] else{return}
+                    
+                    let userId = childSnapshot.key
+                    let time = values["Time"] as? String
+                    
+                    
+                    if let time = time{
+                        if self.reservations[time] != nil{
+                            self.reservations[time]!.append(userId)
+                        }else{
+                            self.reservations[time] = [userId]
+                        }
+                    }
+                }
+                
+                completion()
+            }
+    }
+    
+    func checkTime(_ time:Date,Completion:@escaping(Bool)->()){
+        let timeString = convertString(content: time, dateFormat: "HH:mm")
+        
+        if reservations[timeString] != nil{
+            Completion(false)
+            print("Error in time ")
+        }else{
+            let data:[String:Any] = [
+                "Checked":false,
+                "Time":timeString
+            ]
+            
+            Firebase.Database.database().reference()
+                .child("Reservation")
+                .child(self.trainerId)
+                .child(convertString(content: time, dateFormat: "yyyy-MM-dd"))
+                .child(self.userId)
+                .updateChildValues(data) { error, ref in
+                    guard error == nil else{
+                        Completion(false)
+                        return
+                    }
+                    
+                    Completion(true)
+                }
+            
+            print("time is safe")
+        }
         
     }
 }

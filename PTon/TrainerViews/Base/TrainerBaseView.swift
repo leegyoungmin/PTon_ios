@@ -7,15 +7,21 @@
 
 import SwiftUI
 
-let coloredNavAppearance = UINavigationBarAppearance()
+enum TrainerPageType:String{
+    case userList = "회원목록"
+    case chatList = "채팅목록"
+    case calendar = "일정관리"
+    case exercise = "운동창고"
+}
 
 struct TrainerBaseView: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject var trainerBaseViewModel = TrainerBaseViewModel()
-    @State var trainerSelectedIndex:Int = 0
+    @State var trainerSelectedIndex:TrainerPageType = .userList
     @State var today = Date()
     
     init(){
+        let coloredNavAppearance = UINavigationBarAppearance()
         coloredNavAppearance.configureWithTransparentBackground()
         coloredNavAppearance.backgroundColor = .white
         coloredNavAppearance.titleTextAttributes = [.foregroundColor:UIColor.black]
@@ -24,72 +30,69 @@ struct TrainerBaseView: View {
         UINavigationBar.appearance().scrollEdgeAppearance = coloredNavAppearance
     }
     var body: some View {
-        TabView(selection: $trainerSelectedIndex) {
-            TrainerUserListView(baseIndex: $trainerSelectedIndex)
-                .tabItem {
-                    Label {
-                        Text("회원목록")
-                    } icon: {
-                        Image(systemName: "person")
+        
+        NavigationView {
+            TabView(selection: $trainerSelectedIndex) {
+                TrainerUserListView()
+                    .tag(TrainerPageType.userList)
+                    .tabItem {
+                        Label {
+                            Text("회원목록")
+                        } icon: {
+                            Image(systemName: "person")
+                        }
                     }
-
-
+                    .environmentObject(self.trainerBaseViewModel)
+                
+                ChatRoomListView(viewModel: ChattingRoomListViewModel(fitnessCode: trainerBaseViewModel.fitnessCode,
+                                                                      trainerId: trainerBaseViewModel.trainerId)
+                                 ,trainees: trainerBaseViewModel.trainerbasemodel.trainee
+                                 ,trainerName: trainerBaseViewModel.trainerbasemodel.name ?? "")
+                    .tabItem {
+                        Label {
+                            Text("채팅목록")
+                        } icon: {
+                            Image(systemName: "message.fill")
+                        }
+                    }
+                    .tag(TrainerPageType.chatList)
+                    .badge(trainerBaseViewModel.unreadCount)
+                
+                TrainerScheduleView(viewmodel: ScheduleViewModel(trainerId: trainerBaseViewModel.trainerId,
+                                                                 trainees: trainerBaseViewModel.trainerbasemodel.trainee))
+                    .tabItem{
+                        Label {
+                            Text("일정관리")
+                        } icon: {
+                            Image(systemName: "person.fill")
+                        }
+                    }
+                    .tag(TrainerPageType.calendar)
+                
+                ExerciseStorageView()
+                    .tabItem {
+                        Label {
+                            Text("운동창고")
+                        } icon: {
+                            Image(systemName: "figure.walk")
+                        }
+                    }
+                    .tag(TrainerPageType.exercise)
+            }
+            .tint(Color.accentColor)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement:.navigationBarLeading) {
+                    ChangeTitle($trainerSelectedIndex)
                 }
-                .tag(0)
-                .onTapGesture {
-                    self.trainerSelectedIndex = 0
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    logOutButton
                 }
-                .environmentObject(self.trainerBaseViewModel)
+            }
             
-            ChatRoomListView(viewModel: ChattingRoomListViewModel(fitnessCode: trainerBaseViewModel.fitnessCode,
-                                                                  trainerId: trainerBaseViewModel.trainerId)
-                             ,trainees: trainerBaseViewModel.trainerbasemodel.trainee
-                             ,trainerName: trainerBaseViewModel.trainerbasemodel.name ?? "")
-                .tabItem {
-                    Label {
-                        Text("채팅목록")
-                    } icon: {
-                        Image(systemName: "message.fill")
-                    }
-
-
-                }
-                .tag(1)
-                .badge(trainerBaseViewModel.unreadCount)
-                .onTapGesture {
-                    self.trainerSelectedIndex = 1
-                }
-            TrainerScheduleView(viewmodel: ScheduleViewModel(trainerId: trainerBaseViewModel.trainerId,
-                                                             trainees: trainerBaseViewModel.trainerbasemodel.trainee))
-                .tabItem{
-                    Label {
-                        Text("일정관리")
-                    } icon: {
-                        Image(systemName: "person.fill")
-                    }
-                }
-                .tag(2)
-                .onTapGesture {
-                    self.trainerSelectedIndex = 2
-                }
-            
-            ExerciseStorageView()
-                .tabItem {
-                    Label {
-                        Text("운동창고")
-                    } icon: {
-                        Image(systemName: "figure.walk")
-                    }
-
-                }
-                .tag(3)
-                .onTapGesture {
-                    self.trainerSelectedIndex = 3
-                }
         }
-        .tint(Color.purple)
-        .navigationBarItems(leading: ChangeTitle(trainerSelectedIndex), trailing:logOutButton)
-        .navigationViewStyle(.stack)
+        .navigationBarHidden(true)
     }
     
     var logOutButton:some View{
@@ -111,17 +114,6 @@ struct TrainerBaseView_Previews: PreviewProvider {
     }
 }
 
-private func ChangeTitle(_ selectedTabIndex:Int) -> some View{
-    switch selectedTabIndex{
-    case 0:
-        return Text("회원 목록").font(.system(size:25)).fontWeight(.semibold)
-    case 1:
-        return Text("채팅 목록").font(.system(size:25)).fontWeight(.semibold)
-    case 2:
-        return Text("일정 관리").font(.system(size:25)).fontWeight(.semibold)
-    case 3:
-        return Text("운동 창고").font(.system(size:25)).fontWeight(.semibold)
-    default:
-        return Text("").font(.system(size:25)).fontWeight(.semibold)
-    }
+private func ChangeTitle(_ selectedTabIndex:Binding<TrainerPageType>) -> some View{
+    Text(selectedTabIndex.wrappedValue.rawValue).font(.system(size: 25)).fontWeight(.semibold)
 }
