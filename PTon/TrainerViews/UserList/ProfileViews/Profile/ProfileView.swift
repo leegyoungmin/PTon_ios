@@ -374,7 +374,6 @@ struct MemberShipButtonStyle:ButtonStyle{
             .allowsHitTesting(isText ? false:true)
     }
 }
-
 //struct ProfileView_Previews: PreviewProvider {
 //    static var previews: some View {
 //        ProfileView(viewmodel: ProfileViewModel("", "", trainee()), ispresent: .constant(true), isChatting: .constant(false), index: .constant(1), trainerName: "이경민")

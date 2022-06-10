@@ -229,6 +229,10 @@ extension Bool{
             self.init(false)
         }
     }
+    
+    var intValue:Int{
+        return self ? 1:0
+    }
 }
 
 extension mealType{
@@ -349,6 +353,11 @@ struct ContextMenuHelper<Content:View,Preview:View>:UIViewRepresentable{
     }
 }
 
+func convertPercent(_ rate:Double) -> String{
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .percent
+    return formatter.string(for: rate) ?? formatter.string(from: NSNumber(value: 0))!
+}
 
 //MARK: - PREVIEWS
 struct Extensions_previews:PreviewProvider{

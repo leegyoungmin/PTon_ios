@@ -7,8 +7,9 @@
 
 import Foundation
 import Firebase
+import SwiftUI
 
-enum exercisePart:String{
+enum exercisePart:String,CaseIterable{
     case Aerobic
     case Abs
     case Arm
@@ -40,6 +41,10 @@ enum exercisePart:String{
         case .Fitness:
             return "피트니스"
         }
+    }
+    
+    var keyValues:[String]{
+        return ["Aerobic","AnAerobic","Fitness"]
     }
 }
 
