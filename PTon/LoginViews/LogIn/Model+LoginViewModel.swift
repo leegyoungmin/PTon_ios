@@ -59,7 +59,6 @@ class LoginViewModel:NSObject, ObservableObject{
     }
     
     func validationKakaoToken(){
-        
         self.isShowLoading = true
         if AuthApi.hasToken(){
             UserApi.shared.accessTokenInfo { info, error in

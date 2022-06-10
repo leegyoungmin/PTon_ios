@@ -1,193 +1,194 @@
-////
-////  UserChattingView.swift
-////  PTon
-////
-////  Created by 이경민 on 2022/03/20.
-////
 //
-//import SwiftUI
-//import ToastUI
+//  UserChattingView.swift
+//  PTon
 //
-//struct UserChattingView: View {
-//    @StateObject var viewModel:ChattingInputViewModel
-////    @Binding var messages:[message]
-//    @State var showAdd:Bool = false
-//    @State var isShowImage:Bool = false
-//    @State var isShowCamera:Bool = false
-//    @State var isShowCalendar:Bool = false
-//    @State var typingMessage = ""
-//    let userProfileImage:String?
-//    
-//    
-//    var body: some View {
-//        VStack(spacing:0){
-//            //MARK: - 채팅 리스트
-//            
+//  Created by 이경민 on 2022/03/20.
 //
-//            ScrollView(.vertical, showsIndicators: false){
-//                LazyVStack{
-//                    ForEach(messages.indices.reversed(),id:\.self) { index in
-//                        
-//                        if index == 0 || messages[index-1].date != messages[index].date{
-//                            VStack{
-//                                
-//                                if messages[index].content.hasPrefix("ChatsImage"){
-//                                    ChattingImageView(currentUser: messages[index].isCurrentUser,
-//                                                      userImage: userProfileImage,
-//                                                      urlPath: messages[index].content,
-//                                                      trainerId: viewModel.trainerId,
-//                                                      userId: viewModel.userId,
-//                                                      fitnessCode: viewModel.fitnessCode)
-//                                }else{
-//                                    MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
+
+import SwiftUI
+import ToastUI
+
+struct UserChattingView: View {
+    @StateObject var viewModel:UserChattingViewModel
+    @State var isShowMenu:Bool = false
+    @State var photoType:photoType?
+    
+    //MARK: - VIEW_PROPERTIES
+    let gridItems:[GridItem] = Array(repeating: GridItem(.flexible()), count: 2)
+    
+    //MARK: - FUNCTIONS
+    @ViewBuilder
+    func menuButton(_ title:String,_ image:String,onClick:@escaping()->())->some View{
+        Button {
+            onClick()
+        } label: {
+            VStack(spacing:10){
+                Image(systemName: image)
+                    .font(.system(size: 30))
+                Text(title)
+                    .fontWeight(.light)
+            }
+            .padding()
+            .foregroundColor(.gray.opacity(0.8))
+        }
+        .buttonStyle(.plain)
+        
+    }
+    var body: some View{
+        VStack{
+            ScrollViewReader { proxy in
+                
+                ZStack{
+                    //1. 채팅 리스트 뷰
+                    
+                    ScrollView(.vertical, showsIndicators: false) {
+                        ForEach(viewModel.chattings.sorted(by: {$0.key < $1.key}),id:\.key){ key,value in
+                            
+                            Text(key.replacingOccurrences(of: "-", with: ". "))
+                                .font(.callout)
+                                .foregroundColor(.black.opacity(0.5))
+                                .padding(.top,10)
+                            
+                            ForEach(value,id:\.chatId){ chat in
+                                if chat.content.contains("https://"){
+                                    MessageView(currentMessage: chat, chattingType: .image, userProfileUrl: "")
+                                }else{
+                                    MessageView(currentMessage: chat, chattingType: .text, userProfileUrl: "")
+                                }
+                                
+                            }
+                            
+                        }
+                    }
+                    .onChange(of: viewModel.lastMessageId) { id in
+                        withAnimation {
+                            proxy.scrollTo(id)
+                        }
+                        
+                    }
+                    .onTapGesture {
+                        withAnimation {
+                            UIApplication.shared.endEditing()
+                            self.isShowMenu = false
+                        }
+                        
+                    }
+                    
+                    //2. 상대방 새로운 메시지 스크롤 뷰
+//                    if viewModel.isUpdate{
+//                        VStack{
+//                            Spacer()
+//
+//                            Button {
+//                                DispatchQueue.main.async {
+//                                    withAnimation {
+//                                        proxy.scrollTo(viewModel.lastMessageId)
+//                                        viewModel.isUpdate = false
+//                                    }
 //                                }
-//                                
-//                                userChattingDateView(messages[index].date)
-//                                    .padding()
+//                            } label: {
+//                                Text("마지막으로")
+//                                    .font(.footnote)
 //                            }
-//                        } else {
-//                            if messages[index].content.hasPrefix("ChatsImage"){
-//                                ChattingImageView(currentUser: messages[index].isCurrentUser,
-//                                                  userImage: userProfileImage,
-//                                                  urlPath: messages[index].content,
-//                                                  trainerId: viewModel.trainerId,
-//                                                  userId: viewModel.userId,
-//                                                  fitnessCode: viewModel.fitnessCode)
-//                            }else{
-//                                MessageView(currentMessage: messages[index],userProfileUrl:userProfileImage)
-//                            }
+//                            .padding(10)
+//                            .background(.white)
+//                            .cornerRadius(20)
 //                        }
+//                        .padding()
 //                    }
-//                    .accessibilityElement()
-//                }
-//
-//            }
-//
-//            .padding(.vertical,5)
-//            .onTapGesture {
-//                withAnimation {
-//                    showAdd = false
-//                    UIApplication.shared.endEditing()
-//                }
-//            }
-//            .padding(.horizontal)
-//            .background(Color("Background"))
-//            .rotationEffect(.degrees(-180))
-//            
-//            //MARK: - 채팅 입력창
-//            HStack{
-//                Button {
-//                    withAnimation {
-//                        UIApplication.shared.endEditing()
-//                        showAdd = true
-//                    }
-//                } label: {
-//                    Image(systemName: "plus.circle")
-//                        .font(.system(size: 25))
-//                }
-//                
-//                TextField("메세지를 입력하세요.", text: $typingMessage)
-//                    .textFieldStyle(.plain)
-//                    .onTapGesture {
-//                        withAnimation {
-//                            showAdd = false
-//                        }
-//                    }
-//                
-//                
-//                Button {
-//                    DispatchQueue.main.async {
-//                        viewModel.sendText(typingMessage)
-//                        typingMessage = ""
-//                    }
-//                    
-//                } label: {
-//                    Image(systemName: "arrow.up.circle.fill")
-//                        .font(.system(size: 25))
-//                        .foregroundColor(.accentColor)
-//                }
-//                .disabled(typingMessage.isEmpty)
-//                
-//            }
-//            .padding(10)
-//            
-//            //MARK: - 추가 선택 창
-//            if showAdd{
-//                HStack{
-//                    
-//                    Button {
-//                        isShowCamera = true
-//                    } label: {
-//                        AdditionalButtonView(item: ("camera","카메라"))
-//                        
-//                    }
-//                    .buttonStyle(AdditionalButtonStyle())
-//                    
-//                    Button {
-//                        isShowImage = true
-//                    } label: {
-//                        AdditionalButtonView(item: ("photo","앨범"))
-//                    }
-//                    .buttonStyle(AdditionalButtonStyle())
-//                    
-//                    
-//                }
-//            }
-//            
-//        }
-//        .sheet(isPresented: $isShowImage) {
-//            //MARK: - Chatting Image Picker View
-//            ChattingImagePickerView(isSend: .constant(false), isPresented: $isShowImage)
-//                .edgesIgnoringSafeArea(.bottom)
-//                .environmentObject(self.viewModel)
-//        }
-//        .fullScreenCover(isPresented: $isShowCamera) {
-//            //MARK: - Chatting Camera View
-//            ChattingCameraView(isSend: .constant(false))
-//                .edgesIgnoringSafeArea(.all)
-//                .environmentObject(self.viewModel)
-//        }
-//        .toast(isPresented: $isShowCalendar) {
-//            //MARK: - Chatting Calendar View
-//            ToastView{
-//                CalendarAlertView(isshow: $isShowCalendar)
-//                    .environmentObject(self.viewModel)
-//            }
-//            .onTapGesture {
-//                self.isShowCalendar = false
-//            }
-//        }
-//        .navigationTitle(viewModel.userName)
-//        .onAppear {
-//            viewModel.ChangeRead()
-//        }
-//        .onDisappear {
-//            viewModel.viewDisAppear()
-//        }
-//        
-//    }
-//}
-//
-//@ViewBuilder
-//func userChattingDateView(_ date:String)->some View{
-//    HStack{
-//        Spacer()
-//        Text(date)
-//            .foregroundColor(.white)
-//            .padding(.horizontal)
-//            .padding(.vertical,10)
-//            .background(.gray.opacity(0.7))
-//            .cornerRadius(20)
-//        Spacer()
-//    }
-//    .rotationEffect(.degrees(-180))
-//    
-//}
-//
-//
-//struct UserChattingView_previews: PreviewProvider {
-//    static var previews: some View {
-//        chattingDateView("2021.10.12 월요일")
-//            .previewLayout(.sizeThatFits)
-//    }
-//}
+                }//ZSTACK
+                
+                //3. 채팅 입력창
+                HStack(spacing:0){
+                    Button {
+                        withAnimation {
+                            UIApplication.shared.endEditing()
+                            self.isShowMenu.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "plus")
+                            .foregroundColor(.accentColor)
+                    }//BUTTON
+                    .padding(5)
+                    
+                    HStack{
+                        CustomTextfield(placeHolder: Text("메시지를 입력하세요."), text: $viewModel.typeMessage){_ in
+                            withAnimation {
+                                self.isShowMenu = false
+                            }
+                        } commit: {
+                            if !viewModel.typeMessage.isEmpty{
+                                DispatchQueue.main.async {
+                                    viewModel.uploadChats {
+                                        print("Error in sending message")
+                                    }
+                                    withAnimation {
+                                        proxy.scrollTo(viewModel.lastMessageId)
+                                    }
+                                }
+                            }else{
+                                UIApplication.shared.endEditing()
+                            }
+                        }
+                        .padding(.leading,10)
+                        
+                        Button {
+                            DispatchQueue.main.async {
+                                viewModel.uploadChats {
+                                    print("Error in sending message")
+                                }
+                                withAnimation {
+                                    proxy.scrollTo(viewModel.lastMessageId)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "paperplane.fill")
+                                .font(.footnote)
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(viewModel.typeMessage.isEmpty ? Color(UIColor.secondaryLabel).opacity(0.5):.accentColor)
+                                .cornerRadius(50)
+                        }
+                        .disabled(viewModel.typeMessage.isEmpty)
+                        
+                    }//HSTACK
+                    .padding(3)
+                    .background(backgroundColor)
+                    .cornerRadius(50)
+                }//HSTACK
+                .padding(5)
+                .background(.white)
+                
+                if isShowMenu{
+                    LazyVGrid(columns: gridItems, alignment: .center, spacing: 30) {
+                        menuButton("카메라", "camera") {
+                            self.photoType = .camera
+                        }
+                        menuButton("앨범", "photo.on.rectangle") {
+                            self.photoType = .library
+                        }
+                    }
+                    .frame(height:70)
+                }
+                
+            }//SCROLLVIEWREADER
+        }//VSTACK
+        .background(backgroundColor)
+        .navigationTitle(viewModel.trainerName)
+        .fullScreenCover(item: $photoType) { type in
+            switch type{
+            case .camera:
+                UserChattingCameraView(isPhotoType: $photoType)
+                    .environmentObject(self.viewModel)
+            case .library:
+                UserChattingImagePickerView(isPhotoType: $photoType)
+                    .environmentObject(self.viewModel)
+            }
+        }
+    }
+}
+struct UserChattingView_previews: PreviewProvider {
+    static var previews: some View {
+        UserChattingView(viewModel: UserChattingViewModel(userId: "", trainerId: "", fitnessCode: "", userName: "", trainerName: ""))
+    }
+}

@@ -15,6 +15,7 @@ enum TrainerPageType:String{
 }
 
 struct TrainerBaseView: View {
+    @EnvironmentObject var authService:AuthService
     @Environment(\.presentationMode) var presentationMode
     @StateObject var trainerBaseViewModel = TrainerBaseViewModel()
     @State var trainerSelectedIndex:TrainerPageType = .userList
@@ -90,16 +91,12 @@ struct TrainerBaseView: View {
                     logOutButton
                 }
             }
-            
         }
-        .navigationBarHidden(true)
     }
     
     var logOutButton:some View{
         Button {
-            self.trainerBaseViewModel.logout {
-                self.presentationMode.wrappedValue.dismiss()
-            }
+            authService.LogOut()
         } label: {
             Image(systemName: "arrow.left.to.line.circle.fill")
                 .font(.system(size:20))

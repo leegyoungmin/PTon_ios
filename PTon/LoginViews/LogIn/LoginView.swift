@@ -17,6 +17,7 @@ enum LoginType:Int{
 }
 
 struct LoginView: View {
+    @EnvironmentObject var authService:AuthService
     var rawValue:Int = UserDefaults.standard.integer(forKey: "LoginApi")
     @State var isNavigationUser:Bool = false
     @StateObject var loginViewModel = LoginViewModel()
@@ -89,9 +90,9 @@ struct LoginView: View {
             }
         }
         .navigationBarHidden(true)
-        .onAppear {
-            self.loginViewModel.AutoLogin(loginApi: loginApi)
-        }
+//        .onAppear {
+//            self.loginViewModel.AutoLogin(loginApi: loginApi)
+//        }
     }
 }
 

@@ -89,7 +89,7 @@ class chattingViewModel:ObservableObject{
             "receiverName":userName,
             "sender":trainerId,
             "senderName":trainerName,
-            "time":convertString(content: Date(), dateFormat: "a HH시 mm분")
+            "time":convertString(content: Date(), dateFormat: "HH시 mm분")
         ]
         
         reference.childByAutoId().updateChildValues(data) { err, _ in
@@ -110,7 +110,7 @@ class chattingViewModel:ObservableObject{
             "receiverName":userName,
             "sender":trainerId,
             "senderName":trainerName,
-            "time":convertString(content: Date(), dateFormat: "a HH시 mm분")
+            "time":convertString(content: Date(), dateFormat: "HH시 mm분")
         ]
         
         reference.childByAutoId().updateChildValues(data) { _, _ in
@@ -128,7 +128,7 @@ class chattingViewModel:ObservableObject{
             "receiverName":userName,
             "sender":trainerId,
             "senderName":trainerName,
-            "time":convertString(content: Date(), dateFormat: "a HH시 mm분")
+            "time":convertString(content: Date(), dateFormat: "HH시 mm분")
         ]
         reference.childByAutoId().updateChildValues(data) { err, ref in
             guard err == nil else{

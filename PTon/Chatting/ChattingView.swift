@@ -48,7 +48,6 @@ struct ChattingView:View{
                 
                 ZStack{
                     //1. 채팅 리스트 뷰
-                    
                     ScrollView(.vertical, showsIndicators: false) {
                         ForEach(viewModel.chats.sorted(by: {$0.key < $1.key}),id:\.key){ key,value in
                             
@@ -187,7 +186,7 @@ struct ChattingView:View{
                         }
                     }
                     .frame(height:70)
-                }
+                }//CONDITION
                 
             }//SCROLLVIEWREADER
         }//VSTACK

@@ -10,15 +10,33 @@ import SwiftUI
 struct ContentMessageView: View {
     var contentMessage:String
     var isCurrentUser:Bool
+    let time:String
     var body: some View {
         VStack(alignment: isCurrentUser ? .trailing:.leading){
-            HStack{
-                Text(contentMessage)
-                    .foregroundColor(isCurrentUser ? .white:.black)
-                    .font(.system(size: 15))
-                    .padding(10)
-                    .background(isCurrentUser ? Color.accentColor:Color(UIColor.secondarySystemFill))
-                    .cornerRadius(20)
+            HStack(alignment:.bottom){
+                
+                if isCurrentUser{
+                    Text(time)
+                    Text(contentMessage)
+                        .foregroundColor(.white)
+                        .font(.system(size: 15))
+                        .padding(10)
+                        .background(Color.accentColor)
+                        .cornerRadius(20)
+                }
+                else{
+                    Text(contentMessage)
+                        .foregroundColor(.black)
+                        .font(.system(size: 15))
+                        .padding(10)
+                        .background(Color(UIColor.secondarySystemFill))
+                        .cornerRadius(20)
+                    
+                    Text(time)
+
+                }
+
+                
             }
             .frame(maxWidth:300,alignment: isCurrentUser ? .trailing:.leading)
         }
@@ -31,8 +49,8 @@ struct ContentMessageView: View {
 struct ContentMessageView_Previews: PreviewProvider {
     static var previews: some View {
         Group{
-            ContentMessageView(contentMessage: "무성할 잠, 이런 소학교 청춘이 책상을 봅니다. 하나에 한 별에도 이제 아직 내 까닭입니다. 위에 언덕 별 멀리 그리고 다 하나에 듯합니다. 남은 파란 청춘이 라이너 계십니다. 차 패, 토끼, 가득 계집애들의 계십니다.", isCurrentUser: true)
-            ContentMessageView(contentMessage: "무성할 잠, 이런 소학교 청춘이 책상을 봅니다. 하나에 한 별에도 이제 아직 내 까닭입니다. 위에 언덕 별 멀리 그리고 다 하나에 듯합니다. 남은 파란 청춘이 라이너 계십니다. 차 패, 토끼, 가득 계집애들의 계십니다.", isCurrentUser: false)
+            ContentMessageView(contentMessage: "무성할 잠, 이런 소학교 청춘이 책상을 봅니다. 하나에 한 별에도 이제 아직 내 까닭입니다. 위에 언덕 별 멀리 그리고 다 하나에 듯합니다. 남은 파란 청춘이 라이너 계십니다. 차 패, 토끼, 가득 계집애들의 계십니다.", isCurrentUser: true, time: "")
+            ContentMessageView(contentMessage: "무성할 잠, 이런 소학교 청춘이 책상을 봅니다. 하나에 한 별에도 이제 아직 내 까닭입니다. 위에 언덕 별 멀리 그리고 다 하나에 듯합니다. 남은 파란 청춘이 라이너 계십니다. 차 패, 토끼, 가득 계집애들의 계십니다.", isCurrentUser: false,time: "12:00")
         }
         .previewLayout(.sizeThatFits)
 //        .padding()

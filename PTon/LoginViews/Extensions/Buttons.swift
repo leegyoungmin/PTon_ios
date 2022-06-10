@@ -23,10 +23,8 @@ struct GoogleShape:View{
                 .padding(.horizontal,24)
         }
         .frame(width: 300, height: 50, alignment: .center)
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(.gray.opacity(0.5),lineWidth: 2)
-        )
+        .background(backgroundColor)
+        .cornerRadius(10)
     }
 }
 

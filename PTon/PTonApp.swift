@@ -27,19 +27,9 @@ struct PTONApp: App {
         UITabBar.appearance().scrollEdgeAppearance = appearance
         
     }
-    
     var body: some Scene {
         WindowGroup {
-            LoginView()
-                .onOpenURL { url in
-                    if AuthApi.isKakaoTalkLoginUrl(url){
-                        AuthController.handleOpenUrl(url: url)
-                    }
-                    
-//                    if NaverThirdPartyLoginConnection.getSharedInstance().isNaverThirdPartyLoginAppschemeURL(url){
-//                        NaverThirdPartyLoginConnection.getSharedInstance().receiveAccessToken(url)
-//                    }
-                }
+            ContentView()
         }
     }
 }
@@ -52,16 +42,6 @@ final class AppDelegate:UIResponder,UIApplicationDelegate{
         
         KakaoSDK.initSDK(appKey: "3ab88a82d4b9a11f1a993c02250270ce")
         
-//        let instance = NaverThirdPartyLoginConnection.getSharedInstance()
-//
-//        instance?.isNaverAppOauthEnable = false
-//        instance?.isInAppOauthEnable = true
-//
-//        instance?.serviceUrlScheme = "saludkorea" // 앱을 등록할 때 입력한 URL Scheme
-//        instance?.consumerKey = "6hQwuhLB7Ghf7PFnCJ4W" // 상수 - client id
-//        instance?.consumerSecret = "_SDLuWirVu" // pw
-//        instance?.appName = "ㅖㅆ"
-        
         FirebaseMessaging.Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
         let authOptions:UNAuthorizationOptions = [.badge,.sound,.alert]
@@ -69,11 +49,6 @@ final class AppDelegate:UIResponder,UIApplicationDelegate{
         application.registerForRemoteNotifications()
         return true
     }
-    
-//    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-//        NaverThirdPartyLoginConnection.getSharedInstance().application(app, open: url)
-//        return true
-//    }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         FirebaseMessaging.Messaging.messaging().apnsToken = deviceToken

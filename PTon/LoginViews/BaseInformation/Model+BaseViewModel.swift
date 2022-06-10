@@ -28,7 +28,7 @@ struct BaseInfoModel{
 }
 
 enum userType:String,CaseIterable{
-    case trainer,user,none
+    case trainer,user
 }
 
 

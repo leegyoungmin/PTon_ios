@@ -18,6 +18,9 @@
 		18171E4F284731690058BB5B /* userExerciseSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18171E4E284731690058BB5B /* userExerciseSearchViewModel.swift */; };
 		18184FC427C3554B00BBEB5E /* KcalSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18184FC327C3554B00BBEB5E /* KcalSettingViewModel.swift */; };
 		181C3F8427D73B7F00F7721A /* Profile + ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */; };
+		181CCC5A2851E96F00CEC328 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181CCC592851E96F00CEC328 /* ContentView.swift */; };
+		181CCC5D2851E9D200CEC328 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181CCC5C2851E9D200CEC328 /* AuthService.swift */; };
+		181CCC5F2851F7E800CEC328 /* LoginPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181CCC5E2851F7E800CEC328 /* LoginPageView.swift */; };
 		181DE20827B10C10002F33B2 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181DE20727B10C10002F33B2 /* Error.swift */; };
 		18236D3B27DB6BA300B0D619 /* TrainerCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18236D3A27DB6BA300B0D619 /* TrainerCalendarView.swift */; };
 		1824DE17282E4907005B05C7 /* UserMemoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1824DE16282E4907005B05C7 /* UserMemoViewModel.swift */; };
@@ -105,6 +108,7 @@
 		18A3B8EC283E1152003CDAEE /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 18A3B8EB283E1152003CDAEE /* SDWebImageSwiftUI */; };
 		18A3B8EF283E11DE003CDAEE /* ToastUI in Frameworks */ = {isa = PBXBuildFile; productRef = 18A3B8EE283E11DE003CDAEE /* ToastUI */; };
 		18A3B8F7283E12BD003CDAEE /* PopupView in Frameworks */ = {isa = PBXBuildFile; productRef = 18A3B8F6283E12BD003CDAEE /* PopupView */; };
+		18A605D4285323DB004F37C8 /* userChattingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A605D3285323DB004F37C8 /* userChattingViewModel.swift */; };
 		18A78C782841EDF500798F89 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 18A78C772841EDF500798F89 /* GoogleSignIn */; };
 		18A78C7A2841EDF500798F89 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 18A78C792841EDF500798F89 /* GoogleSignInSwift */; };
 		18A9270C282F7A56005D2599 /* UserDetailMemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A9270B282F7A56005D2599 /* UserDetailMemoView.swift */; };
@@ -186,6 +190,9 @@
 		18171E4E284731690058BB5B /* userExerciseSearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userExerciseSearchViewModel.swift; sourceTree = "<group>"; };
 		18184FC327C3554B00BBEB5E /* KcalSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KcalSettingViewModel.swift; sourceTree = "<group>"; };
 		181C3F8327D73B7F00F7721A /* Profile + ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Profile + ProfileViewModel.swift"; sourceTree = "<group>"; };
+		181CCC592851E96F00CEC328 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		181CCC5C2851E9D200CEC328 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		181CCC5E2851F7E800CEC328 /* LoginPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginPageView.swift; sourceTree = "<group>"; };
 		181DE20727B10C10002F33B2 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		18236D3A27DB6BA300B0D619 /* TrainerCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainerCalendarView.swift; sourceTree = "<group>"; };
 		1824DE16282E4907005B05C7 /* UserMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMemoViewModel.swift; sourceTree = "<group>"; };
@@ -269,6 +276,7 @@
 		18967B5727F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + TrainerJournalViewModel.swift"; sourceTree = "<group>"; };
 		18A3B882283E0506003CDAEE /* userMealDirectRecordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userMealDirectRecordView.swift; sourceTree = "<group>"; };
 		18A3B8D1283E0ABF003CDAEE /* PTon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PTon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		18A605D3285323DB004F37C8 /* userChattingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = userChattingViewModel.swift; sourceTree = "<group>"; };
 		18A9270B282F7A56005D2599 /* UserDetailMemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailMemoView.swift; sourceTree = "<group>"; };
 		18A9270D282F7BF1005D2599 /* UserDetailMemoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDetailMemoViewModel.swift; sourceTree = "<group>"; };
 		18B7D93F27E08E4100400310 /* Model + MemoCreateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Model + MemoCreateViewModel.swift"; sourceTree = "<group>"; };
@@ -368,6 +376,14 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		181CCC5B2851E9C700CEC328 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				181CCC5C2851E9D200CEC328 /* AuthService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		182AB1A827C8C7B800381C55 /* Coaching */ = {
 			isa = PBXGroup;
 			children = (
@@ -394,6 +410,7 @@
 			children = (
 				1893940427ABAF0100B4DB8A /* LoginView.swift */,
 				1893961A27ABF9CD00B4DB8A /* Model+LoginViewModel.swift */,
+				181CCC5E2851F7E800CEC328 /* LoginPageView.swift */,
 			);
 			path = LogIn;
 			sourceTree = "<group>";
@@ -556,6 +573,7 @@
 			isa = PBXGroup;
 			children = (
 				1833C64F27BD00C00096E3E4 /* UserChattingView.swift */,
+				18A605D3285323DB004F37C8 /* userChattingViewModel.swift */,
 			);
 			path = UserChattingView;
 			sourceTree = "<group>";
@@ -716,7 +734,9 @@
 		1893940127ABAF0100B4DB8A /* PTon */ = {
 			isa = PBXGroup;
 			children = (
+				181CCC5B2851E9C700CEC328 /* Services */,
 				187165B327B0059400C4FC6C /* PTonApp.swift */,
+				181CCC592851E96F00CEC328 /* ContentView.swift */,
 				1888F9BB27B6818600EBAA43 /* Extensions.swift */,
 				1833C65327BD5B7B0096E3E4 /* Notification.swift */,
 				18EE19DD27B38C3100CCA16D /* NavigationBarColor.swift */,
@@ -1019,6 +1039,7 @@
 				188B2AB027E70AE2004B9DA9 /* ChattingView.swift in Sources */,
 				1833090D27BE3C6900890212 /* RequestedExerciseSubViews.swift in Sources */,
 				1833091227BE3E1700890212 /* RequestingExerciseView.swift in Sources */,
+				181CCC5A2851E96F00CEC328 /* ContentView.swift in Sources */,
 				1888F9BC27B6818600EBAA43 /* Extensions.swift in Sources */,
 				18171E4F284731690058BB5B /* userExerciseSearchViewModel.swift in Sources */,
 				186F11E527B7D7EC004BED0F /* MemoListView.swift in Sources */,
@@ -1033,6 +1054,7 @@
 				188C452727F2153200C2180A /* Model + UserBaseInfoViewModel.swift in Sources */,
 				18FE931E28436493007F837B /* ExerciseSearchController.swift in Sources */,
 				187D876B27DB422400495576 /* TrainerScheduleCreateView.swift in Sources */,
+				181CCC5F2851F7E800CEC328 /* LoginPageView.swift in Sources */,
 				18EE19EB27B417B500CCA16D /* MessageView.swift in Sources */,
 				1889B98927EAD64400C9AFE1 /* EditModeMemoView.swift in Sources */,
 				188B2AB227E854AC004B9DA9 /* ChattingInputViewModel.swift in Sources */,
@@ -1051,6 +1073,7 @@
 				1833729F27F2F3E400C8D595 /* Model + HomeViewModel.swift in Sources */,
 				184F14FA27B9191700E5AF07 /* StretchingThumnailView.swift in Sources */,
 				183CE8CB27D89B0E00A8B789 /* ChattingImagePickerView.swift in Sources */,
+				181CCC5D2851E9D200CEC328 /* AuthService.swift in Sources */,
 				183308EC27BE309400890212 /* Model+ExerciseStorageViewModel.swift in Sources */,
 				186F11E727B7D821004BED0F /* MemoCreateView.swift in Sources */,
 				18967B5827F9D4B600A4BE58 /* Model + TrainerJournalViewModel.swift in Sources */,
@@ -1068,6 +1091,7 @@
 				18967B5327F9C6FD00A4BE58 /* UserMemoView.swift in Sources */,
 				18036F2627EC3FDE00EFAE56 /* UserBaseInfoViews.swift in Sources */,
 				1893960927ABDE0200B4DB8A /* UserBaseView.swift in Sources */,
+				18A605D4285323DB004F37C8 /* userChattingViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

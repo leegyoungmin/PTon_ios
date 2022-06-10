@@ -18,12 +18,13 @@ struct MessageView: View {
     let chattingType:chattingType
     let userProfileUrl:String?
     
+    
     @ViewBuilder
     func textMessageView() -> some View{
         if currentMessage.isCurrentUser{
-            ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: true)
+            ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: true, time: currentMessage.time)
         }else{
-            ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: false)
+            ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: false,time: currentMessage.time)
         }
     }
     
@@ -63,14 +64,14 @@ struct noTimeMessageView:View{
     var body: some View{
         if !currentMessage.isCurrentUser{
             HStack(alignment:.bottom){
-                ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: currentMessage.isCurrentUser)
+                ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: currentMessage.isCurrentUser, time: "12:00")
                 Text(currentMessage.time)
                 Spacer()
             }
         }else{
             Spacer()
             Text(currentMessage.time)
-            ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: currentMessage.isCurrentUser)
+            ContentMessageView(contentMessage: currentMessage.content, isCurrentUser: currentMessage.isCurrentUser, time: "12:00")
         }
     }
 }
