@@ -15,11 +15,11 @@ struct userMeal:Hashable{
     var uuid:String
     var name:String
     var url:String
-
+    
 }
 
 struct userFoodResult:Hashable{
-    var id:String
+    var id = UUID().uuidString
     var mealType:mealType
     var carbs:Int
     var fat:Int

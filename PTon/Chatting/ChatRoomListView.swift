@@ -55,7 +55,7 @@ struct chatRoomListCellView:View{
                     .bold()
                     .foregroundColor(.black)
                 
-                Text("무성할 잠, 이런 소학교 청춘이 책상을 봅니다. 하나에 한 별에도 이제 아직 내 까닭입니다. 위에 언덕 별 멀리 그리고 다 하나에 듯합니다. 남은 파란 청춘이 라이너 계십니다. 차 패, 토끼, 가득 계집애들의 계십니다.")
+                Text(room.lastMessage)
                     .fontWeight(.light)
                     .foregroundColor(.gray.opacity(0.8))
                     .multilineTextAlignment(.leading)

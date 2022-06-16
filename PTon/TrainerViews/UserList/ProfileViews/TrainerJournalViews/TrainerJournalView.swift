@@ -84,7 +84,8 @@ struct TrainerJournalCalendarView:View{
                                 .onTapGesture {
                                     viewModel.currentDate = value.date
                                     
-                                    viewModel.ObserveData()
+                                    //                                    viewModel.ObserveData()
+                                    
                                 }
                         }else{
                             Rectangle()
@@ -160,13 +161,29 @@ struct TrainerJournalCalendarView:View{
     }
 }
 
+enum TrainerJournalSelectedType:Identifiable{
+    var id:Self{self}
+    case record
+    case request
+}
+
 //MARK: - JOURNAL VIEW
 struct TrainerJournalView: View {
     @StateObject var viewModel:TrainerJournalViewModel
     let userName:String
     @State var isShowZoomView:Bool = false
     @State var selectedUrl:String = ""
+    @State var isShowDetailView:Bool = false
+    @State var selecteItemType:TrainerJournalSelectedType? = nil
+    @State var selectedExercisePart:exercisePart? = nil
     
+    private func checkRecordHas(_ exercisePart:exercisePart)->Bool{
+        return viewModel.recordedExercises.filter({$0.part == exercisePart.rawValue}).count == 0 ? false:true
+    }
+    
+    private func checkRequestHas(_ exercisePart:exercisePart)->Bool{
+        return viewModel.requestExercises.filter({$0.part == exercisePart}).count == 0 ? false:true
+    }
     
     @ViewBuilder
     private func titleView(for title:String,_ isShowkcal:Bool)-> some View{
@@ -175,7 +192,7 @@ struct TrainerJournalView: View {
                 .font(.title3)
                 .fontWeight(.light)
             Spacer()
-            Text("권장칼로리 2200Kcal")
+            Text("권장칼로리 \(viewModel.kcal)kcal")
                 .opacity(isShowkcal ? 1:0)
         }
         .padding(.vertical,10)
@@ -197,35 +214,215 @@ struct TrainerJournalView: View {
                 
                 self.titleView(for: "식단", true)
                 
-                ForEach(mealType.allCases,id:\.self){type in
-                    TrainerMealCellView(mealType: type,items: viewModel.meals.filter({$0.mealType == type}),isShowZoom: $isShowZoomView,selectedUrl: $selectedUrl)
+                ForEach(mealType.allCases,id:\.self){ type in
+                    TrainerMealCellView(mealType: type, items: viewModel.meals[type] ?? [])
                 }
                 
                 self.titleView(for: "운동", false)
-                TabView {
-                    ForEach(viewModel.requestExercises.sorted(by: {$0.key < $1.key}),id:\.key){ key,value in
-                        TrainerExerciseView(title: key, requestExercises: value)
-                            .padding(.horizontal)
+                if viewModel.requestExercises.isEmpty && viewModel.recordedExercises.isEmpty{
+                    Text("아직 기록된 운동이 없습니다.")
+                        .frame(height:300)
+                } else {
+                    TabView {
+                        ForEach(exercisePart.allCases,id:\.self){ part in
+                            if checkRecordHas(part) || checkRequestHas(part){
+                                TrainerExerciseView(exercisePart: part, selectedType: $selecteItemType,selectedExercisePart: $selectedExercisePart)
+                                    .environmentObject(self.viewModel)
+                            }
+                        }
                     }
+                    .frame(height:300)
+                    .tabViewStyle(.page(indexDisplayMode: .never))
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .frame(minHeight:300,maxHeight: 400)
+                
             }
         }
         .navigationTitle("일지확인")
         .navigationBarTitleDisplayMode(.inline)
-        .fullScreenCover(isPresented: $isShowZoomView) {
-            zoomView(url: $selectedUrl,isOpen: $isShowZoomView)
+        .sheet(item: $selectedExercisePart,onDismiss: {
+            self.selectedExercisePart = nil
+            self.selecteItemType = nil
+        }, content: { part in
+            if selecteItemType == .record{
+                ScrollView(.vertical, showsIndicators: false) {
+                    ForEach(viewModel.filterRecordExercise(part),id:\.self){ exercise in
+                        trainerRecordExerciseCellView(exercise: exercise)
+                    }
+                }
+            }else {
+                ScrollView(.vertical, showsIndicators: false) {
+                    ForEach(viewModel.filterRequestExercise(part),id:\.self){ exercise in
+                        trainerRequestExerciseCellView(exercise: exercise)
+                    }
+                }
+            }
+        })
+    }
+}
+
+struct trainerRequestExerciseCellView:View{
+    let exercise:TrainerExercise
+    var body: some View{
+        VStack(spacing:0){
+            HStack{
+                KFImage(URL(string: exercise.exerciseData.url))
+                    .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width:80,height:80)
+                    .cornerRadius(50)
+                    .overlay(
+                        Circle()
+                            .stroke(backgroundColor)
+                    )
+                
+                
+                VStack(alignment:.leading,spacing: 10){
+                    HStack {
+                        Text(exercise.exerciseName)
+                            .font(.title3.bold())
+                        Spacer()
+                    }
+                    
+                    HStack(alignment: .center, spacing: 5) {
+                        VStack(spacing:0){
+                            Text(exercise.exerciseData.weight == nil ? "-":"\(exercise.exerciseData.weight!)")
+                            Text("kg")
+                                .font(.callout)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .frame(width: 60, height: 60, alignment: .center)
+                        .background(backgroundColor)
+                        .cornerRadius(50)
+                        .clipShape(Circle())
+                        
+                        Spacer()
+                        
+                        VStack(spacing:0){
+                            Text(exercise.exerciseData.time == nil ? "-":"\(exercise.exerciseData.time!)")
+                            Text("회")
+                                .font(.callout)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .frame(width: 60, height: 60, alignment: .center)
+                        .background(backgroundColor)
+                        .cornerRadius(50)
+                        .clipShape(Circle())
+                        
+                        Spacer()
+                        
+                        VStack(spacing:0){
+                            Text(exercise.exerciseData.set == nil ? "-":"\(exercise.exerciseData.set!)")
+                            Text("세트")
+                                .font(.callout)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .frame(width: 60, height: 60, alignment: .center)
+                        .background(backgroundColor)
+                        .cornerRadius(50)
+                        .clipShape(Circle())
+                        
+                        Spacer()
+                    }//HSTACK
+                    
+                }//VSTACK
+                
+            }//HSTACK
+            
+            Divider()
+                .padding(.top,5)
         }
-        
+        .padding()
+    }
+}
+
+struct trainerRecordExerciseCellView:View{
+    let exercise:TrainerRecordExercise
+    
+    var body: some View{
+        VStack(spacing:0){
+            HStack{
+                KFImage(URL(string: exercise.url))
+                    .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width:80,height:80)
+                    .cornerRadius(50)
+                    .overlay(
+                        Circle()
+                            .stroke(backgroundColor)
+                    )
+                
+                
+                VStack(alignment:.leading,spacing: 10){
+                    HStack {
+                        Text(exercise.exerciseName)
+                            .font(.title3.bold())
+                        Spacer()
+                        Text("\(Int(exercise.expectKcal))kcal")
+                    }
+                    
+                    HStack(alignment: .center, spacing: 5) {
+                        VStack(spacing:0){
+                            Text(exercise.weight ?? "")
+                            Text("kg")
+                                .font(.callout)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .frame(width: 60, height: 60, alignment: .center)
+                        .background(backgroundColor)
+                        .cornerRadius(50)
+                        .clipShape(Circle())
+                        
+                        Spacer()
+                        
+                        VStack(spacing:0){
+                            Text(exercise.time ?? "")
+                            Text("회")
+                                .font(.callout)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .frame(width: 60, height: 60, alignment: .center)
+                        .background(backgroundColor)
+                        .cornerRadius(50)
+                        .clipShape(Circle())
+                        
+                        Spacer()
+                        
+                        VStack(spacing:0){
+                            Text(exercise.set ?? "")
+                            Text("세트")
+                                .font(.callout)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .frame(width: 60, height: 60, alignment: .center)
+                        .background(backgroundColor)
+                        .cornerRadius(50)
+                        .clipShape(Circle())
+                        
+                        Spacer()
+                    }//HSTACK
+                    
+                }//VSTACK
+                
+            }//HSTACK
+            
+            Divider()
+                .padding(.top,5)
+        }
+        .padding()
     }
 }
 
 struct TrainerMealCellView:View{
     let mealType:mealType
-    let items:[userFoodResult]
-    @Binding var isShowZoom:Bool
-    @Binding var selectedUrl:String
+    let items:[TrainerMealRecorded]
     var body: some View{
         VStack{
             HStack{
@@ -234,7 +431,7 @@ struct TrainerMealCellView:View{
             }
             
             LazyVGrid(columns: [GridItem(.flexible()),GridItem(.flexible()),GridItem(.flexible())], alignment: .center,spacing: 20) {
-                ForEach(items,id:\.id){ meal in
+                ForEach(items,id:\.foodName){ meal in
                     VStack{
                         KFImage(URL(string: meal.url))
                             .onFailureImage(KFCrossPlatformImage(named: "appIcon"))
@@ -256,7 +453,6 @@ struct TrainerMealCellView:View{
                     .font(.system(size: 50))
                     .foregroundColor(backgroundColor)
                 
-                
             }
             .padding()
             
@@ -268,78 +464,90 @@ struct TrainerMealCellView:View{
 }
 
 struct TrainerExerciseView:View{
-    let title:String
-    let requestExercises:[RequestExerciseResult]
-    @State var index:Int = 0
-    
-    func RequestRate()->Double{
-        let doneCount = Double(requestExercises.filter({$0.done == true}).count)
-        return doneCount / Double(requestExercises.count)
-    }
+    @EnvironmentObject var viewModel:TrainerJournalViewModel
+    let exercisePart:exercisePart
+    @Binding var selectedType:TrainerJournalSelectedType?
+    @Binding var selectedExercisePart:exercisePart?
     
     var body: some View{
-        VStack(alignment: .center) {
-            Text(title)
+        VStack(alignment: .center,spacing:0) {
+            Text(exercisePart.description)
                 .font(.title)
                 .fontWeight(.bold)
                 .padding()
             
-            HStack{
+            HStack(alignment:.center,spacing:10){
                 Spacer()
                 
                 Button {
-                    print(123)
+                    if viewModel.filterRecordExercise(exercisePart).count != 0{
+                        selectedExercisePart = exercisePart
+                        selectedType = .record
+                    }
+                    
                 } label: {
                     VStack(alignment: .center,spacing: 20) {
                         Text("일지 수행 운동 수")
                         
-                        Text("65%")
+                        Text("\(viewModel.recordExerciseCount(exercisePart))")
                             .font(.title)
                             .fontWeight(.semibold)
                             .foregroundColor(.accentColor)
                     }
                     .padding()
                     .background(.white)
-                    .cornerRadius(20)
+                    .cornerRadius(10)
                 }
                 .buttonStyle(.plain)
                 
-                Spacer()
-                
                 Button {
-                    print(123)
+                    if viewModel.filterRequestExercise(exercisePart).count != 0{
+                        selectedExercisePart = exercisePart
+                        selectedType = .request
+                    }
                 } label: {
                     VStack(alignment: .center,spacing: 20) {
                         Text("요청 운동 수행률")
                         
-                        Text(convertPercent(Double(RequestRate())))
+                        Text(convertPercent(viewModel.requestExerciseSuccessRate(exercisePart)))
                             .font(.title)
                             .fontWeight(.semibold)
                             .foregroundColor(.accentColor)
                     }
                     .padding()
                     .background(.white)
-                    .cornerRadius(20)
+                    .cornerRadius(10)
                 }
                 .buttonStyle(.plain)
                 
                 Spacer()
+                
+                
             }//HSTACK
-            .padding(.bottom)
             
             Divider()
+                .padding(.vertical,10)
             
-            HStack{
-                ForEach(1..<5,id:\.self){ index in
-                    Text("\(index)")
-                        .font(.title3)
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3)) {
+                VStack(alignment: .center, spacing: 5) {
+                    Text("운동칼로리")
+                    Text("\(viewModel.convertKcal(exercisePart))kcal")
+                }
+                VStack(alignment: .center, spacing: 5) {
+                    Text("수행운동수")
+                    Text("\(viewModel.recordExerciseCount(exercisePart))개")
+                }
+                VStack(alignment: .center, spacing: 5) {
+                    Text("요청운동개요")
+                    Text(viewModel.requestExerciseAllCount(exercisePart) == 0 ? "-":"\(viewModel.requestExerciseSuccessCount(exercisePart))/\(viewModel.requestExerciseAllCount(exercisePart))")
                 }
             }
-            .padding()
             
         }//VSTACK
+        .padding(.vertical)
         .background(backgroundColor)
-        .cornerRadius(20)
+        .cornerRadius(10)
+        .padding(.horizontal)
     }
 }
 
@@ -432,6 +640,15 @@ struct zoomView:View{
 struct TrainerJournalView_Previews: PreviewProvider {
     @StateObject static var viewModel = TrainerJournalViewModel(trainerId: "3yvE0bnUEHbvDKasU1Orf7DhvjX2", userId: "kakao:1967260938")
     static var previews: some View {
-        Text("Example")
+        //        Text("Example")
+        //        TrainerExerciseView(exercisePart: .Leg, selectedType: .constant(nil), selectedExercisePart: .constant(.Leg))
+        //            .environmentObject(self.viewModel)
+        Group {
+            //            TrainerJournalView(viewModel: viewModel, userName: "이경민")
+            trainerRecordExerciseCellView(exercise: TrainerRecordExercise(engName: "asd", exerciseName: "180로테이션 스쿼트 점프", expectKcal: 139.0, hydro: "AnAerobic", minute: 20, parameter: 3.0, part: "Leg", set: "20", time: "20", url: "", weight: "20"))
+                .previewLayout(.sizeThatFits)
+        }
+        
+        
     }
 }

@@ -34,7 +34,7 @@ struct TrainerBaseView: View {
         
         NavigationView {
             TabView(selection: $trainerSelectedIndex) {
-                TrainerUserListView()
+                TrainerUserListView(selectedIndex: $trainerSelectedIndex)
                     .tag(TrainerPageType.userList)
                     .tabItem {
                         Label {

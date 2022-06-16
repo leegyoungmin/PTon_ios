@@ -7,6 +7,19 @@
 
 import Foundation
 import Firebase
+import Combine
+import SwiftPrettyPrint
+
+struct TrainerMealRecorded:Codable{
+    var carbs:Int
+    var fat:Int
+    var foodName:String
+    var intake:Int
+    var kcal:Int
+    var protein:Int
+    var sodium:Int
+    var url:String
+}
 
 struct todayExercise:Hashable{
     var uuid:String
@@ -20,163 +33,299 @@ struct todayExercise:Hashable{
     var weight:String?
 }
 
-
-struct RequestExerciseResult:Hashable{
+struct TrainerExercise:Hashable{
     let exerciseName:String
-    let exercisePart:exercisePart
+    let Hydro:String
+    let part:exercisePart?
+    let exerciseData:RequestExerciseResult
+}
+
+struct TrainerRecordExercise:Hashable,Codable{
+    let engName:String
+    let exerciseName:String
+    let expectKcal:Double
     let hydro:String
+    let minute:Int
+    let parameter:Double
+    let part:String
+    let set:String?
+    let time:String?
+    let url:String
+    let weight:String?
+}
+
+
+struct RequestExerciseResult:Hashable,Codable{
     let done:Bool
+    let hydro:String?
     let minute:Int
     let parameter:Double
     let set:Int?
     let time:Int?
     let url:String
     let weight:Int?
+    
+    enum CodingKeys:String,CodingKey{
+        case done = "Done"
+        case hydro = "Hydro"
+        case minute = "Minute"
+        case parameter = "Parameter"
+        case set = "Set"
+        case time = "Time"
+        case url = "Url"
+        case weight = "Weight"
+    }
 }
 
 
 class TrainerJournalViewModel:ObservableObject{
     @Published var currentMonth:Int = 0
     @Published var currentDate = Date()
-    @Published var requestExercises:[String:[RequestExerciseResult]] = [:]
-    @Published var recordedExercises:[String:[RequestExerciseResult]] = [:]
-    @Published var meals:[userFoodResult] = []
+    @Published var requestExercises:[TrainerExercise] = []
+    @Published var recordedExercises:[TrainerRecordExercise] = []
+    @Published var meals:[mealType:[TrainerMealRecorded]] = [:]
+    @Published var kcal:String = "" {
+        didSet{
+            print("kcal setting value " + kcal)
+        }
+    }
+    @Published var userWeight:Double = 0
+    let decoder = JSONDecoder()
     let trainerId:String
     let userId:String
     let reference = Firebase.Database.database().reference()
+    var cancelable = Set<AnyCancellable>()
     
     init(trainerId:String,userId:String){
         self.trainerId = trainerId
         self.userId = userId
         
-        self.ObserveData()
+        self.settingKcal()
+        self.settingWeight()
+        
+        self.$currentDate.sink { [weak self] date in
+            self?.meals.removeAll()
+            self?.recordedExercises.removeAll()
+            self?.requestExercises.removeAll()
+            guard let self = self else{return}
+            let keyDate = convertString(content: date, dateFormat: "yyyy-MM-dd")
+            DispatchQueue.main.async {
+                self.updateMealData(keyDate)
+                self.updateRequestExercise(keyDate)
+                self.updateRecordExercise(keyDate)
+            }
+            
+        }
+        .store(in: &cancelable)
     }
     
-    func ObserveData(){
-        let mealref = Firebase.Database.database().reference().child("FoodJournal").child(self.trainerId).child(self.userId).child(convertString(content: currentDate, dateFormat: "yyyy-MM-dd"))
-        let requestExerciseRef = Firebase.Database.database().reference().child("RequestExercise").child(self.trainerId).child(self.userId).child(convertString(content: currentDate, dateFormat: "yyyy-MM-dd"))
-        self.meals.removeAll()
-        self.exercises.removeAll()
-        
-        
-        mealType.allCases.forEach{ type in
-            mealref.child(type.keyDescription()).observeSingleEvent(of: .value) { [weak self] snapshot in
-                guard let self = self else{return}
+    func settingKcal(){
+        reference
+            .child("Ingredient")
+            .child(self.userId)
+            .child("AllKcal")
+            .child("Kcal")
+            .observeSingleEvent(of: .value) { snapshot in
+                guard let kcal = snapshot.value as? String else{return}
+                let intKcal = Int(Double(kcal) ?? 0.0)
+                self.kcal = String(intKcal)
+            }
+    }
+    
+    func settingWeight(){
+        reference
+            .child("bodyData")
+            .child(self.userId)
+            .observeSingleEvent(of: .value) { snapshot in
                 for child in snapshot.children{
                     let childSnapshot = child as! DataSnapshot
-                    let key = childSnapshot.key
-                    guard let values = childSnapshot.value as? [String:Any] else{return}
+                    guard let values = snapshot.value as? [String:Any] else{return}
                     
-                    let carbs = values["carbs"] as? Int ?? 0
-                    let fat = values["fat"] as? Int ?? 0
-                    let foodName = values["foodName"] as? String ?? ""
-                    let intake = values["intake"] as? Int ?? 0
-                    let kcal = values["kcal"] as? Int ?? 0
-                    let protein = values["protein"] as? Int ?? 0
-                    let sodium = values["sodium"] as? Int ?? 0
-                    let url = values["url"] as? String ?? ""
+                    let weight = values["weight"] as? String ?? "0"
+                    let weightConvert = Double(weight) ?? 0.0
                     
-                    let data = userFoodResult(id: key,
-                                              mealType: type,
-                                              carbs: carbs,
-                                              fat: fat,
-                                              foodName: foodName,
-                                              intake: intake,
-                                              kcal: kcal,
-                                              protein: protein,
-                                              sodium: sodium,
-                                              url: url)
-                    
-                    self.meals.append(data)
+                    if weightConvert != 0.0{
+                        self.userWeight = weightConvert
+                        print("user weight setting \(self.userWeight)")
+                    }
                 }
             }
-        }
-        
-        ["Aerobic","AnAerobic","Fitness"].forEach { type in
-            requestExerciseRef.child(type).observeSingleEvent(of: .value) { [weak self] snapshot in
-                guard let self = self else{return}
-                if type == "Aerobic" || type == "Fitness"{
-                    self.AerobicItem(type,snapshot)
-                }else{
-                    self.AnAerobicItem(snapshot)
+    }
+    
+    func updateMealData(_ selectedDate:String){
+        let ref = Firebase.Database.database().reference().child("FoodJournal").child(self.trainerId).child(self.userId).child(selectedDate)
+        mealType.allCases.forEach { mealType in
+            ref.child(mealType.keyDescription()).observeSingleEvent(of: .value) { [weak self] snapshot in
+                guard let self = self,
+                      let values = snapshot.value as? [String:Any] else {return}
+                let data = try! JSONSerialization.data(withJSONObject: Array(values.values), options: [])
+                do{
+                    let currentData = try self.decoder.decode([TrainerMealRecorded].self, from: data)
+                    self.meals[mealType] = currentData
+                } catch let error{
+                    print("Error in Read Data ::: \(error.localizedDescription)")
                 }
             }
         }
     }
     
-    func AerobicItem(_ key:String,_ snapshot:DataSnapshot){
-        
-        snapshot.children.forEach{
-            let childSnapshot = $0 as! DataSnapshot
-            let exerciseName = childSnapshot.key
-            guard let values = childSnapshot.value as? [String:Any] else{return}
+    func updateRequestExercise(_ selectedDate:String){
+        DispatchQueue.main.async {
+            self.updateAerobic(selectedDate)
+            self.updateFitness(selectedDate)
+            self.updateAnAerobic(selectedDate)
+        }
+    }
+    
+    func updateRecordExercise(_ selectedDate:String){
+        DispatchQueue.main.async {
+            self.reference
+                .child("ExerciseRecord")
+                .child(self.userId)
+                .child(selectedDate)
+                .observeSingleEvent(of: .value) { [weak self] snapshot in
+                    guard let self = self,
+                          let values = snapshot.value as? [String:Any] else{return}
+                    
+                    let data = try! JSONSerialization.data(withJSONObject: Array(values.values), options: [])
+                    
+                    do{
+                        let currentData = try self.decoder.decode([TrainerRecordExercise].self, from: data)
+                        self.recordedExercises = currentData
+                    } catch let err{
+                        print("Error in update Record Exercise \(err.localizedDescription)")
+                    }
+                }
+        }
+    }
+    
+    private func updateAerobic(_ selectedDate:String){
+        reference.child("RequestExercise").child(self.trainerId).child(self.userId).child(selectedDate).child("Aerobic").observeSingleEvent(of: .value) { [weak self] snapshot in
+            guard let self = self,
+                  let values = snapshot.value as? [String:Any] else{return}
+            let exerciseNames = Array(values.keys)
+            let data = try! JSONSerialization.data(withJSONObject: Array(values.values), options: [])
             
-            let exercisePart:exercisePart = exercisePart.init(rawValue: key) ?? .Fitness
-            let done = values["Done"] as? Bool ?? false
-            let hydro = values["Hydro"] as? String ?? ""
-            let parameter = values["Parameter"] as? Double ?? 0.0
-            let minute = values["Minute"] as? Int ?? 0
-            let set = values["Set"] as? Int ?? 0
-            let time = values["Time"] as? Int ?? 0
-            let url = values["Url"] as? String ?? ""
-            let weight = values["Weight"] as? Int ?? 0
-            
-            let data = RequestExerciseResult(exerciseName: exerciseName,
-                                             exercisePart: exercisePart,
-                                             hydro: hydro,
-                                             done: done,
-                                             minute: minute,
-                                             parameter: parameter,
-                                             set: set,
-                                             time: time,
-                                             url: url,
-                                             weight: weight)
-            
-            if self.requestExercises[exercisePart.description] == nil{
-                self.requestExercises[exercisePart.description] = [data]
-            }else{
-                self.requestExercises[exercisePart.description]!.append(data)
+            do{
+                let currentData = try self.decoder.decode([RequestExerciseResult].self, from: data)
+                for index in currentData.indices{
+                    let trainerData = TrainerExercise(exerciseName: exerciseNames[index], Hydro: "Aerobic", part: exercisePart.Aerobic, exerciseData: currentData[index])
+                    self.requestExercises.append(trainerData)
+                }
+            } catch let err{
+                print("Error in update Aerobic ::: \(err.localizedDescription)")
             }
         }
     }
     
-    func AnAerobicItem(_ snapshot:DataSnapshot){
-        snapshot.children.forEach{
-            let childSnapshot = $0 as! DataSnapshot
-            print(childSnapshot)
-            let exercisePart:exercisePart? = exercisePart.init(rawValue: childSnapshot.key)
-            guard let exercisePart = exercisePart else{return}
-            childSnapshot.children.forEach{
-                let elementSnapshot = $0 as! DataSnapshot
+    private func updateFitness(_ selectedDate:String){
+        reference.child("RequestExercise").child(self.trainerId).child(self.userId).child(selectedDate).child("Fitness").observeSingleEvent(of: .value) { [weak self] snapshot in
+            guard let self = self,
+                  let values = snapshot.value as? [String:Any] else{return}
+            
+            let exerciseNames = Array(values.keys)
+            let data = try! JSONSerialization.data(withJSONObject: Array(values.values), options: [])
+            
+            do{
+                let currentData = try self.decoder.decode([RequestExerciseResult].self, from: data)
                 
-                let exerciseName = elementSnapshot.key
-                guard let values = elementSnapshot.value as? [String:Any] else{return}
-                let done = values["Done"] as? Bool ?? false
-                let minute = values["Minute"] as? Int ?? 0
-                let parameter = values["Parameter"] as? Double ?? 0.0
-                let set = values["Set"] as? Int ?? 0
-                let time = values["Time"] as? Int ?? 0
-                let url = values["Url"] as? String ?? ""
-                let weight = values[""] as? Int ?? 0
-                
-                let currentData = RequestExerciseResult(exerciseName: exerciseName,
-                                                        exercisePart: exercisePart,
-                                                        hydro: "AnAerobic",
-                                                        done: done,
-                                                        minute: minute,
-                                                        parameter: parameter,
-                                                        set: set,
-                                                        time: time,
-                                                        url: url,
-                                                        weight: weight)
-                
-                
-                if self.requestExercises[exercisePart.description] == nil{
-                    self.requestExercises[exercisePart.description] = [currentData]
-                }else{
-                    self.requestExercises[exercisePart.description]!.append(currentData)
+                for index in currentData.indices{
+                    let trainerData = TrainerExercise(exerciseName: exerciseNames[index], Hydro: "Fitness", part: exercisePart.Fitness, exerciseData: currentData[index])
+                    self.requestExercises.append(trainerData)
                 }
+            } catch let err{
+                print("Error in update Fitness \(err.localizedDescription)")
             }
         }
     }
+    
+    private func updateAnAerobic(_ selectedDate:String){
+        exercisePart.allCases.forEach { part in
+            reference
+                .child("RequestExercise")
+                .child(self.trainerId)
+                .child(self.userId)
+                .child(selectedDate)
+                .child("AnAerobic")
+                .child(part.rawValue)
+                .observeSingleEvent(of: .value) { [weak self] snapshot in
+                    
+                    guard let self = self,
+                          let values = snapshot.value as? [String:Any] else{return}
+                    let exerciseNames = Array(values.keys)
+                    
+                    let data = try! JSONSerialization.data(withJSONObject: Array(values.values), options: [])
+                    
+                    do{
+                        let currentData = try self.decoder.decode([RequestExerciseResult].self, from: data)
+                        
+                        for index in currentData.indices{
+                            let trainerData = TrainerExercise(exerciseName: exerciseNames[index], Hydro: "AnAerobic", part: part, exerciseData: currentData[index])
+                            self.requestExercises.append(trainerData)
+                        }
+//                        Pretty.prettyPrint(self.requestExercises)
+                    } catch let err{
+                        print("Error in update AnAerobic \(err)")
+                    }
+                }
+        }
+    }
+    
+    
+    func requestExerciseSuccessRate(_ selectedType:exercisePart)->Double{
+        let allData = requestExercises.filter({$0.part == selectedType})
+        let value = allData.filter({$0.exerciseData.done == true}).count
+        return allData.isEmpty ? 0:Double(value) / Double(allData.count)
+    }
+    
+    func requestExerciseSuccessCount(_ selectedType:exercisePart)->Int{
+        let data = requestExercises.filter({$0.part == selectedType})
+        return data.filter({$0.exerciseData.done == true}).count
+    }
+    func requestExerciseAllCount(_ selectedType:exercisePart)->Int{
+        return requestExercises.filter({$0.part == selectedType}).count
+    }
+    
+    func recordExerciseCount(_ selectedType:exercisePart)->Int{
+        return selectedType == .Aerobic ? recordedExercises.filter({$0.hydro == "Aerobic"}).count:recordedExercises.filter({$0.part == selectedType.rawValue}).count
+    }
+    
+    func filterRequestExercise(_ selectedPart:exercisePart)->[TrainerExercise]{
+        return self.requestExercises.filter({$0.part == selectedPart})
+    }
+    
+    func filterRecordExercise(_ selectedPart:exercisePart)->[TrainerRecordExercise]{
+        return self.recordedExercises.filter({$0.part == selectedPart.rawValue})
+    }
+    
+    func convertKcal(_ selectedPart:exercisePart)->Int{
+        let expectKcal:Double = 0.0
+        let recordKcal = self.recordedExercises.filter({$0.part == selectedPart.rawValue}).reduce(expectKcal) { partialResult, exercise in
+            return partialResult + exercise.expectKcal
+        }
+        let requestKcal = self.requestExercises.filter({$0.part == selectedPart}).reduce(recordKcal) { partialResult, exercise in
+            return partialResult + exerciseKcal(exercise.exerciseData)
+        }
+        Pretty.prettyPrint(requestKcal)
+        return Int(requestKcal)
+    }
+    
+    private func exerciseKcal(_ exercise:RequestExerciseResult)->Double{
+        return ((exercise.parameter * self.userWeight)/30) * Double(calSetting(exercise))
+    }
+    
+    private func calSetting(_ exercise:RequestExerciseResult)->Int{
+        guard let set = exercise.set,
+              let time = exercise.time else{return exercise.minute}
+        return exercise.minute - (set * time * 5)
+    }
+    //MARK: 유저 소모 칼로리 계산 함수
+    /// exercuseParameter : 운동 단위 가중치
+    /// settingTime : 운동 시간 - (세트수 * 횟수 * 5) 분 환산
+//    func calUserData(_ exerciseParameter:Double,settingTime:Int) -> Double{
+//        guard let userWeight = userWeight else {
+//            return 0
+//        }
+//        return ((exerciseParameter * userWeight)/30) * Double(settingTime)
+//    }
 }

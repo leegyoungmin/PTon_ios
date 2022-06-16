@@ -12,6 +12,7 @@ struct TrainerUserListView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var baseViewmodel:TrainerBaseViewModel
     @StateObject var trainerUserListViewModel = TrainerUserListViewModel()
+    @Binding var selectedIndex:TrainerPageType
     @State var isShowSheet:Bool = false
     @State var isChatClicked:Bool = false
     @State var isPresentChat:Bool = false
@@ -76,7 +77,11 @@ struct TrainerUserListView: View {
                                     self.selectedTrainee = user
                                     self.userindex = trainerUserListViewModel.selectedUserIndex(user.userId)
                                     self.isShowSheet = true
-                                }.fullScreenCover(item: $selectedTrainee) { trainee in
+                                }.fullScreenCover(item: $selectedTrainee,onDismiss: {
+                                    if isPresentChat{
+                                        selectedIndex = .chatList
+                                    }
+                                }) { trainee in
                                     ProfileView(
                                         viewmodel: ProfileViewModel(baseViewmodel.trainerId,
                                                                     trainerUserListViewModel.fitnessCode,
@@ -166,7 +171,7 @@ struct userListRowView:View{
 //MARK: - PREVIEWS
 struct TrainerUserListView_Previews: PreviewProvider {
     static var previews: some View {
-        TrainerUserListView()
+        TrainerUserListView(selectedIndex: .constant(.chatList))
         //        userListRowView(item: trainee(username: "이경민", useremail: "cow970814@naver.com", userid: "asd", userProfile: "asdasd"))
         //            .previewLayout(.sizeThatFits)
     }

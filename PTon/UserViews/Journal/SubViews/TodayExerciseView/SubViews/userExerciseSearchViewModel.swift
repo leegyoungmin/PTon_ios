@@ -9,7 +9,8 @@ import Foundation
 import Firebase
 import SwiftUI
 
-enum exercisePart:String,CaseIterable{
+enum exercisePart:String,CaseIterable,Identifiable{
+    var id:Self{self}
     case Aerobic
     case Abs
     case Arm
