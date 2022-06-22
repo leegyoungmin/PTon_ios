@@ -34,7 +34,7 @@ enum exercisePart:String,CaseIterable,Identifiable{
         case .Chest:
             return "가슴"
         case .Compound:
-            return "복합 운동"
+            return "복합운동"
         case .Leg:
             return "하체"
         case .Shoulder:
@@ -46,6 +46,29 @@ enum exercisePart:String,CaseIterable,Identifiable{
     
     var keyValues:[String]{
         return ["Aerobic","AnAerobic","Fitness"]
+    }
+    
+    var hydro:exerciseHydro{
+        switch self {
+        case .Aerobic:
+            return .compound
+        case .Abs:
+            return .AnAerobic
+        case .Arm:
+            return .AnAerobic
+        case .Back:
+            return .AnAerobic
+        case .Chest:
+            return .AnAerobic
+        case .Compound:
+            return .compound
+        case .Leg:
+            return .AnAerobic
+        case .Shoulder:
+            return .AnAerobic
+        case .Fitness:
+            return .Fitness
+        }
     }
 }
 

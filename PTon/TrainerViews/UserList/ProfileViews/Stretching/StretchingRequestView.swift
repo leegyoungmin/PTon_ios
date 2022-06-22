@@ -21,12 +21,9 @@ struct StretchingRequestView: View {
     //MARK: - VIEW
     var body: some View {
         VStack{
-            weekDatePickerView(currentDate: $selectedDay)
-                .padding()
-                .background(.white)
-                .onChange(of: selectedDay) { newvalue in
-                    stretchingViewModel.fetchData(date: newvalue)
-                    print(stretchingViewModel.trainerList.count)
+            weekDatePickerView(selectedDate: $selectedDay)
+                .onChange(of: selectedDay) { newValue in
+                    stretchingViewModel.fetchData(date: newValue)
                 }
             
             ScrollView(.vertical, showsIndicators: false){
@@ -126,7 +123,7 @@ struct CheckboxStyle:ToggleStyle{
             Image(systemName: configuration.isOn ? "checkmark.circle.fill":"circle")
                 .resizable()
                 .frame(width: 24, height: 24)
-                .foregroundColor(configuration.isOn ? .purple:.gray)
+                .foregroundColor(configuration.isOn ? .accentColor:.gray)
                 .font(.system(size: 20, weight: .bold, design: .default))
                 .onTapGesture {
                     configuration.isOn.toggle()

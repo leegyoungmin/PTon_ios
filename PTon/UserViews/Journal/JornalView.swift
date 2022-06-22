@@ -14,10 +14,8 @@ struct JornalView: View {
     let fitnessCode:String
     var body: some View {
         VStack{
-            //Date picker view
-            weekDatePickerView(currentDate: $selectedDate)
-                .padding(.horizontal)
-                .padding(.bottom,10)
+            //week Date View
+            weekDatePickerView(selectedDate: $selectedDate)
             
             //Component Views
             ScrollView(.vertical, showsIndicators: false){

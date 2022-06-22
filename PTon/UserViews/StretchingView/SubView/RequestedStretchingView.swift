@@ -12,14 +12,10 @@ struct RequestedStretchingView: View {
     @StateObject var viewmodel:RequestStretchingViewModel
     var body: some View {
         VStack{
-            
-            weekDatePickerView(currentDate: $viewmodel.currentDate)
-                .padding(.horizontal)
-                .padding(.bottom,10)
+            weekDatePickerView(selectedDate: $viewmodel.currentDate)
                 .onChange(of: viewmodel.currentDate) { newValue in
                     viewmodel.reloadData()
                 }
-            
             
             if viewmodel.memberStretchings.isEmpty{
                 VStack(spacing:0){

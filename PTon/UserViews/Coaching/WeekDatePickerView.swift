@@ -9,189 +9,210 @@ import Foundation
 import SwiftUI
 
 struct weekDatePickerView:View{
-    let dayOfWeek = ["일","월","화","수","목","금","토"]
-    @Binding var currentDate:Date
+    private var calendar:Calendar
+    private let monthDayFormatter:DateFormatter
+    private let dayFormatter:DateFormatter
+    private let weekDayFormatter:DateFormatter
     
-    //Month update on arrow Button clicks
-    @State var currentMonth:Int = 0
-    var body: some View{
-        VStack(spacing:0){
-            VStack(spacing:0){
-                HStack(spacing:0){
-                    Button {
-                        withAnimation {
-                            currentMonth -= 7
-                        }
-                    } label: {
-                        Image(systemName: "chevron.left.square.fill")
-                            .font(.title2)
-                    }
-                    .foregroundColor(.accentColor)
-                    
-                    Spacer()
-                    
-                    Text("\(extraDate()[1])년 \(extraDate()[0])")
-                        .font(.system(size: 20))
-                        .fontWeight(.medium)
-                    
-                    Spacer()
-                    
-                    Button {
-                        withAnimation {
-                            currentMonth += 7
-                        }
-                    } label: {
-                        Image(systemName: "chevron.right.square.fill")
-                            .font(.title2)
-                    }
-                    .foregroundColor(.accentColor)
-
-                }
-                .padding(.vertical,10)
-                
-                VStack(spacing:0){
-                    
-                    let columns = Array(repeating: GridItem(.flexible()), count: 7)
-                    
-                    //MARK: - weekofDay View
-                    LazyVGrid(columns: columns,spacing: 20) {
-                        ForEach(dayOfWeek.indices,id: \.self){ index in
-                            if index == 0{
-                                Text(dayOfWeek[index])
-                                    .foregroundColor(.red)
-                            }else if index == 6{
-                                Text(dayOfWeek[index])
-                                    .foregroundColor(.blue)
-                            }else{
-                                Text(dayOfWeek[index])
-                                    .foregroundColor(.black)
-                            }
-                        }
-                    }
-                    .padding(.bottom,10)
-                    
-                    Divider()
-                    //MARK: - Date View
-                    LazyVGrid(columns: columns,spacing: 20) {
-                        
-                        ForEach(extractDate()) { value in
-                            if value.day != -1{
-                                cardView(value: value)
-                                    .background(
-                                        Circle()
-                                            .stroke(Color.accentColor)
-                                            .opacity(isSameDay(date1: value.date, date2: currentDate) ? 1:0)
-                                    )
-                                    .onTapGesture {
-                                        print("Get value date ::: \(value.date)")
-                                        currentDate = value.date
-                                        print("get current Date ::: \(currentDate)")
-                                    }
-                            }else{
-                                Rectangle()
-                                    .fill(.clear)
-                            }
-
-                        }
-                    }
-                    .padding(.top,10)
-                    
-                    
-                }
-            }
-            .onChange(of: currentMonth) { newValue in
-                withAnimation {
-                    currentDate = getCurrentMonth()
-                }
-            }
-        }
-        .background(.white)
+    @Binding var selectedDate:Date
+    private static var now = Date()
+    
+    init(selectedDate:Binding<Date>){
+        self._selectedDate = selectedDate
+        self.calendar = Calendar.init(identifier: .gregorian)
+        self.calendar.locale = Locale(identifier: "ko_KR")
+        self.monthDayFormatter = DateFormatter(dateFormat:"MM월",calendar:calendar)
+        self.dayFormatter = DateFormatter(dateFormat:"dd",calendar:calendar)
+        self.weekDayFormatter = DateFormatter(dateFormat:"EEEEE",calendar:calendar)
     }
-}
-
-struct weekDatePickerView_Previews:PreviewProvider{
-    static var previews: some View{
-        weekDatePickerView(currentDate: .constant(Date()))
-            .previewLayout(.sizeThatFits)
-    }
-}
-
-extension Date{
-    func getAllWeek()->[Date]{
-        let calendar = Calendar.current
-        //getting start date...
-        
-        let startDate = calendar.date(from: Calendar.current.dateComponents([.year,.month,.day,.weekday], from: self))!
-        
-        let range = calendar.range(of: .weekday, in: .weekOfMonth, for: startDate)!
-
-        return range.compactMap{ day -> Date in
-            return calendar.date(byAdding: .weekday, value: day, to: startDate)!
-        }
-    }
-}
-
-
-extension weekDatePickerView{
-    @ViewBuilder
-    func cardView(value :DateValue) -> some View{
+    
+    var body: some View {
         VStack{
-            if value.day != -1{
-                Text("\(value.day)")
-                    .foregroundColor(isSameDay(date1: value.date, date2: currentDate) ? .accentColor:.gray)
-                    .font(.footnote)
-                    .fontWeight(isSameDay(date1: value.date, date2: currentDate) ? .semibold:.regular)
+            CalendarWeekListView(calendar: calendar,date: $selectedDate) { date in
+                Button {
+                    selectedDate = date
+                    
+                } label: {
+                    Text("00")
+                        .font(.system(size: 13))
+                        .padding(8)
+                        .foregroundColor(.clear)
+                        .overlay(
+                            Text(dayFormatter.string(from: date))
+                                .foregroundColor(
+                                    calendar.isDate(date, inSameDayAs: selectedDate) ? .black:calendar.isDateInToday(date) ? .blue:.gray
+                                )
+                        )
+                        .overlay(
+                            Circle()
+                                .foregroundColor(.gray.opacity(0.4))
+                                .opacity(calendar.isDate(date, inSameDayAs: selectedDate) ? 1:0)
+                        )
+                }
+
+            } header: { date in
+                Text("00")
+                    .font(.system(size: 13))
+                    .padding(8)
+                    .foregroundColor(.clear)
+                    .overlay(
+                        Text(weekDayFormatter.string(from: date))
+                            .font(.system(size: 15))
+                    )
+            } weekSwitcher: { date in
+                
+                
+                HStack{
+                    
+                    Button {
+                        withAnimation {
+                            guard let newDate = calendar.date(byAdding: .weekOfMonth, value: -1, to: selectedDate) else{
+                                return
+                            }
+                            
+                            selectedDate = newDate
+                        }
+                    } label: {
+                        Label {
+                            Text("Previous")
+                        } icon: {
+                            Image(systemName: "chevron.left.square")
+                        }
+                        .labelStyle(.iconOnly)
+
+                    }
+                    
+                    Spacer()
+                    
+                    Text(monthDayFormatter.string(from: selectedDate))
+                        .font(.title2)
+                    
+                    Spacer()
+                    
+                    Button {
+                        withAnimation {
+                            guard let newDate = calendar.date(byAdding: .weekOfMonth, value: 1, to: selectedDate) else{
+                                return
+                            }
+                            
+                            selectedDate = newDate
+                        }
+                    } label: {
+                        Label {
+                            Text("Next")
+                        } icon: {
+                            Image(systemName: "chevron.right.square")
+                        }
+                        .labelStyle(.iconOnly)
+
+                    }
+                }
+                .padding(.horizontal,10)
+                
             }
+
         }
-        .frame(width: 20, height: 20, alignment: .center)
-    }
-    func isSameDay(date1:Date,date2:Date)->Bool{
-        let calendar = Calendar.current
-        return calendar.isDate(date1, inSameDayAs: date2)
-    }
-
-    func extraDate()->[String]{
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM YYYY"
-        let date = formatter.string(from: currentDate)
-
-        return date.components(separatedBy: " ")
-    }
-
-    func getCurrentMonth()->Date{
-        let calendar = Calendar.current
-
-        guard let currentMonth = calendar.date(byAdding: .weekday, value: currentMonth, to: Date()) else{return Date()}
-
-        return currentMonth
-    }
-
-    func extractDate()->[DateValue]{
-        //Getting current Month date
-
-        let calendar = Calendar.current
-
-        let currentMonth = getCurrentMonth()
-
-        var days =  currentMonth.getAllWeek().compactMap{ date -> DateValue in
-            let dateWeek = calendar.component(.weekday, from: date)
-            let day = calendar.component(.day, from: date)
-
-            return DateValue(dateWeek: dateWeek, day: day, date: date)
-        }
-
-        let firstWeekday = calendar.component(.weekday, from: days.first?.date ?? Date())
+        .padding(5)
         
-        for index in (0..<firstWeekday-1).reversed(){
-            let day = calendar.component(.day, from: days.first?.date.addingTimeInterval(-86400) ?? Date())
-            days.insert(DateValue(dateWeek: index, day: day, date: days.first?.date.addingTimeInterval(-86400) ?? Date()) , at: 0)
-            days.removeLast()
-        }
-
-        
-        print("Date in selected Date \(days)")
-        return days
     }
-
 }
 
+struct CalendarWeekListView<Day:View,Header:View,WeekSwitcher:View>:View{
+    private var calendar:Calendar
+    @Binding var date:Date
+    private let content:(Date)->Day
+    private let header:(Date)->Header
+    private let weekSwitcher:(Date)->WeekSwitcher
+    private let daysInWeek = 7
+    
+    init(
+        calendar:Calendar,
+        date:Binding<Date>,
+        @ViewBuilder content:@escaping (Date)-> Day,
+        @ViewBuilder header:@escaping(Date)->Header,
+        @ViewBuilder weekSwitcher:@escaping(Date)->WeekSwitcher
+    ){
+        self.calendar = calendar
+        self._date = date
+        self.content = content
+        self.header = header
+        self.weekSwitcher = weekSwitcher
+    }
+    
+    var body: some View{
+        let month = date.startOfMonth(using: calendar)
+        let dates = makeDays()
+        VStack{
+            HStack{
+                self.weekSwitcher(month)
+            }
+            
+            HStack(spacing:20){
+                ForEach(dates.prefix(daysInWeek),id:\.self,content: header)
+            }
+            
+            HStack(spacing:20){
+                ForEach(dates,id:\.self){ date in
+                    content(date)
+                }
+            }
+        }
+    }
+}
+
+//MARK: - HELPER
+private extension CalendarWeekListView{
+    func makeDays()->[Date]{
+        guard let firstWeek = calendar.dateInterval(of: .weekOfMonth, for: date),
+              let lastWeek = calendar.dateInterval(of: .weekOfMonth, for: firstWeek.end - 1) else{
+            return []
+        }
+        
+        let dateInterval = DateInterval(start: firstWeek.start, end: lastWeek.end)
+        
+        return calendar.generateDays(for: dateInterval)
+    }
+}
+
+private extension Calendar{
+    func generateDates(for dateInterval:DateInterval,matching componenets:DateComponents)->[Date]{
+        var dates = [dateInterval.start]
+        
+        enumerateDates(startingAfter: dateInterval.start, matching: componenets, matchingPolicy: .nextTime) { result, exactMatch, stop in
+            guard let date = result else{return}
+            guard date < dateInterval.end else{
+                stop = true
+                return
+            }
+            
+            dates.append(date)
+        }
+        
+        return dates
+    }
+    
+    func generateDays(for dateInterval:DateInterval)->[Date]{
+        generateDates(for: dateInterval, matching: dateComponents([.hour,.minute,.second], from: dateInterval.start))
+    }
+}
+
+private extension Date{
+    func startOfMonth(using calendar:Calendar)->Date{
+        calendar.date(from: calendar.dateComponents([.year,.month], from: self)) ?? self
+    }
+    
+}
+private extension DateFormatter{
+    convenience init(dateFormat:String,calendar:Calendar) {
+        self.init()
+        self.dateFormat = dateFormat
+        self.calendar = calendar
+        self.locale = Locale(identifier: "ko_KR")
+    }
+}
+
+struct WeekDatePickerView_previews:PreviewProvider{
+    static var previews: some View{
+        weekDatePickerView(selectedDate: .constant(Date()))
+    }
+}

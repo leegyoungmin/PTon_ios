@@ -8,10 +8,10 @@
 import Foundation
 import Firebase
 import SwiftUI
+import Combine
+import SwiftPrettyPrint
 
 //MARK: MODEL
-
-
 struct requestedExercise:Codable,Hashable{
     var id = UUID().uuidString
     var name:String
@@ -28,236 +28,118 @@ struct requestedExercise:Codable,Hashable{
 
 //MARK: VIEWMODEL
 class RequestedExerciseViewModel: ObservableObject{
-    @Published var exercises:[requestedExercise] = []
+    @Published var exercises:[RequestingExercise] = []
     @Published var selectedDate:Date = Date()
     let reference = Firebase.Database.database().reference().child("RequestExercise")
-    
+    private var cancellables:Set<AnyCancellable> = []
     var userid:String
     
     init(_ userid:String){
         self.userid = userid
-    }
-    
-    func fetchData(tasks:[()->Void]){
-        for task in tasks {
-            task()
+        
+        $selectedDate.sink { selectedDate in
+            self.exercises.removeAll()
+            let seletedString = convertString(content: selectedDate, dateFormat: "yyyy-MM-dd")
+            print(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+            self.readRequestedExercise(seletedString)
         }
+        .store(in: &cancellables)
     }
-    
-    func fetchFitness(){
-        guard let trainerid = Firebase.Auth.auth().currentUser?.uid else{return}
+    func readRequestedExercise(_ dateString:String){
+        guard let trainerId = Firebase.Auth.auth().currentUser?.uid else{return}
+        
         reference
-            .child(trainerid)
+            .child(trainerId)
             .child(userid)
-            .child(convertDate(selectedDate))
-            .child("Fitness")
-            .observeSingleEvent(of: .value) { snapshot in
-                for child in snapshot.children{
-                    let childsnap = child as! DataSnapshot
-                    let name = childsnap.key
-                    guard let values = childsnap.value as? [String:Any],
-                          let type = values["Hydro"] as? String else{return}
-                    
-                    if type == "Aerobic"{
-                        guard let parameter = values["Parameter"] as? Double,
-                              let type = values["Hydro"] as? String,
-                              let done = values["Done"] as? Bool,
-                              let minute = values["Minute"] as? Int,
-                              let url = values["Url"] as? String else{return}
-                        
-                        let currentExercise = requestedExercise(name: name,
-                                                                url: url,
-                                                                isDone: done,
-                                                                parameter: parameter,
-                                                                minute: minute,
-                                                                type: type,
-                                                                part: "Fitness")
-                        self.exercises.append(currentExercise)
-                    }else{
-                        guard let parameter = values["Parameter"] as? Double,
-                              let type = values["Hydro"] as? String,
-                              let done = values["Done"] as? Bool,
-                              let time = values["Time"] as? Int,
-                              let weight = values["Weight"] as? Int,
-                              let set = values["Set"] as? Int,
-                              let minute = values["Minute"] as? Int,
-                              let url = values["Url"] as? String else{return}
-                        
-                        let currentExercise = requestedExercise(name: name,
-                                                                url: url,
-                                                                isDone: done,
-                                                                parameter: parameter,
-                                                                minute: minute,
-                                                                time: time,
-                                                                weight: weight,
-                                                                sets: set,
-                                                                type: type,
-                                                                part: "Fitness")
-                        self.exercises.append(currentExercise)
-                    }
-                    
-                    
-                    print("Read Data Fitness values \(values)")
-                }
-            }
-    }
-    
-    func fetchAerobic(){
-        guard let trainerid = Firebase.Auth.auth().currentUser?.uid else{return}
-        reference
-            .child(trainerid)
-            .child(userid)
-            .child(convertDate(selectedDate))
-            .child("Aerobic")
-            .observeSingleEvent(of: .value) { snapshot in
-                for child in snapshot.children{
-                    let childsnap = child as! DataSnapshot
-                    let name = childsnap.key
-                    guard let values = childsnap.value as? [String:Any] else{return}
-                    
-                    guard let parameter = values["Parameter"] as? Double,
-                          let type = values["Hydro"] as? String,
-                          let done = values["Done"] as? Bool,
-                          let minute = values["Minute"] as? Int,
-                          let url = values["Url"] as? String else{return}
-                    
-                    let currentExercise = requestedExercise(name: name,
-                                                            url: url,
-                                                            isDone: done,
-                                                            parameter: parameter,
-                                                            minute: minute,
-                                                            type: type,
-                                                            part: "Aerobic")
-                    self.exercises.append(currentExercise)
+            .child(dateString)
+            .observe(.childAdded) { [weak self] snapshot in
+                guard let self = self,
+                      let values = snapshot.value as? [String:Any] else{return}
+                
+                let data = try! JSONSerialization.data(withJSONObject: values, options: [])
+                let decoder = JSONDecoder()
+                let requestExercise = try? decoder.decode(RequestingExercise.self, from: data)
+                
+                if let exercise = requestExercise{
+                    self.exercises.append(exercise)
                 }
             }
         
+        reference
+            .child(trainerId)
+            .child(userid)
+            .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+            .observe(.childRemoved) { [weak self] snapshot in
+                guard let self = self,
+                      let values = snapshot.value as? [String:Any] else{return}
+                
+                if let exerciseName = values["exerciseName"] as? String{
+                    guard let index = self.exercises.firstIndex(where: {$0.exerciseName == exerciseName}) else{return}
+                    
+                    self.exercises.remove(at: index)
+                }
+            }
+        
+        reference
+            .child(trainerId)
+            .child(userid)
+            .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+            .observe(.childChanged) { [weak self] snapshot in
+                guard let self = self,
+                      let value = snapshot.value as? [String:Any] else{return}
+                
+                if let exerciseName = value["exerciseName"] as? String{
+                    let data = try! JSONSerialization.data(withJSONObject: value, options: [])
+                    let decoder = JSONDecoder()
+                    let requestExercise = try? decoder.decode(RequestingExercise.self, from: data)
+                    guard let index = self.exercises.firstIndex(where: {$0.exerciseName == exerciseName}),
+                          let exercise = requestExercise else{return}
+                    
+                    
+                    
+                    self.exercises[index] = exercise
+                }
+            }
     }
     
-    func fetchAnAerobic(){
-        guard let trainerid = Firebase.Auth.auth().currentUser?.uid else{return}
+    func removeData(exercise:RequestingExercise){
+        guard let trainerId = Firebase.Auth.auth().currentUser?.uid else{return}
+        
         reference
-            .child(trainerid)
-            .child(userid)
-            .child(convertDate(selectedDate))
-            .child("AnAerobic")
+            .child(trainerId)
+            .child(self.userid)
+            .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
             .observeSingleEvent(of: .value) { snapshot in
-                for child in snapshot.children{
-                    let child = child as! DataSnapshot
-                    let part = child.key
+                snapshot.children.forEach { child in
+                    let childSnapshot = child as! DataSnapshot
                     
-                    guard let values = child.value as? [String:[String:Any]] else{return}
-                    
-                    values.keys.forEach { name in
-                        guard let value = values[name],
-                              let url = value["Url"] as? String,
-                              let time = value["Time"] as? Int,
-                              let minute = value["Minute"] as? Int,
-                              let parameter = value["Parameter"] as? Double,
-                              let set = value["Set"] as? Int,
-                              let weight = value["Weight"] as? Int,
-                              let done = value["Done"] as? Bool else{return}
+                    if childSnapshot.childSnapshot(forPath: "exerciseName").value as? String == exercise.exerciseName{
+                        childSnapshot.ref.removeValue()
                         
-                        let currentData = requestedExercise(name: name,
-                                                            url: url,
-                                                            isDone: done,
-                                                            parameter: parameter,
-                                                            minute: minute,
-                                                            time: time,
-                                                            weight: weight,
-                                                            sets: set,
-                                                            type: "AnAerobic",
-                                                            part: part)
-                        self.exercises.append(currentData)
+                        return
                     }
                 }
             }
     }
     
-    func deleteData(exercise:requestedExercise){
-        self.exercises = self.exercises.filter{ $0.name != exercise.name }
-        
-        guard let trainerid = Firebase.Auth.auth().currentUser?.uid else{return}
-        
-        if exercise.part == "Fitness"{
-            reference
-                .child(trainerid)
-                .child(userid)
-                .child(convertDate(selectedDate))
-                .child("Fitness")
-                .child(exercise.name)
-                .removeValue()
-        }else if exercise.part == "Aerobic"{
-            reference
-                .child(trainerid)
-                .child(userid)
-                .child(convertDate(selectedDate))
-                .child("Aerobic")
-                .child(exercise.name)
-                .removeValue()
-        }else{
-            reference
-                .child(trainerid)
-                .child(userid)
-                .child(convertDate(selectedDate))
-                .child("AnAerobic")
-                .child(exercise.part!)
-                .child(exercise.name)
-                .removeValue()
-        }
-    }
     
-    func setData(exercise:requestedExercise,newvalue:[String:Any]){
+    func modifyElementExercise(_ exercise:RequestingExercise){
+        guard let trainerId = Firebase.Auth.auth().currentUser?.uid else{return}
         
-        guard let trainerid = Firebase.Auth.auth().currentUser?.uid else{return}
-        
-        
-        if exercise.part == "Fitness"{
-            if exercise.type == "Aerobic"{
-                reference
-                    .child(trainerid)
-                    .child(userid)
-                    .child(convertDate(selectedDate))
-                    .child("Aerobic")
-                    .child(exercise.name)
-                    .updateChildValues(newvalue)
-            }else{
-                reference
-                    .child(trainerid)
-                    .child(userid)
-                    .child(convertDate(selectedDate))
-                    .child("Fitness")
-                    .child(exercise.name)
-                    .updateChildValues(newvalue)
+        reference
+            .child(trainerId)
+            .child(userid)
+            .child(convertString(content: selectedDate, dateFormat: "yyyy-MM-dd"))
+            .observeSingleEvent(of: .value) { snapshot in
+                snapshot.children.forEach { child in
+                    let childSnapshot = child as! DataSnapshot
+                    
+                    if childSnapshot.childSnapshot(forPath: "exerciseName").value as? String == exercise.exerciseName,
+                       let exerciseData = exercise.toDictionary{
+                        childSnapshot.ref.updateChildValues(exerciseData)
+                    }
+                }
             }
-            
-        }else if exercise.part == "Aerobic"{
-            reference
-                .child(trainerid)
-                .child(userid)
-                .child(convertDate(selectedDate))
-                .child("Aerobic")
-                .child(exercise.name)
-                .updateChildValues(newvalue)
-        }else{
-            reference
-                .child(trainerid)
-                .child(userid)
-                .child(convertDate(selectedDate))
-                .child("AnAerobic")
-                .child(exercise.part!)
-                .child(exercise.name)
-                .updateChildValues(newvalue)
-        }
-    }
-    
-   
-    
-    func convertDate(_ date:Date)->String{
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        formatter.locale = Locale(identifier: "ko_KR")
-        return formatter.string(from: date)
     }
     
     func minuteEditor(time: Int, sets: Int) -> Int{

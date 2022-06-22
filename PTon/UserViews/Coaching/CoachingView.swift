@@ -8,74 +8,111 @@
 import SwiftUI
 import Kingfisher
 
+struct Tabs<Label:View>:View{
+    
+    @Binding var tabs:[String]
+    @Binding var selection:Int
+    let underlineColor:Color
+    let label:(String,Bool) -> Label
+    
+    var body: some View{
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(alignment: .center, spacing: 0) {
+                ForEach(tabs,id:\.self) {
+                    self.tab(title:$0)
+                }
+            }
+        }
+    }
+    
+    private func tab(title:String) -> some View{
+        let index = self.tabs.firstIndex(of: title)!
+        let isSelected = index == selection
+        return Button {
+            withAnimation {
+                self.selection = index
+            }
+        } label: {
+            label(title, isSelected)
+                .frame(width:UIScreen.main.bounds.width/5)
+                .padding(.bottom)
+                .background(
+                    Rectangle()
+                        .foregroundColor(.clear)
+                        .overlay(
+                            Rectangle()
+                                .frame(width:UIScreen.main.bounds.width/5,height:2)
+                                .foregroundColor(isSelected ? .black:Color(uiColor: UIColor.lightGray))
+                                .transition(.move(edge: .bottom))
+                            ,alignment: .bottom
+                        )
+                )
+        }
+        .buttonStyle(.plain)
+        
+    }
+}
+
+
 struct CoachingView: View {
     @StateObject var viewModel:CoachViewModel
-    let compareType:[String] = ["Fitness","Aerobic","Back","Chest","Arm","Leg","Shoulder","Abs"]
+    let exercisePartList = exercisePart.allCases
     @State private var selectedTab = 0
-    @State var selectedDate = Date()
     @State var exerciseType = RequestingExerciseType.allCases.map({$0.rawValue})
     
     var body: some View {
         VStack(spacing:0){
-            //TODO: - 날짜 제한하기
-            weekDatePickerView(currentDate: $selectedDate)
-                .onChange(of: selectedDate) { newValue in
-                    viewModel.reloadData(newValue)
-                }
-                .padding(.horizontal)
-                .padding(.bottom)
+            weekDatePickerView(selectedDate: $viewModel.selectedDate)
             
-            Tabs(tabs: $exerciseType,
-                 selection: $selectedTab,
-                 underlineColor: .accentColor) { title, isSelected in
-                Text(title)
-                    .font(.system(size: 14))
-                    .fontWeight(.semibold)
-                    .foregroundColor(isSelected ? .black:Color(uiColor: UIColor.lightGray))
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHGrid(rows: [.init()], alignment: .center) {
+                    ForEach(exercisePartList.indices,id:\.self){ index in
+                        Button {
+                            withAnimation {
+                                selectedTab = index
+                            }
+                        } label: {
+                            Text(exercisePartList[index].description)
+                                .font(.title3.bold())
+                                .foregroundColor(selectedTab == index ? Color.accentColor:.black)
+                                .padding(.horizontal,10)
+                        }
+                    }
+                }
             }
+            .background(Color.white)
+            .frame(height:40)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(height:1.5)
+                    .padding(.top,10)
+                    .padding(.horizontal,-5)
+                ,alignment: .bottom
+            )
             
             VStack{
-                if exerciseType[selectedTab] == "Fitness"{
+                
+                if viewModel.coachExerciseList.filter({$0.part == exercisePartList[selectedTab].rawValue}).isEmpty{
                     
-                    if viewModel.coachExerciseList.filter({$0.exerciseType == "Fitness"}).isEmpty{
-                        nullTextView()
-                    }else{
-                        ScrollView(.vertical, showsIndicators: false) {
-                            ForEach(viewModel.coachExerciseList.filter({$0.exerciseType == "Fitness"}),id:\.self){ exercise in
-                                CoachingFitnessExercise(selectedDate: $selectedDate, exercise: exercise)
+                    nullTextView()
+                    
+                }else{
+                    ScrollView(.vertical, showsIndicators: false) {
+                        ForEach(viewModel.coachExerciseList.filter({$0.part == exercisePartList[selectedTab].rawValue}),id:\.self){ exercise in
+                            if exercise.exerciseHydro == "Aerobic"{
+                                CoachingAerobicCellView(exercise: exercise)
                                     .environmentObject(self.viewModel)
-                                    .padding(.horizontal)
-                                    .padding(.vertical,5)
+                            }else{
+                                CoachingAnAerobicCellView(exercise: exercise)
+                                    .environmentObject(self.viewModel)
                             }
                         }
                     }
-                } else if exerciseType[selectedTab] == "유산소"{
-                    if viewModel.coachExerciseList.filter({$0.exerciseType == "Aerobic"}).isEmpty{
-                        nullTextView()
-                    }else{
-                        ScrollView(.vertical, showsIndicators: false) {
-                            ForEach(viewModel.coachExerciseList.filter({$0.exerciseType == "Aerobic"}),id:\.self) { exercise in
-                                CoachingAerobicCellView(selectedDate: $selectedDate, exercise: exercise)
-                                    .environmentObject(self.viewModel)
-                                    .padding(.horizontal)
-                                    .padding(.vertical,5)
-                            }
-                        }
-                    }
-                } else{
-                    if viewModel.coachExerciseList.filter({$0.exercisePart == compareType[selectedTab]}).isEmpty{
-                        nullTextView()
-                    }else{
-                        ScrollView(.vertical, showsIndicators: false) {
-                            ForEach(viewModel.coachExerciseList.filter({$0.exercisePart == compareType[selectedTab]}),id:\.self){ exercise in
-                                CoachingAnAerobicCellView(selectedDate: $selectedDate, exercise: exercise)
-                                    .environmentObject(self.viewModel)
-                                    .padding(.horizontal)
-                                    .padding(.vertical,5)
-                            }
-                        }
-                    }
+                    .padding()
                 }
+                
+
             }
             .padding(.top,10)
             .background(backgroundColor)
@@ -99,40 +136,27 @@ struct CoachingView: View {
     }
 }
 
-struct CoachingFitnessExercise:View{
-    @EnvironmentObject var viewModel:CoachViewModel
-    @Binding var selectedDate:Date
-    @State var exercise:coachExercise
-    var body: some View{
-        if exercise.exercisePart == "AnAerobic"{
-            CoachingAnAerobicCellView(selectedDate: $selectedDate, exercise: exercise)
-                .environmentObject(self.viewModel)
-        }else if exercise.exercisePart == "Aerobic"{
-            CoachingAerobicCellView(selectedDate: $selectedDate, exercise: exercise)
-                .environmentObject(self.viewModel)
-        }
-    }
-}
-
 struct CoachingAerobicCellView:View{
     @EnvironmentObject var viewModel:CoachViewModel
-    @Binding var selectedDate:Date
-    @State var exercise:coachExercise
+    @State var exercise:RequestingExercise
+    
+    
+    
     var body: some View{
         HStack(spacing:10){
             
-            CircleImage(url: exercise.imageUrl, size: CGSize(width: 50, height: 50))
+            CircleImage(url: exercise.url, size: CGSize(width: 50, height: 50))
             
             
             VStack(alignment: .leading, spacing: 5){
                 Text(exercise.exerciseName)
                     .font(.body)
                 
-                Text("추천 \(exercise.minute ?? 0) 분")
+                Text("추천 \(exercise.minute) 분")
                     .font(.footnote)
                     .foregroundColor(.gray)
                 
-                Text("예상 칼로리")
+                Text("예상 소모 칼로리 \(viewModel.exerciseKcal(exercise))kcal")
                     .foregroundColor(.accentColor)
                     .font(.system(size: 15))
             }
@@ -140,14 +164,13 @@ struct CoachingAerobicCellView:View{
             Spacer()
             
             Button {
-                viewModel.ToggleDone(exercise, selectedDate: selectedDate)
-                guard let index = viewModel.coachExerciseList.firstIndex(where: {$0.exerciseName == self.exercise.exerciseName}) else{return}
-                self.viewModel.coachExerciseList[index].isDone.toggle()
+                viewModel.ToggleDone(exercise)
+
             } label: {
-                Image(systemName: exercise.isDone ? "checkmark.circle":"circle")
+                Image(systemName: exercise.done ? "checkmark.circle":"circle")
             }
             .disabled(
-                convertString(content: selectedDate, dateFormat: "yyyy-MM-dd") != convertString(content: Date(), dateFormat: "yyyy-MM-dd")
+                convertString(content: viewModel.selectedDate, dateFormat: "yyyy-MM-dd") != convertString(content: Date(), dateFormat: "yyyy-MM-dd")
             )
             
         }
@@ -162,12 +185,11 @@ struct CoachingAerobicCellView:View{
 
 struct CoachingAnAerobicCellView:View{
     @EnvironmentObject var viewModel:CoachViewModel
-    @Binding var selectedDate:Date
-    @State var exercise:coachExercise
+    @State var exercise:RequestingExercise
     var body: some View{
         HStack(spacing:10){
             
-            CircleImage(url: exercise.imageUrl, size: CGSize(width: 50, height: 50))
+            CircleImage(url: exercise.url, size: CGSize(width: 50, height: 50))
             
             VStack(alignment: .leading, spacing: 5){
                 Text(exercise.exerciseName)
@@ -184,12 +206,12 @@ struct CoachingAnAerobicCellView:View{
                     Divider()
                         .frame(height:10)
                     
-                    Text("\(exercise.sets ?? 0)세트")
+                    Text("\(exercise.set ?? 0)세트")
                 }
                 .foregroundColor(.gray)
                 .font(.footnote)
                 
-                Text("예상 칼로리")
+                Text("예상 소모 칼로리 \(viewModel.exerciseKcal(exercise))kcal")
                     .foregroundColor(.accentColor)
                     .font(.system(size: 15))
             }
@@ -197,15 +219,12 @@ struct CoachingAnAerobicCellView:View{
             Spacer()
             
             Button {
-                viewModel.ToggleDone(exercise, selectedDate: selectedDate)
-                guard let index = viewModel.coachExerciseList.firstIndex(where: {$0.exerciseName == self.exercise.exerciseName}) else{return}
-                self.viewModel.coachExerciseList[index].isDone.toggle()
-                
+                viewModel.ToggleDone(exercise)
             } label: {
-                Image(systemName: exercise.isDone ? "checkmark.circle":"circle")
+                Image(systemName: exercise.done ? "checkmark.circle":"circle")
             }
             .disabled(
-                convertString(content: selectedDate, dateFormat: "yyyy-MM-dd") != convertString(content: Date(), dateFormat: "yyyy-MM-dd")
+                convertString(content: viewModel.selectedDate, dateFormat: "yyyy-MM-dd") != convertString(content: Date(), dateFormat: "yyyy-MM-dd")
             )
             
         }

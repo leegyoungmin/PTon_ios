@@ -353,11 +353,20 @@ struct ContextMenuHelper<Content:View,Preview:View>:UIViewRepresentable{
     }
 }
 
+extension Encodable{
+    var toDictionary:[String:Any]?{
+        guard let object = try? JSONEncoder().encode(self) else{return nil}
+        guard let dictionary = try? JSONSerialization.jsonObject(with: object,options: []) as? [String:Any] else{return nil}
+        return dictionary
+    }
+}
+
 func convertPercent(_ rate:Double) -> String{
     let formatter = NumberFormatter()
     formatter.numberStyle = .percent
     return formatter.string(for: rate) ?? formatter.string(from: NSNumber(value: 0))!
 }
+
 
 //MARK: - PREVIEWS
 struct Extensions_previews:PreviewProvider{

@@ -9,306 +9,286 @@ import Foundation
 import SwiftUI
 import Kingfisher
 
-
 enum RequestingExerciseType:String,CaseIterable{
     case Fitness = "Fitness",Aerobic = "유산소",Back = "등",Chest = "가슴",Arm = "팔",Leg = "하체",Shoulder = "어깨", Abs = "복근"
 }
 
-
 struct RequestingExerciseView:View{
-    let compareType:[String] = ["Fitness","Aerobic","Back","Chest","Arm","Leg","Shoulder","Abs"]
-    @State private var selectedTab = 0
-    @State var exerciseType = RequestingExerciseType.allCases.map({$0.rawValue})
     @StateObject var viewmodel:RequestingExerciseViewModel
+    @State var selection:Int = 0
+    let exercisePartList = exercisePart.allCases
     var body: some View{
-        VStack{
-            Tabs(tabs: $exerciseType,
-                 selection: $selectedTab,
-                 underlineColor: .accentColor) { title, isSelected in
-                Text(title)
-                    .font(.system(size: 14))
-                    .fontWeight(.semibold)
-                    .foregroundColor(isSelected ? .black:Color(uiColor: UIColor.lightGray))
-            }
-            VStack{
-                if viewmodel.ExerciseList[compareType[selectedTab]] != nil{
-                    let exercises = viewmodel.ExerciseList[compareType[selectedTab]]!.sorted(by: {$0.name<$1.name})
-                    
-                    if exercises.isEmpty{
-                        Spacer()
-                        Text("저장된 운동이 없습니다.")
-                        Spacer()
-                    }else{
-                        List{
-                            ForEach(exercises,id: \.self) { exercise in
-                                if exercise.type == "Aerobic"{
-                                    RequestingExerciseAeCellView(isContain: exercise.isContain, exercise: exercise)
-                                        .environmentObject(self.viewmodel)
-                                }else{
-                                    RequestingExerciseAnCellView(exercise: exercise,isContain: exercise.isContain)
-                                        .environmentObject(self.viewmodel)
-                                }
+        VStack(spacing:0){
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHGrid(rows: [.init()], alignment: .center) {
+                    ForEach(exercisePartList.indices,id:\.self){ index in
+                        Button {
+                            withAnimation {
+                                selection = index
                             }
+                        } label: {
+                            Text(exercisePartList[index].description)
+                                .font(.title3.bold())
+                                .foregroundColor(selection == index ? Color.accentColor:.black)
+                                .padding(.horizontal,10)
                         }
-                        .listStyle(.plain)
-                        .listRowSeparator(.hidden)
-                    }
-                    
-                    
-                }else if viewmodel.ExerciseList["AnAerobic"] != nil{
-                    let exercises = viewmodel.ExerciseList["AnAerobic"]!.filter{$0.part == compareType[selectedTab]}.sorted(by: {$0.name<$1.name})
-                    
-                    if exercises.isEmpty{
-                        Spacer()
-                        Text("저장된 운동이 없습니다.")
-                        Spacer()
-                    }else{
-                        List{
-                            ForEach(exercises,id:\.self){ exercise in
-                                RequestingExerciseAnCellView(exercise: exercise,isContain: exercise.isContain)
-                                    .environmentObject(self.viewmodel)
-                            }
-                        }
-                        .listStyle(.plain)
-                        .listRowSeparator(.hidden)
                     }
                 }
+            }
+            .background(Color.white)
+            .frame(height:40)
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color.gray.opacity(0.3))
+                    .frame(height:1.5)
+                    .padding(.top,10)
+                    .padding(.horizontal,-5)
+                ,alignment: .bottom
+            )
+            if viewmodel.trainerSavedExercises.filter({$0.exercisePart == exercisePartList[selection]}).isEmpty{
+                Spacer()
+                Text("아직 저장된 운동이 없습니다.")
+                Spacer()
+            }else{
+                List{
+                    ForEach(viewmodel.trainerSavedExercises.filter({$0.exercisePart == exercisePartList[selection]}),id:\.self){ exercise in
+                        if exercise.exerciseHydro == .compound{
+                            RequestingExerciseAerobicCellView(exercise: exercise)
+                                .listRowBackground(backgroundColor)
+                            
+                        }else if exercise.exerciseHydro == .AnAerobic{
+                            RequestingExerciseAnAerobicCellView(exercise: exercise)
+                                .listRowBackground(backgroundColor)
+                            
+                        }else{
+                            if exercise.exercisePart != nil{
+                                RequestingExerciseAnAerobicCellView(exercise: exercise)
+                                    .listRowBackground(backgroundColor)
+                                
+                            }else{
+                                RequestingExerciseAerobicCellView(exercise: exercise)
+                                    .listRowBackground(backgroundColor)
+                                
+                            }
+                        }
+                    }
+                }
+                .environmentObject(self.viewmodel)
+                .listStyle(.plain)
+                .listRowSeparator(.hidden)
+                .background(backgroundColor)
                 
-                Button {
-                    viewmodel.setData()
-                } label: {
-                    Text("운동전송하기")
-                        .font(.title2)
+            }
+            
+            Button {
+                DispatchQueue.main.async {
+                    viewmodel.updateDataBase()
+                    
+                }
+            } label: {
+                HStack{
+                    Spacer()
+                    Text("요청하기")
                         .foregroundColor(.white)
-                        .frame(width: UIScreen.main.bounds.width)
+                        .font(.title2.bold())
+                        .padding(.vertical,10)
+                    
+                    Spacer()
                 }
-                .padding(5)
-                .padding(.top,5)
-                .buttonStyle(.plain)
-                .background(Color.accentColor.edgesIgnoringSafeArea(.bottom))
-                
+
             }
-            .onTapGesture {
-                UIApplication.shared.endEditing()
-            }
+            .background(Color.accentColor)
+            .cornerRadius(15)
+            .padding(.horizontal)
+            .padding(.vertical,3)
+        }
+        .background(backgroundColor)
+        .onTapGesture {
+            UIApplication.shared.endEditing()
         }
     }
-    
-    struct RequestingExerciseAeCellView:View{
-        @EnvironmentObject var viewmodel:RequestingExerciseViewModel
-        @State var isContain:Bool = false
-        @State var minuteText:String = ""
-        let exercise:RequestingExercise
-        var body: some View{
-            HStack{
-                
-                CircleImage(url: exercise.url, size: CGSize(width: 50, height: 50))
-                
-                Text(exercise.name)
-                    .lineLimit(1)
-                    .multilineTextAlignment(.leading)
-                    .minimumScaleFactor(0.1)
-                
-                Spacer()
-                
-                
-                VStack(alignment: .center,spacing:0){
-                    TextField("", text: $minuteText)
-                        .frame(width: 40, alignment: .center)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.accentColor)
-                    
-                    Text("Min")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                }
-                .padding(5)
-                .background(
-                    Circle()
-                        .foregroundColor(Color("Background"))
-                )
-                
-                Button {
-                    if minuteText == ""{
-                        print("안되용")
-                    }else{
-                        viewmodel.setExerciseData(data: exercise,set: "",weight: "",time: "",minute: minuteText)
-                        self.isContain = true
-                    }
-                    
-                } label: {
-                    Image(systemName: isContain ? "checkmark.circle.fill":"circle")
-                }
-                .buttonStyle(.plain)
-                .disabled(isContain)
-                
-            }
-            .padding()
-            .background(
-                Rectangle()
-                    .strokeBorder(.gray.opacity(0.1))
-            )
-            .onAppear {
-                if exercise.minute != nil{
-                    minuteText = exercise.minute!.description
-                }
-            }
-        }
-    }
-    
-    
-    struct RequestingExerciseAnCellView:View{
-        @EnvironmentObject var viewmodel:RequestingExerciseViewModel
-        var exercise:RequestingExercise
-        @State var isContain:Bool = false
-        @State var weightText:String = ""
-        @State var timeText:String = ""
-        @State var setText:String = ""
-        var body: some View{
-            HStack{
-                CircleImage(url: exercise.url, size: CGSize(width: 50, height: 50))
-                
-                Text(exercise.name)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-                    .minimumScaleFactor(0.5)
-                
-                Spacer()
-                
-                // 1. Kg
-                VStack(alignment: .center,spacing:0){
-                    TextField("", text: $weightText)
-                        .frame(width: 40, alignment: .center)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.accentColor)
-                    
-                    Text("Kg")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                }
-                .padding(5)
-                .background(
-                    Circle()
-                        .foregroundColor(Color("Background"))
-                )
-                
-                //2. Time
-                VStack(alignment: .center,spacing:0){
-                    TextField("", text: $timeText)
-                        .frame(width: 40, alignment: .center)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.accentColor)
-                    
-                    Text("Time")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                }
-                .padding(5)
-                .background(
-                    Circle()
-                        .foregroundColor(Color("Background"))
-                )
-                
-                //3. Set
-                VStack(alignment: .center,spacing:0){
-                    TextField("", text: $setText)
-                        .frame(width: 40, alignment: .center)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.accentColor)
-                    
-                    Text("Set")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-                }
-                .padding(5)
-                .background(
-                    Circle()
-                        .foregroundColor(Color("Background"))
-                )
-                
-                Button {
-                    if setText == "" || weightText == "" || timeText == ""{
-                        print("안되용")
-                    }else{
-                        viewmodel.setExerciseData(data: exercise,set: setText,weight: weightText,time: timeText, minute: "")
-                        self.isContain = true
-                    }
-                    
-                    
-                } label: {
-                    Image(systemName: isContain ? "checkmark.circle.fill":"circle")
-                }
-                .buttonStyle(.plain)
-                .disabled(isContain)
-                
-                
-            }
-            .padding()
-            .background(
-                Rectangle()
-                    .strokeBorder(.gray.opacity(0.1))
-            )
-            .onAppear {
-                if exercise.set != nil && exercise.weight != nil && exercise.time != nil{
-                    self.setText = exercise.set!.description
-                    self.weightText = exercise.weight!.description
-                    self.timeText = exercise.time!.description
-                }
-            }
-        }
-    }
-    
-    struct RequestingExerciseView_Previews:PreviewProvider{
-        static var previews: some View{
-                    RequestingExerciseView(viewmodel: RequestingExerciseViewModel("asdasd", "asdasd", selecteDate: "asjndjkasd"))
-//            RequestingExerciseAnCellView(exercise: RequestingExercise(name: "asd", type: "asda", paramter: "asda", url: "asdas"))
-//                .previewLayout(.sizeThatFits)
-        }
-    }
-    
 }
 
-struct Tabs<Label:View>:View{
+struct RequestingExerciseAnAerobicCellView:View{
+    @EnvironmentObject var viewModel:RequestingExerciseViewModel
+    @State var inputWeight:String = ""
+    @State var inputTime:String = ""
+    @State var inputSet:String = ""
+    @State var didSelected:Bool = false
+    let exercise:TrainerSaveExercise
     
-    @Binding var tabs:[String]
-    @Binding var selection:Int
-    let underlineColor:Color
-    let label:(String,Bool) -> Label
-    
-    var body: some View{
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(alignment: .center, spacing: 0) {
-                ForEach(tabs,id:\.self) {
-                    self.tab(title:$0)
-                }
-            }
-        }
+    private func isNotAllWriteData()->Bool{
+        return inputWeight.isEmpty || inputTime.isEmpty || inputSet.isEmpty
     }
     
-    private func tab(title:String) -> some View{
-        let index = self.tabs.firstIndex(of: title)!
-        let isSelected = index == selection
-        return Button {
-            withAnimation {
-                self.selection = index
+    var body: some View{
+        HStack{
+            
+            KFImage(URL(string: exercise.url))
+                .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
+                .resizable()
+                .scaledToFill()
+                .frame(width: 50, height: 50, alignment: .center)
+                .cornerRadius(35)
+                .padding(5)
+            
+            VStack(alignment: .leading, spacing: 10) {
+                Text("운동 강도 자리")
+                    .font(.footnote)
+                    .fontWeight(.light)
+                
+                Text(exercise.exerciseName)
+                    .fontWeight(.semibold)
+                HStack{
+                    VStack(spacing:0){
+                        TextField("", text: $inputWeight)
+                            .keyboardType(.numberPad)
+                            .textFieldStyle(.plain)
+                            .background(backgroundColor)
+                            .multilineTextAlignment(.center)
+                            .font(.callout)
+                        
+                        Text("kg")
+                            .foregroundColor(.gray.opacity(0.5))
+                    }
+                    .frame(width: 40, height: 40, alignment: .center)
+                    .padding(5)
+                    .background(backgroundColor)
+                    .cornerRadius(50)
+                    
+                    VStack(spacing:0){
+                        TextField("", text: $inputTime)
+                            .keyboardType(.numberPad)
+                            .textFieldStyle(.plain)
+                            .background(backgroundColor)
+                            .multilineTextAlignment(.center)
+                            .font(.callout)
+                        
+                        Text("Time")
+                            .foregroundColor(.gray.opacity(0.5))
+                    }
+                    .frame(width: 40, height: 40, alignment: .center)
+                    .padding(5)
+                    .background(backgroundColor)
+                    .cornerRadius(50)
+                    
+                    VStack(spacing:0){
+                        TextField("", text: $inputSet)
+                            .keyboardType(.numberPad)
+                            .textFieldStyle(.plain)
+                            .background(backgroundColor)
+                            .multilineTextAlignment(.center)
+                            .font(.callout)
+                        
+                        Text("set")
+                            .foregroundColor(.gray.opacity(0.5))
+                    }
+                    .frame(width: 40, height: 40, alignment: .center)
+                    .padding(5)
+                    .background(backgroundColor)
+                    .cornerRadius(50)
+                }
+                
             }
-        } label: {
-            label(title, isSelected)
-                .frame(width:UIScreen.main.bounds.width/5)
-                .padding(.bottom)
-                .background(
-                    Rectangle()
-                        .foregroundColor(.clear)
-                        .overlay(
-                            Rectangle()
-                                .frame(width:UIScreen.main.bounds.width/5,height:2)
-                                .foregroundColor(isSelected ? .black:Color(uiColor: UIColor.lightGray))
-                                .transition(.move(edge: .bottom))
-                            ,alignment: .bottom
-                        )
-                )
+            .padding(.vertical)
+            
+            Spacer()
+            
+            Toggle(isOn: $didSelected) {
+                Text("")
+            }
+            .toggleStyle(CheckboxStyle())
+            .onChange(of: didSelected) { newValue in
+                if isNotAllWriteData(){
+                    
+                }else{
+                    print("did selected Change \(newValue)")
+                    let data = RequestingExercise(exerciseName: exercise.exerciseName, exerciseHydro: "AnAerobic",
+                                                  minute: viewModel.minuteEditor(time: Int(inputTime) ?? 0, sets: Int(inputSet) ?? 0),
+                                                  paramter: exercise.paramter, part: exercise.exercisePart?.rawValue ?? "", set: Int(inputSet), time: Int(inputTime), url: exercise.url, weight: Int(inputWeight), done: false)
+                    
+                    viewModel.selectedExerciseList.append(data)
+                }
+            }
+            .disabled(isNotAllWriteData())
         }
-        .buttonStyle(.plain)
-        
+        .padding(.horizontal)
+        .background(.white)
+        .cornerRadius(1)
+        .shadow(color: .gray.opacity(0.3), radius: 1, x: 0, y: 0)
+    }
+}
+
+struct RequestingExerciseAerobicCellView:View{
+    @EnvironmentObject var viewModel:RequestingExerciseViewModel
+    @State var inputMinute:String = ""
+    @State var didSelected:Bool = false
+    let exercise:TrainerSaveExercise
+    
+    var body: some View{
+        HStack(alignment: .center) {
+            KFImage(URL(string: exercise.url))
+                .onFailureImage(KFCrossPlatformImage(named: "defaultImage"))
+                .resizable()
+                .scaledToFill()
+                .frame(width: 50, height: 50, alignment: .center)
+                .cornerRadius(35)
+                .padding(5)
+            
+            VStack(alignment: .leading, spacing: 10) {
+                Text("운동 강도자리")
+                    .font(.footnote)
+                    .fontWeight(.light)
+                
+                Text(exercise.exerciseName)
+                    .fontWeight(.semibold)
+                
+                VStack(spacing:0){
+                    TextField("", text: $inputMinute)
+                        .keyboardType(.numberPad)
+                        .textFieldStyle(.plain)
+                        .background(backgroundColor)
+                        .multilineTextAlignment(.center)
+                        .font(.callout)
+                    
+                    Text("분")
+                        .foregroundColor(.gray.opacity(0.5))
+                }
+                .frame(width: 40, height: 40, alignment: .center)
+                .padding(5)
+                .background(backgroundColor)
+                .cornerRadius(50)
+            }
+            .padding(.vertical)
+            
+            Spacer()
+            
+            Toggle(isOn: $didSelected) {
+                Text("")
+            }
+            .toggleStyle(CheckboxStyle())
+            .onChange(of: didSelected) { newValue in
+                if inputMinute.isEmpty == false{
+                    let data = RequestingExercise(exerciseName: exercise.exerciseName, exerciseHydro: "Aerobic", minute: Int(inputMinute) ?? 0, paramter: exercise.paramter, part: exercise.exercisePart?.rawValue ?? "", url: exercise.url, done: false)
+                    
+                    viewModel.selectedExerciseList.append(data)
+                }
+            }
+            .disabled(inputMinute.isEmpty)
+        }
+        .padding(.horizontal)
+        .background(.white)
+        .cornerRadius(1)
+        .shadow(color: .gray.opacity(0.3), radius: 1, x: 0, y: 0)
+    }
+}
+
+struct RequestingExerciseView_Previews:PreviewProvider{
+    static var viewModel = RequestingExerciseViewModel("", "", selecteDate: "")
+    static var previews: some View{
+//                        RequestingExerciseView(viewmodel: RequestingExerciseViewModel("kakao:1967260938", "000001", selecteDate: "asjndjkasd"))
+        RequestingExerciseAnAerobicCellView(exercise: TrainerSaveExercise(exerciseName: "asd", paramter: 3.0, url: "", exerciseHydro: .compound, exercisePart: .Aerobic))
+            .previewLayout(.sizeThatFits)
+            .environmentObject(self.viewModel)
     }
 }
