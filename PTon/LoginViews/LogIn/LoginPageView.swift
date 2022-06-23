@@ -8,8 +8,13 @@
 import Foundation
 import SwiftUI
 
+enum userType:String,CaseIterable{
+    case trainer,user
+}
+
 struct LoginPageView:View{
     @EnvironmentObject var authService:AuthService
+    @State var userType:userType?
     var body: some View{
         VStack{
             HStack{
@@ -26,6 +31,7 @@ struct LoginPageView:View{
             Spacer()
             
             Button {
+                authService.authType = "Kakao"
                 authService.validationKakaoToke()
             } label: {
                 kakaoShape()
@@ -33,6 +39,8 @@ struct LoginPageView:View{
             }
             
             Button {
+                
+                authService.authType = "Google"
                 authService.GoogleLogin()
             } label: {
                 GoogleShape()
@@ -41,6 +49,7 @@ struct LoginPageView:View{
             .buttonStyle(.plain)
             
             Button {
+                authService.authType = "Apple"
                 authService.AppleLogin()
             } label: {
                 AppleShape()
@@ -53,7 +62,14 @@ struct LoginPageView:View{
             LinearGradient(colors: [.gray.opacity(0.5),.accentColor.opacity(0.5)], startPoint: .topLeading, endPoint: .bottomTrailing)
                 .edgesIgnoringSafeArea(.all)
         )
-        
+        .fullScreenCover(isPresented: $authService.isNewUser,onDismiss: {
+            authService.checkUserType()
+        }) {
+            BaseInformationPage(viewModel: BaseInfoViewModel(userId: authService.userId(),
+                                                             userName: authService.userName(),
+                                                             email: authService.getuserEmail(),
+                                                             loginApi: authService.getauthType()))
+        }
     }
 }
 

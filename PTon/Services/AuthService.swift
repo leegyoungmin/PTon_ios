@@ -10,24 +10,28 @@ import FirebaseFunctions
 import KakaoSDKAuth
 import KakaoSDKCommon
 import FirebaseAuth
+import Firebase
+import FirebaseDatabase
 //import NaverThirdPartyLogin
 import Alamofire
 import GoogleSignIn
-import Firebase
 import KakaoSDKUser
 import CryptoKit
 import SwiftUI
 import AuthenticationServices
+import SwiftPrettyPrint
 
 class AuthService:NSObject,ObservableObject{
     fileprivate var currentNonce:String?
-    @Published var user:FirebaseAuth.User?
+    @Published var user = FirebaseAuth.Auth.auth().currentUser
     @Published var usertype:userType?
     @Published var isNotLogged:Bool = false
+    @Published var isNewUser:Bool = false
+    @Published var authType:String?
     
     override init(){
         super.init()
-        self.user = Firebase.Auth.auth().currentUser
+        LogOut()
         
         self.checkUserType()
     }
@@ -61,16 +65,47 @@ class AuthService:NSObject,ObservableObject{
                 }
             }
     }
-
     
+    func userId()->String{
+        guard let userid = user?.uid else{return ""}
+        return userid
+    }
     
+    func getuserEmail()->String{
+        guard let userEmail = user?.email else{return ""}
+        return userEmail
+    }
+    
+    func getauthType()->String{
+        guard let authType = authType else {
+            return ""
+        }
+        
+        return authType
+    }
+    
+    func userName()->String{
+        guard let userName = user?.displayName else{return ""}
+        return userName
+    }
     
     func customTokenLogIn(_ customToken:String){
         FirebaseAuth.Auth.auth().signIn(withCustomToken: customToken) { result, error in
             print("Error in custom token Login \(error.debugDescription)")
             
             if error == nil{
+                Pretty.prettyPrint("custom token is new user \(result?.additionalUserInfo?.isNewUser)")
+                //                result?
+                guard let isNewUser = result?.additionalUserInfo?.isNewUser,
+                      isNewUser == true else{
+                    //is not new user
+                    self.user = FirebaseAuth.Auth.auth().currentUser
+                    self.checkUserType()
+                    return
+                }
+                
                 self.user = FirebaseAuth.Auth.auth().currentUser
+                self.isNewUser = isNewUser
                 self.checkUserType()
             }
         }
@@ -92,6 +127,7 @@ class AuthService:NSObject,ObservableObject{
 extension AuthService{
     
     func validationKakaoToke(){
+        self.authType = "Kakao"
         if AuthApi.hasToken(){
             UserApi.shared.accessTokenInfo { info, err in
                 if let err = err {
@@ -104,7 +140,6 @@ extension AuthService{
                 }else{
                     //에러 없음
                     print("Not error in kakako Token")
-                    print(FirebaseAuth.Auth.auth().currentUser)
                     let token = TokenManager.manager.getToken()
                     self.kakaoCloudFunctions(token)
                     
@@ -141,7 +176,7 @@ extension AuthService{
         guard let token = token else {
             return
         }
-
+        
         Functions.functions().httpsCallable("kakaoToken").call(["access_token":token.accessToken]) { result, error in
             if let error = error as NSError? {
                 if error.domain == FunctionsErrorDomain{
@@ -201,6 +236,7 @@ extension AuthService{
     
     //애플 로그인 호출 메소드
     func AppleLogin(){
+        self.authType = "Apple"
         let nonce = randomNonceString()
         self.currentNonce = nonce
         let request = ASAuthorizationAppleIDProvider().createRequest()
@@ -216,12 +252,13 @@ extension AuthService{
 //MARK: - GOOGLE
 extension AuthService{
     func GoogleLogin(){
+        self.authType = "Google"
         if GIDSignIn.sharedInstance.hasPreviousSignIn(){
             GIDSignIn.sharedInstance.restorePreviousSignIn { [unowned self] user, error in
                 self.googleFirebaseLogin(for: user, with: error)
             }
         }else{
-            guard let clientId = FirebaseApp.app()?.options.clientID else{return}
+            guard let clientId = FirebaseOptions.defaultOptions()?.clientID else{return}
             let config = GIDConfiguration(clientID: clientId)
             
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else{return}
@@ -248,8 +285,14 @@ extension AuthService{
                 print("Error in Google Firebase Login \(error.localizedDescription)")
                 
             }else{
-                self.user = FirebaseAuth.Auth.auth().currentUser
-                self.checkUserType()
+                guard let isNewUser = result?.additionalUserInfo?.isNewUser,
+                      isNewUser == true else {
+                    self.user = result?.user
+                    self.checkUserType()
+                    return
+                }
+                self.user = result?.user
+                self.isNewUser = isNewUser
             }
         }
     }

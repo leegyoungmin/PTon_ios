@@ -8,89 +8,107 @@
 import SwiftUI
 
 struct BodyInfoPage: View {
-    @ObservedObject var bodyViewModel = BodyInfoViewModel()
-    @EnvironmentObject var errorHandle:ErrorHandling
-    @Binding var isNavigatePast:Bool
-    @State var userName:String
-    @State var userEmail:String
-    var body: some View {
-        VStack{
-            HStack{
-                Text("회원 가입")
-                    .font(.system(size: 30))
-                    .fontWeight(.bold)
-                Spacer()
-            }
-            .padding(.vertical,20)
-            
-            bodyCardView(title: "키", unit: "cm", value: $bodyViewModel.height)
-            bodyCardView(title: "체중", unit: "kg", value: $bodyViewModel.weight)
-            bodyCardView(title: "체지방률", unit: "%", value: $bodyViewModel.fat)
-            bodyCardView(title: "골격근량", unit: "kg", value: $bodyViewModel.muscle)
-            
-            Button {
-                print("Tapped Button")
-                do{
-                    try self.bodyViewModel.ValidValue()
-                    self.bodyViewModel.uploadData {
-                        self.isNavigatePast = false
-                    }
-                } catch{
-                    self.errorHandle.handle(error: error)
-                }
-                
-            } label: {
-                HStack(alignment:.center){
-                    Text("입력 완료")
-                        .font(.system(size: 20))
-                        .fontWeight(.bold)
-                    
-                    Image(systemName: "arrow.right.circle.fill")
-                        .font(.system(size: 25))
-                }
-                .padding(.vertical,8)
-                .padding(.horizontal)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 25)
-                        .stroke(lineWidth: 2)
-                )
-                .foregroundColor(.purple)
-            }
-            .buttonStyle(.plain)
-            .padding()
-            
-            Spacer()
-        }
-        .padding(.horizontal)
-        .navigationTitle("신체 정보")
-    }
-}
-
-struct bodyCardView:View{
-    @State var title:String
-    @State var unit:String
-    @Binding var value:String
-    var body: some View{
+    @StateObject var viewModel = BodyInfoViewModel()
+    @ViewBuilder
+    func titleView(_ title:String)->some View{
         HStack{
             Text(title)
+                .font(.title2.bold())
                 .foregroundColor(.black)
-                .font(.title2)
-                .fontWeight(.semibold)
+            
             Spacer()
-            TextField("", text: $value)
-                .textFieldStyle(.roundedBorder)
-                .frame(width: 100)
-            Text(unit)
-                .font(.title2)
-                .fontWeight(.semibold)
         }
-        .padding(.horizontal)
+    }
+    var body: some View{
+        VStack{
+            VStack{
+                //height
+                HStack{
+                    titleView("키")
+                    
+                    Spacer()
+                    
+                    TextField("", text: $viewModel.height)
+                        .padding(10)
+                        .background(backgroundColor)
+                        .cornerRadius(10)
+                    
+                    Text("cm")
+                        .frame(maxWidth:30)
+                }
+                
+                //weight
+                HStack{
+                    titleView("몸무게")
+                    
+                    Spacer()
+                    
+                    TextField("", text: $viewModel.weight)
+                        .padding(10)
+                        .background(backgroundColor)
+                        .cornerRadius(10)
+                    Text("kg")
+                        .frame(maxWidth:30)
+                }
+                
+                //Muscle
+                HStack{
+                    titleView("근골격근량")
+                    
+                    Spacer()
+                    
+                    TextField("", text: $viewModel.muscle)
+                        .padding(10)
+                        .background(backgroundColor)
+                        .cornerRadius(10)
+                    Text("kg")
+                        .frame(maxWidth:30)
+                }
+                
+                //Fat
+                HStack{
+                    titleView("체지방률")
+                    
+                    Spacer()
+                    
+                    TextField("", text: $viewModel.fat)
+                        .padding(10)
+                        .background(backgroundColor)
+                        .cornerRadius(10)
+                    Text("kg")
+                        .frame(maxWidth:30)
+                }
+            }
+            .padding(10)
+            .background(.white)
+            .cornerRadius(10)
+            
+            Spacer()
+            
+            Button {
+                print(123)
+            } label: {
+                Text("저장하기")
+                    .font(.title2)
+                    .foregroundColor(.white)
+                    .padding(.vertical,5)
+            }
+            .padding(5)
+            .frame(width:UIScreen.main.bounds.width*0.8)
+            .background(Color.accentColor)
+            .cornerRadius(20)
+
+        }
+        .padding()
+        .background(backgroundColor)
+        .navigationTitle("신체정보 기입")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
-
 struct BodyInfoPage_Previews: PreviewProvider {
     static var previews: some View {
-        BodyInfoPage(isNavigatePast: .constant(true), userName: "이경민", userEmail: "cow970814@naver.com")
-            .withErrorHandling()
+        NavigationView{
+            BodyInfoPage()
+        }
     }
 }

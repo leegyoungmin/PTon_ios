@@ -37,12 +37,8 @@ class UserBaseViewModel:ObservableObject{
     @Published var userKcal:Int = 0
     @Environment(\.presentationMode) var presentaionMode
     let reference = Firebase.Database.database().reference()
-    var rawValue:Int = UserDefaults.standard.integer(forKey: "LoginApi")
-    var loginApi:LoginType
     
     init(){
-        self.loginApi = LoginType(rawValue: rawValue) ?? .none
-        
         self.registerToken {
             self.fetchData {
                 self.settingtrainerName()
@@ -268,67 +264,11 @@ class UserBaseViewModel:ObservableObject{
     
     //TODO: 로그 아웃 메소드
     func logout(completion:@escaping()->Void){
-        switch loginApi {
-        case .kakao:
-            UserApi.shared.logout { error in
-                if let error = error {
-                    print("Error : \(error)")
-                }else{
-                    do{
-                        try FirebaseAuth.Auth.auth().signOut()
-                        UserDefaults.standard.set(LoginType.none.rawValue, forKey: "LoginApi")
-                        completion()
-                    }catch{
-                        print("Log Out Fail in Kakao")
-                    }
-                    
-                }
-            }
-            
-        case .naver:
-            print("Login Error Naver")
-//            do{
-//                NaverThirdPartyLoginConnection.getSharedInstance().requestDeleteToken()
-//
-//                UserDefaults.standard.set(LoginType.none.rawValue, forKey: "LoginApi")
-//                try FirebaseAuth.Auth.auth().signOut()
-//
-//                completion()
-//            }catch{
-//                print("Error in LogOut")
-//            }
-            
-        case .google:
-            do{
-                UserDefaults.standard.set(LoginType.none.rawValue, forKey: "LoginApi")
-                try FirebaseAuth.Auth.auth().signOut()
-                GIDSignIn.sharedInstance.signOut()
-                
-                completion()
-            }catch{
-                print("Error in LogOut")
-            }
-
-        case .apple:
-            do{
-                UserDefaults.standard.set(LoginType.none.rawValue, forKey: "LoginApi")
-                try FirebaseAuth.Auth.auth().signOut()
-                
-                completion()
-            }catch{
-                print("Error in LogOut")
-            }
-            
-        case .none:
-            do{
-                try FirebaseAuth.Auth.auth().signOut()
-                UserDefaults.standard.set(LoginType.none.rawValue, forKey: "LoginApi")
-                completion()
-            }
-            catch{
-                print("Error in Logout")
-            }
-            
+        do{
+            try FirebaseAuth.Auth.auth().signOut()
+            completion()
+        }catch{
+            print("Log Out Fail in Kakao")
         }
     }
     

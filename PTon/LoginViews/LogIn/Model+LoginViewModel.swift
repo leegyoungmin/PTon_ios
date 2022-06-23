@@ -38,15 +38,15 @@ class LoginViewModel:NSObject, ObservableObject{
     @State var userType:userType?
     @Published var isTrainer:Bool?
     
-    func AutoLogin(loginApi:LoginType){
-        switch loginApi{
-        case .kakao: self.validationKakaoToken()
-        case .naver: print("tapped Naver")
-        case .google: self.googleLogin()
-        case .apple: self.AppleLogin()
-        case .none: print("login API None")
-        }
-    }
+//    func AutoLogin(loginApi:LoginType){
+//        switch loginApi{
+//        case .kakao: self.validationKakaoToken()
+//        case .naver: print("tapped Naver")
+//        case .google: self.googleLogin()
+//        case .apple: self.AppleLogin()
+//        case .none: print("login API None")
+//        }
+//    }
     
     var name:String{
         guard let name = userBaseModel.name else{return ""}
@@ -133,7 +133,7 @@ class LoginViewModel:NSObject, ObservableObject{
                             self.userBaseModel.email = user?.kakaoAccount?.email
                             self.userBaseModel.name = user?.kakaoAccount?.profile?.nickname
                             print(self.userBaseModel)
-                            UserDefaults.standard.set(LoginType.kakao.rawValue, forKey: "LoginApi")
+//                            UserDefaults.standard.set(LoginType.kakao.rawValue, forKey: "LoginApi")
                             self.isShowLoading = false
                             self.validNewUser(newuser)
                         }

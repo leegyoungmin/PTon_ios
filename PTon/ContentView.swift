@@ -23,7 +23,6 @@ struct ContentView:View{
                 }
             }else{
                 VStack{}
-                    .navigationBarTitleDisplayMode(.inline)
             }
         }
         .navigationBarHidden(true)

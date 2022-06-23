@@ -194,6 +194,22 @@ struct Question:Codable,Hashable{
     let answer2:String
 }
 extension String{
+    
+    enum RegexType{
+        case mobilePhoneNumber
+        case birth
+        
+        fileprivate var pattern:String{
+            switch self{
+            case .mobilePhoneNumber:
+                return "^01[0-1, 7][0-9]{7,8}$"
+            case .birth:
+                return "[0-9].{6}"
+            }
+        }
+    }
+    
+    
     var bool:Bool{
         if self.lowercased() == "false"{
             return false
@@ -203,6 +219,46 @@ extension String{
             return false
         }
     }
+    
+    func isValidWith(regex:RegexType)->Bool{
+        guard let gRegex = try? NSRegularExpression(pattern: regex.pattern) else{
+            return false
+        }
+        
+        let range = NSRange(location: 0, length: self.utf16.count)
+        
+        if gRegex.firstMatch(in: self, options: [], range: range) != nil{
+            return true
+        }
+        
+        return false
+    }
+    
+    func formatMobileNumber()->String{
+        let cleanPhoneNumber = components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        
+        let mark = "XXX-XXXX-XXXX"
+        
+        var result = ""
+        var startIndex = cleanPhoneNumber.startIndex
+        var endIndex = cleanPhoneNumber.endIndex
+        
+        for char in mark where startIndex < endIndex{
+            if char == "X"{
+                result.append(cleanPhoneNumber[startIndex])
+                startIndex = cleanPhoneNumber.index(after: startIndex)
+            } else{
+                result.append(char)
+            }
+        }
+        
+        return result
+    }
+    
+    func cleanMobileNumberFormat()->String{
+        return self.replacingOccurrences(of: "-", with: "")
+    }
+    
 }
 
 
