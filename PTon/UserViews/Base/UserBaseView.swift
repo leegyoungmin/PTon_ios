@@ -13,14 +13,21 @@ struct UserBaseView: View {
     @StateObject var UserBaseViewModel:UserBaseViewModel
     @State var selectedIndex:Int = 0
     @State var StretchingIndex:StretchingType = .request
-
+    
     var body: some View {
         NavigationView {
             TabView(selection: $selectedIndex){
                 HomeView()
                     .environmentObject(self.UserBaseViewModel)
                     .tabItem {
-                        Label("홈", systemImage: "person.fill")
+                        VStack{
+                            Image("houseIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50, alignment: .center)
+                            
+                            Text("홈")
+                        }
                     }
                     .tag(0)
                     .onTapGesture {
@@ -30,7 +37,14 @@ struct UserBaseView: View {
                            userId: UserBaseViewModel.userid,
                            fitnessCode: UserBaseViewModel.fitnessCode)
                 .tabItem {
-                    Label("일지", systemImage: "bookmark.fill")
+                    VStack{
+                        Image("journalIcon")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 50, height: 50, alignment: .center)
+                        
+                        Text("일지")
+                    }
                 }
                 .tag(1)
                 .onTapGesture {
@@ -39,7 +53,15 @@ struct UserBaseView: View {
                 
                 StretchingView(type: $StretchingIndex, trainerid: UserBaseViewModel.trainerid, userid: UserBaseViewModel.userid )
                     .tabItem {
-                        Label("스트레칭", systemImage: "person.fill")
+                        
+                        VStack{
+                            Image("stretchingIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50, alignment: .center)
+                            
+                            Text("스트레칭")
+                        }
                     }
                     .tag(2)
                     .onTapGesture {
@@ -48,7 +70,14 @@ struct UserBaseView: View {
                 
                 CoachingView(viewModel: CoachViewModel(UserBaseViewModel.trainerid, UserBaseViewModel.userid))
                     .tabItem {
-                        Label("코칭", systemImage: "person.fill")
+                        VStack{
+                            Image("personIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50, alignment: .center)
+                            
+                            Text("코칭")
+                        }
                     }
                     .tag(3)
                     .onTapGesture {
@@ -219,4 +248,10 @@ private func ChangeTitle(_ selectedTabIndex:Int) -> String{
 
 enum StretchingType{
     case request,all
+}
+
+struct UserBaseView_Previews:PreviewProvider{
+    static var previews: some View{
+        UserBaseView(UserBaseViewModel: UserBaseViewModel())
+    }
 }

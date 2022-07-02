@@ -37,10 +37,14 @@ struct TrainerBaseView: View {
                 TrainerUserListView(selectedIndex: $trainerSelectedIndex)
                     .tag(TrainerPageType.userList)
                     .tabItem {
-                        Label {
+                        
+                        VStack{
+                            Image("listIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50, alignment: .center)
+                            
                             Text("회원목록")
-                        } icon: {
-                            Image(systemName: "person")
                         }
                     }
                     .environmentObject(self.trainerBaseViewModel)
@@ -50,10 +54,14 @@ struct TrainerBaseView: View {
                                  ,trainees: trainerBaseViewModel.trainerbasemodel.trainee
                                  ,trainerName: trainerBaseViewModel.trainerbasemodel.name ?? "")
                     .tabItem {
-                        Label {
+                        
+                        VStack{
+                            Image("chatIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50, alignment: .center)
+                            
                             Text("채팅목록")
-                        } icon: {
-                            Image(systemName: "message.fill")
                         }
                     }
                     .tag(TrainerPageType.chatList)
@@ -62,21 +70,29 @@ struct TrainerBaseView: View {
                 TrainerScheduleView(viewmodel: ScheduleViewModel(trainerId: trainerBaseViewModel.trainerId,
                                                                  trainees: trainerBaseViewModel.trainerbasemodel.trainee))
                     .tabItem{
-                        Label {
+                        
+                        VStack{
+                            Image("calendarIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50, alignment: .center)
+                            
                             Text("일정관리")
-                        } icon: {
-                            Image(systemName: "person.fill")
                         }
                     }
                     .tag(TrainerPageType.calendar)
                 
                 ExerciseStorageView()
                     .tabItem {
-                        Label {
+                        VStack{
+                            Image("exerciseListIcon")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50, alignment: .center)
+                            
                             Text("운동창고")
-                        } icon: {
-                            Image(systemName: "figure.walk")
                         }
+                        
                     }
                     .tag(TrainerPageType.exercise)
             }

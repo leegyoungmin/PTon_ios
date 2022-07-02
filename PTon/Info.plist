@@ -61,7 +61,7 @@
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIImageName</key>
-		<string>defaultImage</string>
+		<string>logoImage</string>
 		<key>UIImageRespectsSafeAreaInsets</key>
 		<true/>
 	</dict>
