@@ -9,6 +9,7 @@ import SwiftUI
 
 struct BodyInfoPage: View {
     @StateObject var viewModel = BodyInfoViewModel()
+    @Binding var dismissCurrentPage:Bool
     @ViewBuilder
     func titleView(_ title:String)->some View{
         HStack{
@@ -86,7 +87,9 @@ struct BodyInfoPage: View {
             Spacer()
             
             Button {
-                print(123)
+                viewModel.setupDataBase {
+                    dismissCurrentPage = false
+                }
             } label: {
                 Text("저장하기")
                     .font(.title2)
@@ -108,7 +111,7 @@ struct BodyInfoPage: View {
 struct BodyInfoPage_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView{
-            BodyInfoPage()
+            BodyInfoPage(dismissCurrentPage: .constant(true))
         }
     }
 }

@@ -45,6 +45,8 @@ class DetailMemoViewModel:ObservableObject{
         
         // 데이터 구독함수 실행
         ObserveData()
+        
+        viewAppear()
     }
     
     //MARK: - 데이터 구독 함수
@@ -68,7 +70,16 @@ class DetailMemoViewModel:ObservableObject{
         switch result{
         case .success(let comment):
             if changeType == .added{
-                self.commentList.append(comment)
+                var realComment = comment
+                
+                if realComment.writerId == trainerId {
+                    realComment.isRead = true
+                } else {
+                    realComment.isRead = false
+                }
+
+                
+                self.commentList.append(realComment)
             }
             else{
                 guard let index = self.commentList.firstIndex(where: {$0.uid == comment.uid}) else {return}
@@ -170,4 +181,20 @@ class DetailMemoViewModel:ObservableObject{
         }
     }
     
+    func viewAppear(){
+        reference.getDocuments { [weak self] querySnapshot, err in
+            querySnapshot?.documents.forEach({ [weak self] snapshot in
+                guard let self = self else {return}
+                
+                guard let writerId = snapshot.data()["writerId"] as? String else{return}
+                if writerId == self.trainerId{
+                    
+                    snapshot.reference.updateData([
+                        "isRead":true
+                    ])
+                }
+                
+            })
+        }
+    }
 }

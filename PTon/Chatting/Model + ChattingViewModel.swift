@@ -17,7 +17,11 @@ struct chattingRoom:Hashable{
 }
 
 class ChattingRoomListViewModel:ObservableObject{
-    @Published var chatRooms:[chattingRoom] = []
+    @Published var chatRooms:[chattingRoom] = []{
+        didSet{
+            print(chatRooms)
+        }
+    }
     let fitnessCode:String
     let trainerId:String
     let reference:DatabaseReference
@@ -41,16 +45,25 @@ class ChattingRoomListViewModel:ObservableObject{
             let userName = values["userName"] as? String ?? ""
             let isFavorite = values["isFavorite"] as? Bool ?? false
             
-            snapshot.childSnapshot(forPath: "chats").ref.queryLimited(toLast: 1).observe(.value) { chatsnapshot in
-                guard let values = chatsnapshot.value as? [String:Any] else{return}
-                
-                var lastMessage = values["message"] as? String ?? ""
-                print("chats last message \(lastMessage)")
-                if lastMessage.contains("https://"){
-                    lastMessage = "사진"
+            if snapshot.hasChild("chats"){
+                snapshot.childSnapshot(forPath: "chats").ref.queryLimited(toLast: 1).observe(.value) { chatsnapshot in
+                    guard let values = chatsnapshot.value as? [String:Any] else{return}
+                    
+                    var lastMessage = values["message"] as? String ?? ""
+                    print("chats last message \(lastMessage)")
+                    if lastMessage.contains("https://"){
+                        lastMessage = "사진"
+                    }
+                    
+                    switch self.chatRooms.firstIndex(where: {$0.opponentId == userId}){
+                    case .some(let value):
+                        self.chatRooms[value].lastMessage = lastMessage
+                    case .none:
+                        self.chatRooms.append(chattingRoom(opponentId: userId, opponentName: userName, favorite: isFavorite,lastMessage: lastMessage))
+                    }
                 }
-                
-                self.chatRooms.append(chattingRoom(opponentId: userId, opponentName: userName, favorite: isFavorite,lastMessage: lastMessage))
+            }else{
+                self.chatRooms.append(chattingRoom(opponentId: userId, opponentName: userName, favorite: isFavorite, lastMessage: ""))
             }
         }
         

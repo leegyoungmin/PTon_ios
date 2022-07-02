@@ -9,10 +9,10 @@ import SwiftUI
 import AlertToast
 
 struct BaseInformationPage: View {
-    @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel:BaseInfoViewModel
     @State var isPresentBodyData:Bool = false
     @EnvironmentObject var errorhandle:ErrorHandling
+    @Binding var dismissCurrent:Bool
     
     //MARK: - FUNCTIONS
     @ViewBuilder
@@ -179,15 +179,12 @@ struct BaseInformationPage: View {
                     if viewModel.validationUserBaseInfo(){
                         viewModel.setupDataBase {
                             if viewModel.isTrainer! == true{
-                                dismiss.callAsFunction()
+                                dismissCurrent = false
                             }else{
-                                print("Data is not Trainer")
                                 isPresentBodyData = true
                             }
                         }
                     }
-                    
-                    print(viewModel.validationUserBaseInfo())
                 } label: {
                     Text("회원가입")
                         .font(.title2)
@@ -201,7 +198,7 @@ struct BaseInformationPage: View {
                 .disabled(viewModel.validationUserBaseInfo())
                 
                 NavigationLink(isActive: $isPresentBodyData) {
-                    BodyInfoPage()
+                    BodyInfoPage(dismissCurrentPage: $dismissCurrent)
                 } label: {
                     EmptyView()
                 }
@@ -220,7 +217,7 @@ struct BaseInformationPage: View {
 
 struct BaseInformationPage_Previews: PreviewProvider {
     static var previews: some View {
-        BaseInformationPage(viewModel: BaseInfoViewModel(userId: "asnjkansjd", userName: "이경민", email: "cow970814@naver.com", loginApi: "Kakao"))
+        BaseInformationPage(viewModel: BaseInfoViewModel(userId: "asnjkansjd", userName: "이경민", email: "cow970814@naver.com", loginApi: "Kakao"), dismissCurrent: .constant(true))
             .withErrorHandling()
     }
 }

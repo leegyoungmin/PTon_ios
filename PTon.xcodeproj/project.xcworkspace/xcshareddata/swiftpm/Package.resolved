@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk",
       "state" : {
-        "revision" : "2eb177effe7baf1f13ad0c5f4eb8c71a98429fb5",
-        "version" : "9.1.0"
+        "revision" : "e8828e8efc813817b3c2cbfde8e965f7a7a26641",
+        "version" : "9.2.0"
       }
     },
     {
@@ -141,7 +141,7 @@
       "location" : "https://github.com/google/GoogleSignIn-iOS",
       "state" : {
         "branch" : "main",
-        "revision" : "48e2e68b186631a9faae8b9d0ad85d7cb3a25a44"
+        "revision" : "b3a898e06a8acc2d1ab89ed8a01b31b5853cd94d"
       }
     },
     {
@@ -181,21 +181,12 @@
       }
     },
     {
-      "identity" : "gzipswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/1024jp/GzipSwift",
-      "state" : {
-        "revision" : "7a7f17761c76a932662ab77028a4329f67d645a4",
-        "version" : "5.2.0"
-      }
-    },
-    {
       "identity" : "instantsearch-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/algolia/instantsearch-ios",
       "state" : {
-        "revision" : "01fb89a21abc64f4256064fb6b301275328b20f4",
-        "version" : "7.17.0"
+        "revision" : "7fd8f30854538c2b9eeac38b154c9bb6c622fe36",
+        "version" : "7.18.0"
       }
     },
     {
@@ -203,8 +194,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/algolia/instantsearch-telemetry-native",
       "state" : {
-        "revision" : "dc46e639601aa32f0ef2ecabdd97da0efbfde08d",
-        "version" : "0.1.0"
+        "revision" : "10b07e4d711e1c3d0b2a19c46ecd99491fd9929c",
+        "version" : "0.1.2"
       }
     },
     {
@@ -213,7 +204,7 @@
       "location" : "https://github.com/kakao/kakao-ios-sdk",
       "state" : {
         "branch" : "master",
-        "revision" : "6dc19970c90d543b5d61b4b5c5d7d433f905f67c"
+        "revision" : "4aee2605de323bdb54d42fb5108a414838efac08"
       }
     },
     {
@@ -221,8 +212,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
       "state" : {
-        "revision" : "59eb199fdb8dd47733624e8b0277822d0232579e",
-        "version" : "7.2.2"
+        "revision" : "022e4eeb79f817748544b318b991d9a70036bbf8",
+        "version" : "7.2.4"
       }
     },
     {
@@ -248,8 +239,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kean/Nuke.git",
       "state" : {
-        "revision" : "9b62e2ecbfecdcccacd52341e38832bcc84d98f4",
-        "version" : "10.10.0"
+        "revision" : "a002b7fd786f2df2ed4333fe73a9727499fd9d97",
+        "version" : "10.11.2"
       }
     },
     {
@@ -258,7 +249,7 @@
       "location" : "https://github.com/kean/NukeUI.git",
       "state" : {
         "branch" : "main",
-        "revision" : "e62b52cfb54ad3607e3389b431ba2e28c9f0d799"
+        "revision" : "db55022a8e483774ebbf3568727071477546d9ea"
       }
     },
     {
@@ -266,8 +257,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/exyte/PopupView.git",
       "state" : {
-        "revision" : "521b2ddc2ae8160f2816e03fa1f7be0937db8fff",
-        "version" : "1.1.1"
+        "revision" : "a25e22b46d47558b1e7e049b5734522c6706600c",
+        "version" : "1.1.5"
       }
     },
     {
@@ -275,8 +266,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/promises.git",
       "state" : {
-        "revision" : "46c1e6b5ac09d8f82c991061c659f67e573d425d",
-        "version" : "2.1.0"
+        "revision" : "3e4e743631e86c8c70dbc6efdc7beaa6e90fd3bb",
+        "version" : "2.1.1"
       }
     },
     {
@@ -284,8 +275,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "revision" : "2e63d0061da449ad0ed130768d05dceb1496de44",
-        "version" : "5.12.5"
+        "revision" : "c4b8660bb3ef543fe4bdcaac0db956b32dc5583f",
+        "version" : "5.13.0"
       }
     },
     {
@@ -304,6 +295,15 @@
       "state" : {
         "revision" : "6c61f5382dd07a64d76bc8b7fad8cec0d8a4ff7a",
         "version" : "0.1.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "df9ee6676cd5b3bf5b330ec7568a5644f547201b",
+        "version" : "1.1.3"
       }
     },
     {

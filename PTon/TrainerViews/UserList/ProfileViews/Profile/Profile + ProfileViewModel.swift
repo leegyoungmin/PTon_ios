@@ -130,4 +130,17 @@ class ProfileViewModel:ObservableObject{
             .child(trainee.userId)
             .updateChildValues(data)
     }
+    
+    func newChatRoom(){
+        let chatRef = FirebaseDatabase.Database.database().reference().child("Chats").child(fitnessCode).child(self.trainerId).child(trainee.userId)
+        
+        chatRef.observeSingleEvent(of: .value) { snapshot in
+            if !snapshot.exists(){
+                snapshot.ref.updateChildValues([
+                    "isFavorite":false,
+                    "userName":self.trainee.userName
+                ])
+            }
+        }
+    }
 }

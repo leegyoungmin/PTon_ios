@@ -21,49 +21,60 @@ import SwiftUI
 import AuthenticationServices
 import SwiftPrettyPrint
 
+enum signInState:Identifiable{
+    var id : Self {self}
+    case signedIn
+    case signedOut
+}
+
 class AuthService:NSObject,ObservableObject{
     fileprivate var currentNonce:String?
     @Published var user = FirebaseAuth.Auth.auth().currentUser
     @Published var usertype:userType?
-    @Published var isNotLogged:Bool = false
+    @Published var State:signInState = .signedOut
     @Published var isNewUser:Bool = false
     @Published var authType:String?
     
     override init(){
         super.init()
-        LogOut()
-        
-        self.checkUserType()
+        self.ChangeState()
     }
     
-    func checkUserType(){
-        if user != nil{
-            self.isNotLogged = false
-            userType()
+    func ChangeState(){
+        if FirebaseAuth.Auth.auth().currentUser == nil{
+            self.State = .signedOut
         }else{
-            self.isNotLogged = true
+            self.State = .signedIn
+            
+            guard let userId = FirebaseAuth.Auth.auth().currentUser?.uid else{return}
+            
+            FirebaseDatabase.Database.database().reference()
+                .observeSingleEvent(of: .value) { snapshot in
+                    if snapshot.childSnapshot(forPath: "Trainer").childSnapshot(forPath: userId).exists(){
+                        self.usertype = .trainer
+                        
+                        self.registerToken(userId: userId)
+                    }else if snapshot.childSnapshot(forPath: "User").childSnapshot(forPath: userId).exists(){
+                        self.usertype = .user
+                        self.registerToken(userId: userId)
+                    }else{
+                        self.State = .signedOut
+                        self.isNewUser = true
+                    }
+                }
         }
     }
     
-    func userType(){
-        guard let userId = user?.uid else{return}
-        Firebase.Database.database().reference()
-            .child("Trainer")
-            .child(userId)
-            .observeSingleEvent(of: .value) { snapshot in
-                if snapshot.exists(){
-                    self.usertype = .trainer
-                }
+    func registerToken(userId:String){
+        Messaging.messaging().token { [weak self] token, err in
+            guard err == nil else{return}
+            
+            if let token = token{
+                FirebaseDatabase.Database.database().reference()
+                    .child("tokens")
+                    .updateChildValues([userId:token])
             }
-        
-        Firebase.Database.database().reference()
-            .child("User")
-            .child(userId)
-            .observeSingleEvent(of: .value) { snapshot in
-                if snapshot.exists(){
-                    self.usertype = .user
-                }
-            }
+        }
     }
     
     func userId()->String{
@@ -100,13 +111,13 @@ class AuthService:NSObject,ObservableObject{
                       isNewUser == true else{
                     //is not new user
                     self.user = FirebaseAuth.Auth.auth().currentUser
-                    self.checkUserType()
+                    self.ChangeState()
                     return
                 }
                 
                 self.user = FirebaseAuth.Auth.auth().currentUser
                 self.isNewUser = isNewUser
-                self.checkUserType()
+                self.ChangeState()
             }
         }
     }
@@ -116,7 +127,7 @@ class AuthService:NSObject,ObservableObject{
         do{
             try FirebaseAuth.Auth.auth().signOut()
             self.user = FirebaseAuth.Auth.auth().currentUser
-            self.checkUserType()
+            self.ChangeState()
         } catch {
             print("Error in Firebase auth LogOut")
         }
@@ -219,7 +230,6 @@ extension AuthService{
                 }
             }
         }
-        print(result)
         return result
     }//MARK: Apple Login Random Nonce
     
@@ -288,7 +298,7 @@ extension AuthService{
                 guard let isNewUser = result?.additionalUserInfo?.isNewUser,
                       isNewUser == true else {
                     self.user = result?.user
-                    self.checkUserType()
+                    self.ChangeState()
                     return
                 }
                 self.user = result?.user
@@ -304,31 +314,64 @@ extension AuthService:ASAuthorizationControllerDelegate{
     }
     
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        if let appleCredential = authorization.credential as? ASAuthorizationAppleIDCredential{
-            guard let nonce = currentNonce else{
-                fatalError("Invalid state: A login callback was received, but no login request was sent.")
+        switch authorization.credential{
+        case let appleIdCredential as ASAuthorizationAppleIDCredential:
+            if let _ = appleIdCredential.email,
+               let _ = appleIdCredential.fullName{
+                registerNewAccount(credential: appleIdCredential)
+            } else{
+                signInWithExistingAccount(credential: appleIdCredential)
             }
             
-            guard let idToken = appleCredential.identityToken else{
-                print("Unable to fetch Identify token")
-                return
-            }
-            
-            guard let token = String(data: idToken, encoding: .utf8) else{
-                print("Unable to serialize token string from data")
-                return
-            }
-            
-            let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: token, rawNonce: nonce)
-            
-            FirebaseAuth.Auth.auth().signIn(with: credential) { result, err in
-                if let err = err{
-                    print("Error in Apple Login Firebase \(err)")
-                }else{
-                    self.user = FirebaseAuth.Auth.auth().currentUser
-                    self.checkUserType()
+            break
+        default:
+            break
+        }
+    }
+    
+    private func firebaseLogin(credential:ASAuthorizationAppleIDCredential){
+        guard let nonce = currentNonce else{
+            fatalError("Invalid state: A login callback was received, but no login request was sent.")
+        }
+        
+        guard let idToken = credential.identityToken else{
+            print("Unable to fetch Identify token")
+            return
+        }
+        
+        guard let token = String(data: idToken, encoding: .utf8) else{
+            print("Unable to serialize token string from data")
+            return
+        }
+        
+        let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: token, rawNonce: nonce)
+        
+        FirebaseAuth.Auth.auth().signIn(with: credential) { result, err in
+            if let err = err{
+                print("Error in Apple Login Firebase \(err)")
+            }else{
+                print(result?.user.uid)
+                
+                guard let isNewUser = result?.additionalUserInfo?.isNewUser,
+                      isNewUser == true else{
+                    self.user = result?.user
+                    self.ChangeState()
+                    return
                 }
+                
+                self.user = result?.user
+                self.isNewUser = isNewUser
             }
         }
     }
+    
+    private func registerNewAccount(credential:ASAuthorizationAppleIDCredential){
+        self.isNewUser = true
+        firebaseLogin(credential: credential)
+    }
+    
+    private func signInWithExistingAccount(credential:ASAuthorizationAppleIDCredential){
+        self.firebaseLogin(credential: credential)
+    }
 }
+

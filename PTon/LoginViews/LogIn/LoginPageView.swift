@@ -63,12 +63,14 @@ struct LoginPageView:View{
                 .edgesIgnoringSafeArea(.all)
         )
         .fullScreenCover(isPresented: $authService.isNewUser,onDismiss: {
-            authService.checkUserType()
+            authService.ChangeState()
         }) {
             BaseInformationPage(viewModel: BaseInfoViewModel(userId: authService.userId(),
                                                              userName: authService.userName(),
                                                              email: authService.getuserEmail(),
-                                                             loginApi: authService.getauthType()))
+                                                             loginApi: authService.getauthType())
+                                ,dismissCurrent: $authService.isNewUser
+            )
         }
     }
 }

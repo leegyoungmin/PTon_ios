@@ -9,6 +9,14 @@ import Foundation
 import FirebaseDatabase
 import FirebaseAuth
 
+struct userBodyInfo:Codable{
+    var height:String
+    var weight:String
+    var fat:String
+    var muscle:String
+    var kcalSetting:String = "200"
+}
+
 class BodyInfoViewModel:ObservableObject{
     @Published var height:String = ""
     @Published var weight:String = ""
@@ -16,21 +24,16 @@ class BodyInfoViewModel:ObservableObject{
     @Published var muscle:String = ""
     let reference = FirebaseDatabase.Database.database().reference().child("UserInfo")
     
-    //데이터 베이스 저장 메소드
-    func uploadData(completion:@escaping()->Void){
-        guard let userid = FirebaseAuth.Auth.auth().currentUser?.uid else {return}
-        let values:[String:String] = [
-            "height":height,
-            "weight":weight,
-            "fat":fat,
-            "muscle":muscle,
-            "kcalSetting":"0"
-        ]
-        reference
-            .child(userid)
-            .setValue(values) { error, reference in
-                if error == nil{
-                    completion()
+    func setupDataBase(Completion:@escaping()->Void){
+        guard let userId = FirebaseAuth.Auth.auth().currentUser?.uid,
+              let data = userBodyInfo(height: height, weight: weight, fat: fat, muscle: muscle).toDictionary else{return}
+        
+        FirebaseDatabase.Database.database().reference()
+            .child("UserInfo")
+            .child(userId)
+            .updateChildValues(data) { err, _ in
+                if err == nil{
+                    Completion()
                 }
             }
     }

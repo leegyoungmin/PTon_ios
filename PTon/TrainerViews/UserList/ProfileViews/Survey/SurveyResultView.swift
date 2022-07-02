@@ -22,11 +22,10 @@ struct SurveyResultView: View {
                     Text("설문조사 완료")
                         .foregroundColor(.white)
                         .padding(.bottom)
+                        .font(.title2)
                     
-                    Image(systemName: "person.fill")
-                        .resizable()
-                        .frame(width: 100, height: 100, alignment: .center)
-                        .cornerRadius(50)
+                    Spacer()
+                        .frame(height:100)
                     
                     Text(viewModel.getUserType(result: userScore).rawValue)
                         .font(.title)

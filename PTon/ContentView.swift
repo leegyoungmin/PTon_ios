@@ -11,22 +11,22 @@ import KakaoSDKAuth
 
 struct ContentView:View{
     @StateObject var authService = AuthService()
+    @ViewBuilder
+    func userBaseView()->some View{
+        if authService.usertype == .trainer{
+            TrainerBaseView()
+        } else if authService.usertype == .user{
+            UserBaseView(UserBaseViewModel: UserBaseViewModel())
+        } else{
+            LoginPageView()
+        }
+    }
     var body: some View{
         Group{
-            if authService.usertype != nil{
-                if authService.usertype == .user{
-                    UserBaseView(UserBaseViewModel: UserBaseViewModel())
-                        .navigationBarTitleDisplayMode(.inline)
-                }else if authService.usertype == .trainer{
-                    TrainerBaseView()
-                        .navigationBarTitleDisplayMode(.inline)
-                }
-            }else{
-                VStack{}
-            }
+            userBaseView()
         }
         .navigationBarHidden(true)
-        .fullScreenCover(isPresented: $authService.isNotLogged) {
+        .fullScreenCover(isPresented: .constant(authService.State == .signedOut)) {
             LoginPageView()
                 .navigationBarTitleDisplayMode(.inline)
                 .environmentObject(authService)
@@ -48,14 +48,14 @@ struct TrainerExample:View{
             
             Text("Trainer")
             
-            Text(viewModel.isNotLogged ? "False":"True")
+            Text(viewModel.usertype == .trainer ? "False":"True")
             
             Button {
                 viewModel.LogOut()
             } label: {
                 Text("LogOut")
             }
-
+            
             Spacer()
         }.font(.largeTitle)
         
@@ -70,18 +70,17 @@ struct UserExample:View{
             
             Text("User")
             
-            Text(viewModel.isNotLogged ? "False":"True")
+            Text(viewModel.usertype == .trainer ? "False":"True")
             
             Button {
                 viewModel.LogOut()
             } label: {
                 Text("LogOut")
             }
-
+            
             Spacer()
         }
         .font(.largeTitle)
-        
     }
 }
 

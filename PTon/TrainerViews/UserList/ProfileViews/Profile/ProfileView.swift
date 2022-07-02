@@ -134,6 +134,7 @@ struct ProfileView: View {
                     LazyVGrid(columns: grids, alignment: .center){
                         
                         Button {
+                            viewmodel.newChatRoom()
                             self.isChatting = true
                             dismiss()
                         } label: {
