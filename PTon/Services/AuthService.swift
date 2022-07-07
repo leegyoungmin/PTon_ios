@@ -19,7 +19,6 @@ import KakaoSDKUser
 import CryptoKit
 import SwiftUI
 import AuthenticationServices
-import SwiftPrettyPrint
 
 enum signInState:Identifiable{
     var id : Self {self}
@@ -105,8 +104,6 @@ class AuthService:NSObject,ObservableObject{
             print("Error in custom token Login \(error.debugDescription)")
             
             if error == nil{
-                Pretty.prettyPrint("custom token is new user \(result?.additionalUserInfo?.isNewUser)")
-                //                result?
                 guard let isNewUser = result?.additionalUserInfo?.isNewUser,
                       isNewUser == true else{
                     //is not new user

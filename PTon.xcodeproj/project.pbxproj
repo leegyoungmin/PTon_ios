@@ -14,7 +14,6 @@
 		18036F2D27ECA40B00EFAE56 /* MealCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18036F2C27ECA40B00EFAE56 /* MealCameraView.swift */; };
 		18055AB027EF065400CB2AFE /* Exercises.json in Resources */ = {isa = PBXBuildFile; fileRef = 18055AAF27EF065400CB2AFE /* Exercises.json */; };
 		18055AB227EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18055AB127EF0DE700CB2AFE /* Model + TodayExerciseRecordViewModel.swift */; };
-		1805B93F285AD3BA000294EF /* SwiftPrettyPrint in Frameworks */ = {isa = PBXBuildFile; productRef = 1805B93E285AD3BA000294EF /* SwiftPrettyPrint */; };
 		1807A83B27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1807A83A27FC686B005AF490 /* Model + ScheduleMakeViewModel.swift */; };
 		18171E4F284731690058BB5B /* userExerciseSearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18171E4E284731690058BB5B /* userExerciseSearchViewModel.swift */; };
 		18184FC427C3554B00BBEB5E /* KcalSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18184FC327C3554B00BBEB5E /* KcalSettingViewModel.swift */; };
@@ -313,7 +312,6 @@
 				18D548E6283E20A30071D0D9 /* GoogleSignIn in Frameworks */,
 				18D243CB2844910400223382 /* InstantSearch in Frameworks */,
 				18D54960283E6B180071D0D9 /* FirebaseDatabase in Frameworks */,
-				1805B93F285AD3BA000294EF /* SwiftPrettyPrint in Frameworks */,
 				18A3B8EF283E11DE003CDAEE /* ToastUI in Frameworks */,
 				18D5495C283E6B180071D0D9 /* FirebaseAnalytics in Frameworks */,
 				18D5496C283E6B180071D0D9 /* FirebaseStorage in Frameworks */,
@@ -906,7 +904,6 @@
 				18D243CA2844910400223382 /* InstantSearch */,
 				18C3C464284CAAB1004707B6 /* NukeUI */,
 				184E27822850A85A00A5C823 /* BottomSheet */,
-				1805B93E285AD3BA000294EF /* SwiftPrettyPrint */,
 			);
 			productName = PTon;
 			productReference = 18A3B8D1283E0ABF003CDAEE /* PTon.app */;
@@ -952,7 +949,6 @@
 				18D243C92844910400223382 /* XCRemoteSwiftPackageReference "instantsearch-ios" */,
 				18C3C463284CAAB1004707B6 /* XCRemoteSwiftPackageReference "NukeUI" */,
 				184E27812850A85A00A5C823 /* XCRemoteSwiftPackageReference "bottom-sheet" */,
-				1805B93D285AD3BA000294EF /* XCRemoteSwiftPackageReference "SwiftPrettyPrint" */,
 			);
 			productRefGroup = 189393F627ABAF0100B4DB8A;
 			projectDirPath = "";
@@ -1257,6 +1253,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = logoImage;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1268,7 +1265,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_WORKSPACE = YES;
 				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = "";
 			};
@@ -1300,6 +1297,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = logoImage;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1311,7 +1309,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VALIDATE_WORKSPACE = YES;
 				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = "";
 			};
@@ -1341,14 +1339,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		1805B93D285AD3BA000294EF /* XCRemoteSwiftPackageReference "SwiftPrettyPrint" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/YusukeHosonuma/SwiftPrettyPrint.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
 		184E27812850A85A00A5C823 /* XCRemoteSwiftPackageReference "bottom-sheet" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weitieda/bottom-sheet";
@@ -1464,11 +1454,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		1805B93E285AD3BA000294EF /* SwiftPrettyPrint */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1805B93D285AD3BA000294EF /* XCRemoteSwiftPackageReference "SwiftPrettyPrint" */;
-			productName = SwiftPrettyPrint;
-		};
 		184E27822850A85A00A5C823 /* BottomSheet */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 184E27812850A85A00A5C823 /* XCRemoteSwiftPackageReference "bottom-sheet" */;

@@ -9,7 +9,6 @@ import Foundation
 import Firebase
 import SwiftUI
 import Combine
-import SwiftPrettyPrint
 
 //MARK: MODEL
 struct requestedExercise:Codable,Hashable{

@@ -8,7 +8,6 @@
 import Foundation
 import Combine
 import Firebase
-import SwiftPrettyPrint
 
 
 struct BaseInfo:Codable{
@@ -154,7 +153,6 @@ class BaseInfoViewModel:ObservableObject{
         }else if sexString == "2" || sexString == "4"{
             self.info.gender = "1"
         }
-        Pretty.prettyPrint(self.info)
 
     }
     

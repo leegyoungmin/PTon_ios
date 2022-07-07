@@ -8,8 +8,6 @@
 import Foundation
 import Firebase
 import Combine
-import SwiftPrettyPrint
-
 struct TrainerMealRecorded:Codable{
     var carbs:Int
     var fat:Int
@@ -263,7 +261,6 @@ class TrainerJournalViewModel:ObservableObject{
                             let trainerData = TrainerExercise(exerciseName: exerciseNames[index], Hydro: "AnAerobic", part: part, exerciseData: currentData[index])
                             self.requestExercises.append(trainerData)
                         }
-//                        Pretty.prettyPrint(self.requestExercises)
                     } catch let err{
                         print("Error in update AnAerobic \(err)")
                     }
@@ -306,7 +303,6 @@ class TrainerJournalViewModel:ObservableObject{
         let requestKcal = self.requestExercises.filter({$0.part == selectedPart}).reduce(recordKcal) { partialResult, exercise in
             return partialResult + exerciseKcal(exercise.exerciseData)
         }
-        Pretty.prettyPrint(requestKcal)
         return Int(requestKcal)
     }
     
