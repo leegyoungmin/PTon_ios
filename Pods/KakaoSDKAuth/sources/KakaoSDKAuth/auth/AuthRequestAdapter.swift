@@ -16,6 +16,7 @@ import Foundation
 import Alamofire
 import KakaoSDKCommon
 
+///:nodoc:
 public class AuthRequestAdapter : RequestInterceptor {
     public init() {}
     
@@ -25,6 +26,10 @@ public class AuthRequestAdapter : RequestInterceptor {
         if let accessToken = AUTH.tokenManager.getToken()?.accessToken {
             urlRequest.headers.add(.authorization(bearerToken: accessToken))
         }
+        else {
+            return completion(.failure(SdkError(reason: .TokenNotFound)))
+        }
+        
         urlRequest.setValue(Constants.kaHeader, forHTTPHeaderField: "KA")
         return completion(.success(urlRequest))
     }

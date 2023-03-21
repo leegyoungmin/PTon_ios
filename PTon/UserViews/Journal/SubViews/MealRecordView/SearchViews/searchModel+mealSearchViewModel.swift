@@ -8,8 +8,8 @@
 import Foundation
 import InstantSearchSwiftUI
 import InstantSearchCore
-import FirebaseStorage
-import Firebase
+//import FirebaseStorage
+//import Firebase
 
 struct foodResult:Codable{
     var foodName:String

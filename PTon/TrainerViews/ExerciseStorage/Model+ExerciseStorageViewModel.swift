@@ -128,6 +128,8 @@ class ExerciseStorageViewModel: ObservableObject{
             "url": item.exerciseURL
         ] as [String : Any]
         
+        ref.document(item.exerciseName).
+        
         ref.document(item.exerciseName).setData(fieldData){ error in
             if let error = error{
                 print("Error writing document: \(error)")

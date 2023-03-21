@@ -14,6 +14,7 @@
 
 import Foundation
 
+///:nodoc:
 public class Hosts {
     public static let shared = Hosts()
     
@@ -26,6 +27,7 @@ public class Hosts {
     public let talkLink : String
     public let talkLinkVersion : String
     public let sharerLink : String
+    public let universalLink : String
     
     public init(kapi: String = "kapi.kakao.com",
                 dapi: String = "dapi.kakao.com",
@@ -35,7 +37,8 @@ public class Hosts {
                 channel: String = "pf.kakao.com",
                 talkLink: String = "kakaolink",
                 talkLinkVersion: String = "kakaotalk-5.9.7",
-                sharerLink: String  = "sharer.kakao.com")
+                sharerLink: String = "sharer.kakao.com",
+                universalLink: String = "talk-apps.kakao.com")
     {
         self.kapi = kapi
         self.dapi = dapi
@@ -46,9 +49,11 @@ public class Hosts {
         self.talkLink = talkLink
         self.talkLinkVersion = talkLinkVersion
         self.sharerLink = sharerLink
+        self.universalLink = universalLink
     }
 }
 
+///:nodoc:
 public enum HostType {
     case Kapi
     case Dapi
@@ -61,6 +66,7 @@ public enum HostType {
     case TalkLink
     case TalkLinkVersion
     case SharerLink
+    case UniversalLink
     
     public var host: String {
         switch self {
@@ -86,10 +92,13 @@ public enum HostType {
             return "\(KakaoSDK.shared.hosts().talkLinkVersion)://"
         case .SharerLink:
             return "https://\(KakaoSDK.shared.hosts().sharerLink)"
+        case .UniversalLink:
+            return "https://\(KakaoSDK.shared.hosts().universalLink)"
         }
     }
 }
 
+///:nodoc:
 public class Paths {
     //kauth
     public static let authAuthorize = "/oauth/authorize"
@@ -126,6 +135,13 @@ public class Paths {
     public static let defaultMessage = "/v1/api/talk/friends/message/default/send"
     public static let scrapMessage = "/v1/api/talk/friends/message/scrap/send"
     
+    //friend
+    public static let selectFriends = "/v1/friends/sdk"
+    public static let userScpoes = "/v2/user/scopes/sdk"
+    
+    public static let selectChats = "/v1/api/talk/chat/list/sdk"
+    public static let selectChatMembers = "/v1/api/talk/members/sdk"
+    
     //story
     public static let isStoryUser = "/v1/api/story/isstoryuser"
     public static let storyProfile = "/v1/api/story/profile"
@@ -152,19 +168,22 @@ public class Paths {
     public static let talkLink = "send"
     public static let talkLinkVersion = "send"
     
-    public static let validateLink = "/v2/api/kakaolink/talk/template/validate"
-    public static let scrapLink = "/v2/api/kakaolink/talk/template/scrap"
-    public static let defalutLink = "/v2/api/kakaolink/talk/template/default"
+    public static let shareCustomValidate = "/v2/api/kakaolink/talk/template/validate"
+    public static let shareScrapValidate = "/v2/api/kakaolink/talk/template/scrap"
+    public static let shareDefalutValidate = "/v2/api/kakaolink/talk/template/default"
     
     public static let sharerLink = "/talk/friends/picker/easylink"
     
-    public static let imageUploadLink = "/v2/api/talk/message/image/upload"
-    public static let imageScrapLink = "/v2/api/talk/message/image/scrap"
+    public static let shareImageUpload = "/v2/api/talk/message/image/upload"
+    public static let shareImageScrap = "/v2/api/talk/message/image/scrap"
+    
+    public static let universalLink = "/scheme"
     
     //search
-    public static let searchCafe = "/v2/search/cafe"    
+    public static let searchCafe = "/v2/search/cafe"
 }
 
+///:nodoc:
 public class Urls {
     public static func compose(_ hostType:HostType = .Kapi, path:String) -> String {
         return "\(hostType.host)\(path)"

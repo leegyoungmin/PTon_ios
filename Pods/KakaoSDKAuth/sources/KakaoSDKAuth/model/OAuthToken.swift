@@ -42,18 +42,22 @@ public struct OAuthToken: Codable {
     /// 리프레시 토큰의 만료 시각
     public let refreshTokenExpiredAt: Date
     
+    /// :nodoc:
     public let scope: String? //space delimited string
     
     /// 현재까지 사용자로부터 획득에 성공한 scope (동의항목) 목록. 인증코드를 통한 토큰 신규 발급 시점에만 저장되며 이후 같은 값으로 유지됩니다. 토큰 갱신으로는 최신정보로 업데이트되지 않습니다.
     public let scopes: [String]?
     
+    /// OpenID Connect 확장 기능을 통해 발급되는 ID 토큰, Base64 인코딩된 사용자 인증 정보 포함
+    public let idToken: String?
+    
     enum CodingKeys: String, CodingKey {
-        case accessToken, expiresIn, tokenType, refreshToken, refreshTokenExpiresIn, scope
+        case accessToken, expiresIn, tokenType, refreshToken, refreshTokenExpiresIn, scope, idToken
     }
     
     
     // MARK: Initializers
-    
+    /// :nodoc:
     public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         
@@ -66,8 +70,10 @@ public struct OAuthToken: Codable {
         self.refreshTokenExpiredAt = Date().addingTimeInterval(self.refreshTokenExpiresIn)
         self.scope = try? values.decode(String.self, forKey: .scope)
         self.scopes = scope?.components(separatedBy:" ")
+        self.idToken = try? values.decode(String.self, forKey: .idToken)
     }
     
+    /// :nodoc:
     public init(accessToken: String,
                 expiresIn: TimeInterval? = nil,
                 expiredAt: Date? = nil,
@@ -76,7 +82,8 @@ public struct OAuthToken: Codable {
                 refreshTokenExpiresIn: TimeInterval? = nil,
                 refreshTokenExpiredAt: Date? = nil,
                 scope: String?,
-                scopes: [String]? ) {
+                scopes: [String]?,
+                idToken: String? = nil) {
         
         self.accessToken = accessToken
         self.expiresIn = (expiresIn != nil) ? expiresIn! : 0
@@ -99,6 +106,7 @@ public struct OAuthToken: Codable {
         }
         self.scope = scope
         self.scopes = scopes
+        self.idToken = idToken
     }
     
     static func ==(left:OAuthToken, right:OAuthToken) -> Bool {
@@ -157,9 +165,10 @@ public struct Token: Codable {
     public let refreshTokenExpiresIn: TimeInterval?
     public let scope: String? //space delimited string
     public let scopes: [String]?
+    public let idToken: String?
     
     enum CodingKeys: String, CodingKey {
-        case accessToken, expiresIn, tokenType, refreshToken, refreshTokenExpiresIn, scope
+        case accessToken, expiresIn, tokenType, refreshToken, refreshTokenExpiresIn, scope, idToken
     }
     
     public init(from decoder: Decoder) throws {
@@ -172,6 +181,7 @@ public struct Token: Codable {
         refreshTokenExpiresIn = try? values.decode(TimeInterval.self, forKey: .refreshTokenExpiresIn)
         scope = try? values.decode(String.self, forKey: .scope)
         scopes = scope?.components(separatedBy:" ")
+        idToken = try? values.decode(String.self, forKey: .idToken)
     }
 }
 
@@ -188,9 +198,11 @@ public struct CertOAuthToken: Codable {
     public let scope: String? //space delimited string
     public let scopes: [String]?
     public let txId: String?
+    public let idToken: String?
+    
     
     enum CodingKeys: String, CodingKey {
-        case accessToken, expiresIn, tokenType, refreshToken, refreshTokenExpiresIn, scope, txId
+        case accessToken, expiresIn, tokenType, refreshToken, refreshTokenExpiresIn, scope, txId, idToken
     }
     
     
@@ -209,6 +221,7 @@ public struct CertOAuthToken: Codable {
         self.scope = try? values.decode(String.self, forKey: .scope)
         self.scopes = scope?.components(separatedBy:" ")
         self.txId = try? values.decode(String.self, forKey: .txId)
+        self.idToken = try? values.decode(String.self, forKey: .idToken)
     }
 }
 
@@ -220,6 +233,7 @@ public struct CertTokenInfo: Codable {
     ///전자서명 접수번호
     public let txId: String
     
+    /// :nodoc:
     public init(token:OAuthToken,
                 txId:String) {
         self.token = token

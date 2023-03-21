@@ -13,7 +13,7 @@ target 'PTon' do
 
   # Pods for PTon
   pod 'naveridlogin-sdk-ios'
-  pod 'KakaoSDK','~>2.8.5'
+  pod 'KakaoSDK'
   pod 'Charts'
   pod 'Firebase/Core'
   pod 'Firebase/Auth'

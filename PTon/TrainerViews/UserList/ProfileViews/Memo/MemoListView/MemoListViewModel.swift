@@ -10,9 +10,9 @@ import Firebase
 import FirebaseFirestoreSwift
 
 
-struct Memo:Codable,Hashable{
-    let uuid:String
-    let title:String
+struct Memo: Codable,Hashable{
+    let uuid: String
+    let title: String
     var content:String
     let time:String
     let isPrivate:Bool
